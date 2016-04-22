@@ -20,6 +20,7 @@ import org.springframework.beans.factory.Aware;
 import org.springframework.core.env.Environment;
 
 /**
+ * 实现类能被传递环境对象<p>
  * Interface to be implemented by any bean that wishes to be notified
  * of the {@link Environment} that it runs in.
  *
@@ -29,6 +30,7 @@ import org.springframework.core.env.Environment;
 public interface EnvironmentAware extends Aware {
 
 	/**
+	 * 设置环境对象
 	 * Set the {@code Environment} that this object runs in.
 	 */
 	void setEnvironment(Environment environment);

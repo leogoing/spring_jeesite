@@ -32,6 +32,7 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 
 /**
+ * 对string做了一些封装包括jdk已有的strng类方法<p>
  * Miscellaneous {@link String} utility methods.
  *
  * <p>Mainly for internal use within the framework; consider
@@ -85,7 +86,7 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * 判断字符是否为空或者长度大于零
+	 * 判断字符序是否为空或者长度大于零<p>
 	 * Check that the given CharSequence is neither {@code null} nor of length 0.
 	 * Note: Will return {@code true} for a CharSequence that purely consists of whitespace.
 	 * <p><pre class="code">
@@ -102,7 +103,7 @@ public abstract class StringUtils {
 		return (str != null && str.length() > 0);
 	}
 
-	/**
+	/**判断字符是否为空或者长度大于零<p>
 	 * Check that the given String is neither {@code null} nor of length 0.
 	 * Note: Will return {@code true} for a String that purely consists of whitespace.
 	 * @param str the String to check (may be {@code null})
@@ -114,6 +115,7 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 检查给定的字符序是否有实际的文本<p>
 	 * Check whether the given CharSequence has actual text.
 	 * More specifically, returns {@code true} if the string not {@code null},
 	 * its length is greater than 0, and it contains at least one non-whitespace character.
@@ -143,6 +145,7 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 检查给定字符串是否有实际的文本<p>
 	 * Check whether the given String has actual text.
 	 * More specifically, returns {@code true} if the string not {@code null},
 	 * its length is greater than 0, and it contains at least one non-whitespace character.
@@ -345,6 +348,7 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 判断给定的字符串是否匹配给定的子字符串在给定的起始位置开始<p>
 	 * Test whether the given string matches the given substring
 	 * at the given index.
 	 * @param str the original string (or StringBuilder)

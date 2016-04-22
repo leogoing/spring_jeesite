@@ -20,6 +20,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.Aware;
 
 /**
+ * 实现类能获取spring上下文,初始化ApplicationContext<p>
  * Interface to be implemented by any object that wishes to be notified
  * of the {@link ApplicationContext} that it runs in.
  *
@@ -59,6 +60,7 @@ import org.springframework.beans.factory.Aware;
 public interface ApplicationContextAware extends Aware {
 
 	/**
+	 * 提供ApplicationContext的设置,通常用来初始化上下文<p>
 	 * Set the ApplicationContext that this object runs in.
 	 * Normally this call will be used to initialize the object.
 	 * <p>Invoked after population of normal bean properties but before an init callback such

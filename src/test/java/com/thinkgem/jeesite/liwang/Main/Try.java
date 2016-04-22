@@ -8,9 +8,9 @@ import org.springframework.util.StringUtils;
 public class Try {
 	
 	public static void main(String[] args) {
-		
-		for(String s:StringUtils.delimitedListToStringArray("http://nishui/kkj..//sa", "/"))
-			System.out.println(s);;
+		System.out.println("null".equals(null));
+//		for(String s:StringUtils.delimitedListToStringArray("http://nishui/kkj..//sa", "/"))
+//			System.out.println(s);;
 	}
 	
 	public static String subTime(String firstTime,String lastTime){

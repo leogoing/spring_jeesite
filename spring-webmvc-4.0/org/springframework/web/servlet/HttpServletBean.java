@@ -46,6 +46,8 @@ import org.springframework.web.context.support.ServletContextResourceLoader;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
 /**
+ * 适用于Http协议的Servlet实现<p>
+ * 抽象类但没有抽象方法避免实例化,只能被扩展 <p>
  * Simple extension of {@link javax.servlet.http.HttpServlet} which treats
  * its config parameters ({@code init-param} entries within the
  * {@code servlet} tag in {@code web.xml}) as bean properties.

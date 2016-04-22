@@ -17,6 +17,7 @@
 package org.springframework.beans.factory;
 
 /**
+ * 表示bean是合格的
  * Marker superinterface indicating that a bean is eligible to be
  * notified by the Spring container of a particular framework object
  * through a callback-style method. Actual method signature is

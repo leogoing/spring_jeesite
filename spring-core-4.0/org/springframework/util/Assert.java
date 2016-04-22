@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 判断元素工具基类(元素无意义则抛逻辑异常)
+ * 判断元素工具基类(元素无意义则抛逻辑异常)<p>
  * Assertion utility class that assists in validating arguments.
  * Useful for identifying programmer errors early and clearly at runtime.
  *
@@ -309,6 +309,7 @@ public abstract class Assert {
 
 
 	/**
+	 * 判断clazz为obj的同类或子类否则抛出逻辑异常<p>
 	 * Assert that the provided object is an instance of the provided class.
 	 * <pre class="code">Assert.instanceOf(Foo.class, foo);</pre>
 	 * @param clazz the required class
@@ -321,6 +322,7 @@ public abstract class Assert {
 	}
 
 	/**
+	 * 判断clazz为obj的同类或子类否则抛出显示message的异常<p>
 	 * Assert that the provided object is an instance of the provided class.
 	 * <pre class="code">Assert.instanceOf(Foo.class, foo);</pre>
 	 * @param type the type to check against

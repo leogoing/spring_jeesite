@@ -451,6 +451,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	/**
+	 * 初始化spring上下文<p>
 	 * Called by Spring via {@link ApplicationContextAware} to inject the current
 	 * application context. This method allows FrameworkServlets to be registered as
 	 * Spring beans inside an existing {@link WebApplicationContext} rather than
