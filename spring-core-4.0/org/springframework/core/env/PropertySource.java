@@ -23,6 +23,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 配置源基类,键值对<p>
  * Abstract base class representing a source of name/value property pairs. The underlying
  * {@linkplain #getSource() source object} may be of any type {@code T} that encapsulates
  * properties. Examples include {@link java.util.Properties} objects, {@link java.util.Map}
@@ -75,6 +76,7 @@ public abstract class PropertySource<T> {
 	}
 
 	/**
+	 * 构造方法,指定name,默认实际配置对象为new Object<p>
 	 * Create a new {@code PropertySource} with the given name and with a new {@code Object}
 	 * instance as the underlying source.
 	 * <p>Often useful in testing scenarios when creating anonymous implementations that
@@ -87,6 +89,7 @@ public abstract class PropertySource<T> {
 
 
 	/**
+	 * 获取配置源名称<p>
 	 * Return the name of this {@code PropertySource}
 	 */
 	public String getName() {
@@ -94,6 +97,7 @@ public abstract class PropertySource<T> {
 	}
 
 	/**
+	 * 获取实际源对象<p>
 	 * Return the underlying source object for this {@code PropertySource}.
 	 */
 	public T getSource() {
@@ -101,6 +105,7 @@ public abstract class PropertySource<T> {
 	}
 
 	/**
+	 * 判断是否包含指定名称的配置属性<p>
 	 * Return whether this {@code PropertySource} contains the given name.
 	 * <p>This implementation simply checks for a {@code null} return value
 	 * from {@link #getProperty(String)}. Subclasses may wish to implement
@@ -112,6 +117,7 @@ public abstract class PropertySource<T> {
 	}
 
 	/**
+	 * 根据指定名获取配置<p>
 	 * Return the value associated with the given name,
 	 * or {@code null} if not found.
 	 * @param name the property to find
@@ -121,6 +127,7 @@ public abstract class PropertySource<T> {
 
 
 	/**
+	 * 重写equals方法,只判断name属性是否相同<p>
 	 * This {@code PropertySource} object is equal to the given object if:
 	 * <ul>
 	 * <li>they are the same instance
@@ -165,6 +172,7 @@ public abstract class PropertySource<T> {
 
 
 	/**
+	 * 根据name属性创建一个新PropertySource对象(仅用于判断)<p>
 	 * Return a {@code PropertySource} implementation intended for collection comparison purposes only.
 	 * <p>Primarily for internal use, but given a collection of {@code PropertySource} objects, may be
 	 * used as follows:
@@ -187,6 +195,7 @@ public abstract class PropertySource<T> {
 
 
 	/**
+	 * 配置源桩,不包含实际逻辑用途<p>
 	 * {@code PropertySource} to be used as a placeholder in cases where an actual
 	 * property source cannot be eagerly initialized at application context
 	 * creation time.  For example, a {@code ServletContext}-based property source
@@ -215,10 +224,14 @@ public abstract class PropertySource<T> {
 
 
 	/**
+	 * 配置源只用与比较(判断name属性),关闭了其他方法(调用抛异常)<p>
 	 * @see PropertySource#named(String)
 	 */
 	static class ComparisonPropertySource extends StubPropertySource {
 
+		/**
+		 * 错误信息,该对象仅用于比较
+		 */
 		private static final String USAGE_ERROR =
 				"ComparisonPropertySource instances are for use with collection comparison only";
 

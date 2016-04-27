@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * 占位符替换工具类<p>
  * Utility class for working with Strings that have placeholder values in them. A placeholder takes the form
  * {@code ${name}}. Using {@code PropertyPlaceholderHelper} these placeholders can be substituted for
  * user-supplied values. <p> Values for substitution can be supplied using a {@link Properties} instance or
@@ -53,11 +54,19 @@ public class PropertyPlaceholderHelper {
 		wellKnownSimplePrefixes.put(")", "(");
 	}
 
-
+	/**
+	 * 占位符前缀
+	 */
 	private final String placeholderPrefix;
 
+	/**
+	 * 占位符后缀
+	 */
 	private final String placeholderSuffix;
 
+	/**
+	 * 占位符简单前缀如{、(
+	 */
 	private final String simplePrefix;
 
 	/**

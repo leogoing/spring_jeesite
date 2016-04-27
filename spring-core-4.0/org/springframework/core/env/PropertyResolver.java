@@ -17,7 +17,7 @@
 package org.springframework.core.env;
 
 /**
- * 属性解析器，用于解析相应key的value(各种getProperty方法)<p>
+ * 属性解析器，用于解析相应key的value(各种getProperty方法及占位符解析)<p>
  * Interface for resolving properties against any underlying source.
  *
  * @author Chris Beams
@@ -106,7 +106,7 @@ public interface PropertyResolver {
 	<T> T getRequiredProperty(String key, Class<T> targetType) throws IllegalStateException;
 
 	/**
-	 * 替换文本中的占位符（${key}）到属性值<p>
+	 * 替换文本中的占位符（${key}）到属性值,未传入对应的属性值是为了实现类的扩展性<p>
 	 * Resolve ${...} placeholders in the given text, replacing them with corresponding
 	 * property values as resolved by {@link #getProperty}. Unresolvable placeholders with
 	 * no default value are ignored and passed through unchanged.

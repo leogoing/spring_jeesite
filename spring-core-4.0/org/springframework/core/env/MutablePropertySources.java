@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 配置源集的默认实现,支持对配置源集的操作<p>
  * Default implementation of the {@link PropertySources} interface.
  * Allows manipulation of contained property sources and provides a constructor
  * for copying an existing {@code PropertySources} instance.
@@ -39,16 +40,21 @@ import org.springframework.util.StringUtils;
  * @see PropertySourcesPropertyResolver
  */
 public class MutablePropertySources implements PropertySources {
-
+	
+	/**配置源不存在Msg*/
 	static final String NON_EXISTENT_PROPERTY_SOURCE_MESSAGE = "PropertySource named [%s] does not exist";
 	static final String ILLEGAL_RELATIVE_ADDITION_MESSAGE = "PropertySource named [%s] cannot be added relative to itself";
 
 	private final Log logger;
 
+	/**
+	 * 存放配置源集合
+	 */
 	private final LinkedList<PropertySource<?>> propertySourceList = new LinkedList<PropertySource<?>>();
 
 
 	/**
+	 * 无参构造,加载logger<p>
 	 * Create a new {@link MutablePropertySources} object.
 	 */
 	public MutablePropertySources() {
@@ -56,6 +62,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 创建新对象,复制传入的配置源集所有的配置源<p>
 	 * Create a new {@code MutablePropertySources} from the given propertySources
 	 * object, preserving the original order of contained {@code PropertySource} objects.
 	 */
@@ -92,6 +99,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 添加配置源到首位<p>
 	 * Add the given property source object with highest precedence.
 	 */
 	public void addFirst(PropertySource<?> propertySource) {
@@ -104,6 +112,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 添加配置源到末位<p>
 	 * Add the given property source object with lowest precedence.
 	 */
 	public void addLast(PropertySource<?> propertySource) {
@@ -116,6 +125,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 添加配置源到指定配置源前<p>
 	 * Add the given property source object with precedence immediately higher
 	 * than the named relative property source.
 	 */
@@ -131,6 +141,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 添加配置源到指定配置源后<p>
 	 * Add the given property source object with precedence immediately lower
 	 * than the named relative property source.
 	 */
@@ -146,6 +157,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 获取指定配置源在配置源集合中下标位置<p>
 	 * Return the precedence of the given property source, {@code -1} if not found.
 	 */
 	public int precedenceOf(PropertySource<?> propertySource) {
@@ -153,6 +165,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 删除指定配置源名的配置源并返回<p>
 	 * Remove and return the property source with the given name, {@code null} if not found.
 	 * @param name the name of the property source to find and remove
 	 */

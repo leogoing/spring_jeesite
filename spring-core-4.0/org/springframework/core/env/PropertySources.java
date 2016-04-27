@@ -17,6 +17,7 @@
 package org.springframework.core.env;
 
 /**
+ * 配置源集<p>
  * Holder containing one or more {@link PropertySource} objects.
  *
  * @author Chris Beams
@@ -25,12 +26,14 @@ package org.springframework.core.env;
 public interface PropertySources extends Iterable<PropertySource<?>> {
 
 	/**
+	 * 配置源集中是否包含指定配置源名的配置源<p>
 	 * Return whether a property source with the given name is contained.
 	 * @param name the {@linkplain PropertySource#getName() name of the property source} to find
 	 */
 	boolean contains(String name);
 
 	/**
+	 * 获取指定配置源名的配置源<p>
 	 * Return the property source with the given name, {@code null} if not found.
 	 * @param name the {@linkplain PropertySource#getName() name of the property source} to find
 	 */

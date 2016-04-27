@@ -33,24 +33,30 @@ package org.springframework.util;
  */
 public abstract class SystemPropertyUtils {
 
-	/** Prefix for system property placeholders: "${" */
+	/**占位符前缀 Prefix for system property placeholders: "${" */
 	public static final String PLACEHOLDER_PREFIX = "${";
 
-	/** Suffix for system property placeholders: "}" */
+	/**占位符后缀 Suffix for system property placeholders: "}" */
 	public static final String PLACEHOLDER_SUFFIX = "}";
 
-	/** Value separator for system property placeholders: ":" */
+	/**占位符分隔符 Value separator for system property placeholders: ":" */
 	public static final String VALUE_SEPARATOR = ":";
 
-
+	/**
+	 * 严格的占位符工具类,不允许忽略无法解析的占位符
+	 */
 	private static final PropertyPlaceholderHelper strictHelper =
 			new PropertyPlaceholderHelper(PLACEHOLDER_PREFIX, PLACEHOLDER_SUFFIX, VALUE_SEPARATOR, false);
 
+	/**
+	 * 不严格的占位符工具类,可以忽略无法解析的占位符
+	 */
 	private static final PropertyPlaceholderHelper nonStrictHelper =
 			new PropertyPlaceholderHelper(PLACEHOLDER_PREFIX, PLACEHOLDER_SUFFIX, VALUE_SEPARATOR, true);
 
 
 	/**
+	 * 替换传入文本中的占位符<p>
 	 * Resolve {@code ${...}} placeholders in the given text, replacing them with
 	 * corresponding system property values.
 	 * @param text the String to resolve
@@ -64,11 +70,12 @@ public abstract class SystemPropertyUtils {
 	}
 
 	/**
+	 * 替换传入文本中的占位符，根据指定布尔值执行是否忽略无法解析的占位符<p>
 	 * Resolve {@code ${...}} placeholders in the given text, replacing them with
 	 * corresponding system property values. Unresolvable placeholders with no default
 	 * value are ignored and passed through unchanged if the flag is set to {@code true}.
-	 * @param text the String to resolve
-	 * @param ignoreUnresolvablePlaceholders whether unresolved placeholders are to be ignored
+	 * @param text 被解析的文本the String to resolve
+	 * @param ignoreUnresolvablePlaceholders 是否忽略无法解析的占位符whether unresolved placeholders are to be ignored
 	 * @return the resolved String
 	 * @see #PLACEHOLDER_PREFIX
 	 * @see #PLACEHOLDER_SUFFIX
@@ -82,6 +89,7 @@ public abstract class SystemPropertyUtils {
 
 
 	/**
+	 * 系统配置占位符属性获取内部类<p>
 	 * PlaceholderResolver implementation that resolves against system properties
 	 * and system environment variables.
 	 */
@@ -93,13 +101,16 @@ public abstract class SystemPropertyUtils {
 			this.text = text;
 		}
 
+		/**
+		 * 从系统配置或系统环境中获取占位符对应属性值
+		 */
 		@Override
 		public String resolvePlaceholder(String placeholderName) {
 			try {
-				String propVal = System.getProperty(placeholderName);
+				String propVal = System.getProperty(placeholderName);//系统配置文件中获取
 				if (propVal == null) {
 					// Fall back to searching the system environment.
-					propVal = System.getenv(placeholderName);
+					propVal = System.getenv(placeholderName);//系统环境中获取
 				}
 				return propVal;
 			}

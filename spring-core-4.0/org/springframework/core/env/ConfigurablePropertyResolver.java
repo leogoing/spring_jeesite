@@ -19,6 +19,7 @@ package org.springframework.core.env;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 
 /**
+ * 配置解析接口增加了可配置性,如设置前后缀、类型转换服务的getset<p>
  * Configuration interface to be implemented by most if not all {@link PropertyResolver
  * PropertyResolver} types. Provides facilities for accessing and customizing the
  * {@link org.springframework.core.convert.ConversionService ConversionService} used when
@@ -30,6 +31,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 public interface ConfigurablePropertyResolver extends PropertyResolver {
 
 	/**
+	 * 获取可配置的类型转换服务<p>
 	 * @return the {@link ConfigurableConversionService} used when performing type
 	 * conversions on properties.
 	 * <p>The configurable nature of the returned conversion service allows for
@@ -44,6 +46,7 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	ConfigurableConversionService getConversionService();
 
 	/**
+	 * 设置可配置的类型转换服务<p>
 	 * Set the {@link ConfigurableConversionService} to be used when performing type
 	 * conversions on properties.
 	 * <p><strong>Note:</strong> as an alternative to fully replacing the {@code
@@ -57,16 +60,19 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	void setConversionService(ConfigurableConversionService conversionService);
 
 	/**
+	 * 设置占位符前缀<p>
 	 * Set the prefix that placeholders replaced by this resolver must begin with.
 	 */
 	void setPlaceholderPrefix(String placeholderPrefix);
 
 	/**
+	 * 设置占位符后缀<p>
 	 * Set the suffix that placeholders replaced by this resolver must end with.
 	 */
 	void setPlaceholderSuffix(String placeholderSuffix);
 
 	/**
+	 * 设置占位符中的分隔符<p>
 	 * Specify the separating character between the placeholders replaced by this
 	 * resolver and their associated default value, or {@code null} if no such
 	 * special character should be processed as a value separator.

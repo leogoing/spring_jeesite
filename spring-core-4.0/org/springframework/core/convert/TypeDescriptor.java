@@ -31,6 +31,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 对象类型描述类<p>
  * Context about a type to convert from or to.
  *
  * @author Keith Donald
@@ -43,10 +44,19 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class TypeDescriptor implements Serializable {
 
+	/**
+	 * 用来表示空注解数组
+	 */
 	static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
+	/**
+	 * 常用的class类型存放容器
+	 */
 	private static final Map<Class<?>, TypeDescriptor> commonTypesCache = new HashMap<Class<?>, TypeDescriptor>(18);
 
+	/**
+	 * 常用的class类型池数组
+	 */
 	private static final Class<?>[] CACHED_COMMON_TYPES = {
 			boolean.class, Boolean.class, byte.class, Byte.class, char.class, Character.class,
 			double.class, Double.class, int.class, Integer.class, long.class, Long.class,
@@ -519,6 +529,7 @@ public class TypeDescriptor implements Serializable {
 	}
 
 	/**
+	 * 根据传入class创建一个类型描述对象<p>
 	 * Create a new type descriptor from the given type.
 	 * <p>Use this to instruct the conversion system to convert an object to a
 	 * specific target type, when no type location such as a method parameter or

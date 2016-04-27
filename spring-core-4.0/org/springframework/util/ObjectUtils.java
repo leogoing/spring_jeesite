@@ -226,6 +226,7 @@ public abstract class ObjectUtils {
 	//---------------------------------------------------------------------
 
 	/**
+	 * 判断对象是否相同(安全的不会空指针,包含数组内容比较)<p>
 	 * Determine if the given objects are equal, returning {@code true}
 	 * if both are {@code null} or {@code false} if only one is
 	 * {@code null}.
