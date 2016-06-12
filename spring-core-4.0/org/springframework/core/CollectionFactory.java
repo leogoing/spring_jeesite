@@ -117,11 +117,12 @@ public abstract class CollectionFactory {
 	}
 
 	/**
+	 * 根据传入Class对象和集合初始容量大小创建集合对象(如果为接口返回常用实现类)<p>
 	 * Create the most appropriate collection for the given collection type.
 	 * <p>Creates an ArrayList, TreeSet or linked Set for a List, SortedSet
 	 * or Set, respectively.
 	 * @param collectionType the desired type of the target Collection
-	 * @param initialCapacity the initial capacity
+	 * @param initialCapacity 初始容量   the initial capacity
 	 * @return the new Collection instance
 	 * @see java.util.ArrayList
 	 * @see java.util.TreeSet
@@ -129,7 +130,7 @@ public abstract class CollectionFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E> Collection<E> createCollection(Class<?> collectionType, int initialCapacity) {
-		if (collectionType.isInterface()) {
+		if (collectionType.isInterface()) {//如果属于接口根据具体类型返回常用的实现类
 			if (List.class.equals(collectionType)) {
 				return new ArrayList<E>(initialCapacity);
 			}
@@ -188,6 +189,7 @@ public abstract class CollectionFactory {
 	}
 
 	/**
+	 * 根据传入Class对象和Map初始容量大小创建Map对象(如果为接口返回常用实现类)<p>
 	 * Create the most approximate map for the given map.
 	 * <p>Creates a TreeMap or linked Map for a SortedMap or Map, respectively.
 	 * @param mapType the desired type of the target Map

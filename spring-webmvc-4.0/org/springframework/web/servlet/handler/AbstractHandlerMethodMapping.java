@@ -71,8 +71,14 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 	private boolean detectHandlerMethodsInAncestorContexts = false;
 
+	/**
+	 * 保存着匹配条件RequestCondition<T>和HandlerMethod的对应关系
+	 */
 	private final Map<T, HandlerMethod> handlerMethods = new LinkedHashMap<T, HandlerMethod>();
 
+	/**
+	 * 保存着url和匹配条件RequestCondition<T>的对应关系
+	 */
 	private final MultiValueMap<String, T> urlMap = new LinkedMultiValueMap<String, T>();
 
 
@@ -135,21 +141,25 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected abstract boolean isHandler(Class<?> beanType);
 
 	/**
+	 * 首先从传入的处理器中找到符合要求的方法,然后进行注册<p>
 	 * Look for handler methods in a handler.
 	 * @param handler the bean name of a handler or a handler instance
 	 */
 	protected void detectHandlerMethods(final Object handler) {
-		Class<?> handlerType =
+		Class<?> handlerType =//获取handler的类型
 				(handler instanceof String ? getApplicationContext().getType((String) handler) : handler.getClass());
 
+		//保存Handler和匹配条件<T>的对应关系
 		// Avoid repeated calls to getMappingForMethod which would rebuild RequestMappingInfo instances
 		final Map<Method, T> mappings = new IdentityHashMap<Method, T>();
+		//如果是CGLIB代理的子对象类型,则返回父类型,否则直接返回传入对象
 		final Class<?> userType = ClassUtils.getUserClass(handlerType);
 
+		//获取传入bean里所有符合Handler要求的Method
 		Set<Method> methods = HandlerMethodSelector.selectMethods(userType, new MethodFilter() {
 			@Override
 			public boolean matches(Method method) {
-				T mapping = getMappingForMethod(method, userType);
+				T mapping = getMappingForMethod(method, userType);//创建匹配条件对象
 				if (mapping != null) {
 					mappings.put(method, mapping);
 					return true;
@@ -160,6 +170,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 		});
 
+		//注册符合要求的Method(保存到当前对象的3个(目前只有2个)Map属性中)
 		for (Method method : methods) {
 			registerHandlerMethod(handler, method, mappings.get(method));
 		}
@@ -186,17 +197,20 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected void registerHandlerMethod(Object handler, Method method, T mapping) {
 		HandlerMethod newHandlerMethod = createHandlerMethod(handler, method);
 		HandlerMethod oldHandlerMethod = this.handlerMethods.get(mapping);
+		//检查是否已经在handlerMethods中存在,如果已经存在并和现在传入的不同则抛异常
 		if (oldHandlerMethod != null && !oldHandlerMethod.equals(newHandlerMethod)) {
 			throw new IllegalStateException("Ambiguous mapping found. Cannot map '" + newHandlerMethod.getBean() +
 					"' bean method \n" + newHandlerMethod + "\nto " + mapping + ": There is already '" +
 					oldHandlerMethod.getBean() + "' bean method\n" + oldHandlerMethod + " mapped.");
 		}
 
+		//添加到handlerMethods
 		this.handlerMethods.put(mapping, newHandlerMethod);
 		if (logger.isInfoEnabled()) {
 			logger.info("Mapped \"" + mapping + "\" onto " + newHandlerMethod);
 		}
 
+		//添加到urlMap
 		Set<String> patterns = getMappingPathPatterns(mapping);
 		for (String pattern : patterns) {
 			if (!getPathMatcher().isPattern(pattern)) {
@@ -237,6 +251,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
+	 * 根据指定的request查找handlerMethod<p>
 	 * Look up a handler method for the given request.
 	 */
 	@Override
@@ -268,15 +283,16 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<Match>();
-		List<T> directPathMatches = this.urlMap.get(lookupPath);
-		if (directPathMatches != null) {
+		List<T> directPathMatches = this.urlMap.get(lookupPath);//根据url获取匹配条件
+		if (directPathMatches != null) {//将找到的匹配条件添加到matches
 			addMatchingMappings(directPathMatches, matches, request);
 		}
-		if (matches.isEmpty()) {
+		if (matches.isEmpty()) {//如果不能通过url获取匹配条件则将所有匹配条件加入matches
 			// No choice but to go through all mappings...
 			addMatchingMappings(this.handlerMethods.keySet(), matches, request);
 		}
 
+		//将包含匹配条件和Handler的matches排序,并取第一个作为bestMatches,若前面两个排序相同则抛异常
 		if (!matches.isEmpty()) {
 			Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
 			Collections.sort(matches, comparator);
@@ -329,6 +345,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected abstract Comparator<T> getMappingComparator(HttpServletRequest request);
 
 	/**
+	 * 默认实现是将lookupPath设置到request的属性<p>
 	 * Invoked when a matching mapping is found.
 	 * @param mapping the matching mapping
 	 * @param lookupPath mapping lookup path within the current servlet mapping
@@ -353,6 +370,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
+	 * 用来保存匹配条件<T>和handlerMethod的对应关系<p>
 	 * A thin wrapper around a matched HandlerMethod and its mapping, for the purpose of
 	 * comparing the best match with a comparator in the context of the current request.
 	 */

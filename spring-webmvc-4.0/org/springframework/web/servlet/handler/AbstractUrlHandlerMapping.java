@@ -92,6 +92,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 获取Handler<p>
 	 * Look up a handler for the URL path of the given request.
 	 * @param request current HTTP request
 	 * @return the handler instance, or {@code null} if none found
@@ -111,6 +112,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 				rawHandler = getDefaultHandler();
 			}
 			if (rawHandler != null) {
+				//如果是String类型则到容器中查找具体得Bean
 				// Bean name or resolved handler?
 				if (rawHandler instanceof String) {
 					String handlerName = (String) rawHandler;
@@ -130,6 +132,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 匹配并查找Handler<p>
 	 * Look up a handler instance for the given URL path.
 	 * <p>Supports direct matches, e.g. a registered "/test" matches "/test",
 	 * and various Ant-style pattern matches, e.g. a registered "/t*" matches
@@ -144,16 +147,17 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	 */
 	protected Object lookupHandler(String urlPath, HttpServletRequest request) throws Exception {
 		// Direct match?
-		Object handler = this.handlerMap.get(urlPath);
+		Object handler = this.handlerMap.get(urlPath);//直接从Map中获取
 		if (handler != null) {
 			// Bean name or resolved handler?
-			if (handler instanceof String) {
+			if (handler instanceof String) {//如果是String类型则从容器中获取
 				String handlerName = (String) handler;
 				handler = getApplicationContext().getBean(handlerName);
 			}
 			validateHandler(handler, request);
 			return buildPathExposingHandler(handler, urlPath, urlPath, null);
 		}
+		//pattern匹配,比如使用带*号的模式与url进行匹配
 		// Pattern match?
 		List<String> matchingPatterns = new ArrayList<String>();
 		for (String registeredPattern : this.handlerMap.keySet()) {
@@ -180,6 +184,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 			validateHandler(handler, request);
 			String pathWithinMapping = getPathMatcher().extractPathWithinPattern(bestPatternMatch, urlPath);
 
+			//之前是通过sort方法排序,然后用第一个作为bestPatternMatch的,不过有可能有多个Pattern的顺序相同,也就是返回0,现在处理这种情况
 			// There might be multiple 'best patterns', let's make sure we have the correct URI template variables
 			// for all of them
 			Map<String, String> uriTemplateVariables = new LinkedHashMap<String, String>();
@@ -200,6 +205,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 用来校验传入的handler和request是否匹配(默认空处理)<p>
 	 * Validate the given handler against the current request.
 	 * <p>The default implementation is empty. Can be overridden in subclasses,
 	 * for example to enforce specific preconditions expressed in URL mappings.
@@ -211,6 +217,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 给查找到的Handler注册两个拦截器(主要将当前url实际匹配的Pattern和匹配条件和url模板参数等设置到request中)<p>
 	 * Build a handler object for the given raw handler, exposing the actual
 	 * handler, the {@link #PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE}, as well as
 	 * the {@link #URI_TEMPLATE_VARIABLES_ATTRIBUTE} before executing the handler.
@@ -254,6 +261,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 注册url到处理器,把传入的beanName作为处理器(存放入handlerMap中)<p>
 	 * Register the specified handler for the given URL paths.
 	 * @param urlPaths the URLs that the bean should be mapped to
 	 * @param beanName the name of the handler bean
@@ -268,6 +276,9 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	}
 
 	/**
+	 * 注册url到指定的处理器中<br>
+	 * 首先看handlerMap属性里有没有url,如果没有则put进去,如果有就看以前保存的和现在的Handler是否一致不一样则抛异常<br>
+	 * 如果url是'/'或'/*'则分别设置到rootHandler和defaultHandler属性里去<p>
 	 * Register the specified handler for the given URL path.
 	 * @param urlPath the URL the bean should be mapped to
 	 * @param handler the handler instance or handler bean name String

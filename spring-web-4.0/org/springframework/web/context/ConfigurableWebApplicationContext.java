@@ -40,6 +40,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public interface ConfigurableWebApplicationContext extends WebApplicationContext, ConfigurableApplicationContext {
 
 	/**
+	 * 应用上下文ID的前缀(WebApplicationContext的全称+':')<p>
 	 * Prefix for ApplicationContext ids that refer to context path and/or servlet name.
 	 */
 	String APPLICATION_CONTEXT_ID_PREFIX = WebApplicationContext.class.getName() + ":";

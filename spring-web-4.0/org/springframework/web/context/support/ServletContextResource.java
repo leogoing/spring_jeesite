@@ -78,6 +78,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 返回servletContext(不被重写)<p>
 	 * Return the ServletContext for this resource.
 	 */
 	public final ServletContext getServletContext() {
@@ -85,6 +86,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 获取资源路径(不被重写)<p>
 	 * Return the path for this resource.
 	 */
 	public final String getPath() {
@@ -93,6 +95,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 
 
 	/**
+	 * 判断当前servletContext属性能否获取path属性路径的资源<p>
 	 * This implementation checks {@code ServletContext.getResource}.
 	 * @see javax.servlet.ServletContext#getResource(String)
 	 */
@@ -108,6 +111,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * servletContext属性下获取path属性标明的文件资源转为URL再判断能否打开一个连接到这个URL<p>
 	 * This implementation delegates to {@code ServletContext.getResourceAsStream},
 	 * which returns {@code null} in case of a non-readable resource (e.g. a directory).
 	 * @see javax.servlet.ServletContext#getResourceAsStream(String)
@@ -130,6 +134,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 返回servletContext属性下获取path属性标明的文件资源转为URL再打开一个连接到这个URL用于读取并返回这个InputStream的连接<p>
 	 * This implementation delegates to {@code ServletContext.getResourceAsStream},
 	 * but throws a FileNotFoundException if no resource found.
 	 * @see javax.servlet.ServletContext#getResourceAsStream(String)
@@ -144,6 +149,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 返回servletContext属性下获取path属性路径的资源<p>
 	 * This implementation delegates to {@code ServletContext.getResource},
 	 * but throws a FileNotFoundException if no resource found.
 	 * @see javax.servlet.ServletContext#getResource(String)
@@ -159,6 +165,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 获取servletContext属性下的path属性路径的文件<p>
 	 * This implementation resolves "file:" URLs or alternatively delegates to
 	 * {@code ServletContext.getRealPath}, throwing a FileNotFoundException
 	 * if not found or not resolvable.
@@ -179,6 +186,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 在当前资源路径的父级文件夹下并拼接传入路径字符串创建相同资源对象<p>
 	 * This implementation creates a ServletContextResource, applying the given path
 	 * relative to the path of the underlying file of this resource descriptor.
 	 * @see org.springframework.util.StringUtils#applyRelativePath(String, String)
@@ -190,6 +198,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 获取资源文件名<p>
 	 * This implementation returns the name of the file that this ServletContext
 	 * resource refers to.
 	 * @see org.springframework.util.StringUtils#getFilename(String)
@@ -200,6 +209,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	}
 
 	/**
+	 * 描述信息<p>
 	 * This implementation returns a description that includes the ServletContext
 	 * resource location.
 	 */

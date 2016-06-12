@@ -76,13 +76,14 @@ public abstract class AbstractControllerUrlHandlerMapping extends AbstractDetect
 
 
 	/**
+	 * 将符合条件的Handler找出来<p>
 	 * This implementation delegates to {@link #buildUrlsForHandler},
 	 * provided that {@link #isEligibleForMapping} returns {@code true}.
 	 */
 	@Override
 	protected String[] determineUrlsForHandler(String beanName) {
 		Class<?> beanClass = getApplicationContext().getType(beanName);
-		if (isEligibleForMapping(beanName, beanClass)) {
+		if (isEligibleForMapping(beanName, beanClass)) {//判断是不是支持的类型
 			return buildUrlsForHandler(beanName, beanClass);
 		}
 		else {
@@ -91,6 +92,7 @@ public abstract class AbstractControllerUrlHandlerMapping extends AbstractDetect
 	}
 
 	/**
+	 * 筛选合适的handler<p>
 	 * Determine whether the specified controller is excluded from this mapping.
 	 * @param beanName the name of the controller bean
 	 * @param beanClass the concrete class of the controller bean
@@ -106,7 +108,7 @@ public abstract class AbstractControllerUrlHandlerMapping extends AbstractDetect
 			}
 			return false;
 		}
-		if (this.excludedClasses.contains(beanClass)) {
+		if (this.excludedClasses.contains(beanClass)) {//排除excludedClasses里配置的类
 			if (logger.isDebugEnabled()) {
 				logger.debug("Excluding controller bean '" + beanName + "' from class name mapping " +
 						"because its bean class is explicitly excluded: " + beanClass.getName());
@@ -114,7 +116,7 @@ public abstract class AbstractControllerUrlHandlerMapping extends AbstractDetect
 			return false;
 		}
 		String beanClassName = beanClass.getName();
-		for (String packageName : this.excludedPackages) {
+		for (String packageName : this.excludedPackages) {//排除excludedPackages里配置的包下的类
 			if (beanClassName.startsWith(packageName)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Excluding controller bean '" + beanName + "' from class name mapping " +
@@ -123,6 +125,7 @@ public abstract class AbstractControllerUrlHandlerMapping extends AbstractDetect
 				return false;
 			}
 		}
+		//检查是否实现了Controller或标识了@Controller
 		return isControllerType(beanClass);
 	}
 

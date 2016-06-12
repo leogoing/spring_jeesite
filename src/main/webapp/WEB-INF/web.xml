@@ -11,9 +11,11 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:/spring-context*.xml</param-value>
 	</context-param>
-	<listener>
+	<listener><!-- 继承了Spring的ContextLoaderListener加载Spring主应用上下文 -->
 		<listener-class>com.thinkgem.jeesite.modules.sys.listener.WebContextListener</listener-class>
 	</listener>
+	
+	<!-- 针对Bean的request和session和 globalsession作用域定义的初始化配置 -->
 	<listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>  
 	</listener>

@@ -34,6 +34,7 @@ import static java.lang.String.*;
 import static org.springframework.util.StringUtils.*;
 
 /**
+ * 抽象类实现可配置的环境接口<p>
  * Abstract base class for {@link Environment} implementations. Supports the notion of
  * reserved default profile names and enables specifying active and default profiles
  * through the {@link #ACTIVE_PROFILES_PROPERTY_NAME} and
@@ -67,6 +68,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	public static final String IGNORE_GETENV_PROPERTY_NAME = "spring.getenv.ignore";
 
 	/**
+	 * 激活的profile<p>
 	 * Name of property to set to specify active profiles: {@value}. Value may be comma
 	 * delimited.
 	 * <p>Note that certain shell environments such as Bash disallow the use of the period
@@ -78,6 +80,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	public static final String ACTIVE_PROFILES_PROPERTY_NAME = "spring.profiles.active";
 
 	/**
+	 * 默认的profile<p>
 	 * Name of property to set to specify profiles active by default: {@value}. Value may
 	 * be comma delimited.
 	 * <p>Note that certain shell environments such as Bash disallow the use of the period
@@ -89,6 +92,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	public static final String DEFAULT_PROFILES_PROPERTY_NAME = "spring.profiles.default";
 
 	/**
+	 * 默认profile的name<p>
 	 * Name of reserved default profile name: {@value}. If no default profile names are
 	 * explicitly and no active profile names are explicitly set, this profile will
 	 * automatically be activated by default.
@@ -103,8 +107,14 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 * 激活的profile集合
+	 */
 	private Set<String> activeProfiles = new LinkedHashSet<String>();
 
+	/**
+	 * 默认的profile集合,初始化添加默认name的profile
+	 */
 	private Set<String> defaultProfiles = new LinkedHashSet<String>(getReservedDefaultProfiles());
 
 	private final MutablePropertySources propertySources = new MutablePropertySources(this.logger);
@@ -130,6 +140,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 
 	/**
+	 * 用来给子类扩展,添加配置源到指定的配置源集<p>
 	 * Customize the set of {@link PropertySource} objects to be searched by this
 	 * {@code Environment} during calls to {@link #getProperty(String)} and related
 	 * methods.
@@ -208,6 +219,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	}
 
 	/**
+	 * 返回一个只包含了默认profile的name的集合<p>
 	 * Return the set of reserved default profile names. This implementation returns
 	 * {@value #RESERVED_DEFAULT_PROFILE_NAME}. Subclasses may override in order to
 	 * customize the set of reserved names.
@@ -215,7 +227,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * @see #doGetDefaultProfiles()
 	 */
 	protected Set<String> getReservedDefaultProfiles() {
-		return Collections.singleton(RESERVED_DEFAULT_PROFILE_NAME);
+		return Collections.singleton(RESERVED_DEFAULT_PROFILE_NAME);//返回一个只包含指定对象的不可变 Set
 	}
 
 

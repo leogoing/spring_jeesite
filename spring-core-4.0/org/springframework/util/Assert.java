@@ -345,6 +345,7 @@ public abstract class Assert {
 	}
 
 	/**
+	 * 判断左边的类型是否为右边Class对象的父类或同类否则抛异常<p>
 	 * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
 	 * <pre class="code">Assert.isAssignable(Number.class, myClass);</pre>
 	 * @param superType the super type to check
@@ -356,11 +357,12 @@ public abstract class Assert {
 	}
 
 	/**
+	 * 判断左边的类型是否为中间Class对象的父类或同类否则抛异常<p>
 	 * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
 	 * <pre class="code">Assert.isAssignable(Number.class, myClass);</pre>
 	 * @param superType the super type to check against
 	 * @param subType the sub type to check
-	 * @param message a message which will be prepended to the message produced by
+	 * @param message 用于日志输出  a message which will be prepended to the message produced by
 	 * the function itself, and which may be used to provide context. It should
 	 * normally end in a ": " or ". " so that the function generate message looks
 	 * ok when prepended to it.

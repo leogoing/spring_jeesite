@@ -22,6 +22,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
 /**
+ * 在资源与类加载器接口的默认实现类基础上将类路径(classPath:)资源转为了ServletContext资源<p>
  * ResourceLoader implementation that resolves paths as ServletContext
  * resources, for use outside a WebApplicationContext (for example,
  * in an HttpServletBean or GenericFilterBean subclass).
@@ -51,6 +52,7 @@ public class ServletContextResourceLoader extends DefaultResourceLoader {
 	}
 
 	/**
+	 * 返回新创建的ServletContextResource对象根据指定路径字符串初始化path属性<p>
 	 * This implementation supports file paths beneath the root of the web application.
 	 * @see ServletContextResource
 	 */

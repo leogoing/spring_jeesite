@@ -63,6 +63,9 @@ import org.springframework.context.ApplicationContextException;
  */
 public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
 
+	/**
+	 * 当设置新的Bean定义时是否覆盖之前的定义
+	 */
 	private Boolean allowBeanDefinitionOverriding;
 
 	private Boolean allowCircularReferences;
@@ -70,7 +73,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	/** Bean factory for this context */
 	private DefaultListableBeanFactory beanFactory;
 
-	/** Synchronization monitor for the internal BeanFactory */
+	/**当前BeanFactory的锁对象<br> Synchronization monitor for the internal BeanFactory */
 	private final Object beanFactoryMonitor = new Object();
 
 
@@ -112,19 +115,20 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
+	 * 先清空BeanFactory然后创建新BeanFactory并设置序列化ID(为当前上下文ID)设置启动参数并加载Bean定义<p>
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
-		if (hasBeanFactory()) {
+		if (hasBeanFactory()) {//清空bean工厂
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
-			beanFactory.setSerializationId(getId());
+			beanFactory.setSerializationId(getId());//将上下文ID作为序列化BeanFactory的ID
 			customizeBeanFactory(beanFactory);
 			loadBeanDefinitions(beanFactory);
 			synchronized (this.beanFactoryMonitor) {
@@ -145,6 +149,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		super.cancelRefresh(ex);
 	}
 
+	/**
+	 * 关闭BeanFactory(清空beanFactory中允许序列化的及被序列化的工厂并设置beanFactory为空)
+	 */
 	@Override
 	protected final void closeBeanFactory() {
 		synchronized (this.beanFactoryMonitor) {
@@ -154,6 +161,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 返回当前对象beanFactory属性是否有值<p>
 	 * Determine whether this context currently holds a bean factory,
 	 * i.e. has been refreshed at least once and not been closed yet.
 	 */
@@ -163,6 +171,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		}
 	}
 
+	/**
+	 * 返回当前beanFactory属性
+	 */
 	@Override
 	public final ConfigurableListableBeanFactory getBeanFactory() {
 		synchronized (this.beanFactoryMonitor) {
@@ -183,6 +194,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 根据当前对象的父上下文创建BeanFactory<p>
 	 * Create an internal bean factory for this context.
 	 * Called for each {@link #refresh()} attempt.
 	 * <p>The default implementation creates a
@@ -201,6 +213,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 设置传入BeanFactory是否覆盖bean之前定义的属性和允许循环参考多个bean的属性为当前对象的属性<p>
 	 * Customize the internal bean factory used by this context.
 	 * Called for each {@link #refresh()} attempt.
 	 * <p>The default implementation applies this context's

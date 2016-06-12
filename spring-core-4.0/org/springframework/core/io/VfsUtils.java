@@ -110,7 +110,7 @@ public abstract class VfsUtils {
 			ReflectionUtils.handleReflectionException(ex);
 		}
 
-		throw new IllegalStateException("Invalid code path reached");
+		throw new IllegalStateException("Invalid code path reached");//防止异常没有被抛出
 	}
 
 	static boolean exists(Object vfsResource) {

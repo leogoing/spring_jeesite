@@ -52,7 +52,7 @@ public abstract class ClassUtils {
 	/** Prefix for internal array class names: "[" */
 	private static final String INTERNAL_ARRAY_PREFIX = "[";
 
-	/** Prefix for internal non-primitive array class names: "[L" */
+	/**数组类型的字符串前缀<p>  Prefix for internal non-primitive array class names: "[L" */
 	private static final String NON_PRIMITIVE_ARRAY_PREFIX = "[L";
 
 	/** The package separator character '.' */
@@ -69,30 +69,34 @@ public abstract class ClassUtils {
 
 
 	/**
+	 * 根据包装类作为key存放基本类型的所有Class对象(包含包装类)<p>
 	 * Map with primitive wrapper type as key and corresponding primitive
 	 * type as value, for example: Integer.class -> int.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(8);
 
 	/**
+	 * 根据Class作为key包装类为value存放基本类型的所有Class对象(包含包装类)<p>
 	 * Map with primitive type as key and corresponding wrapper
 	 * type as value, for example: int.class -> Integer.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new HashMap<Class<?>, Class<?>>(8);
 
 	/**
+	 * 根据name作为key存放基本类型的所有Class对象(包含包装类数组)<p>
 	 * Map with primitive type name as key and corresponding primitive
 	 * type as value, for example: "int" -> "int.class".
 	 */
 	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<String, Class<?>>(32);
 
 	/**
+	 * 存放通用的Class类型<p>
 	 * Map with common "java.lang" class name as key and corresponding Class as value.
 	 * Primarily for efficient deserialization of remote invocations.
 	 */
 	private static final Map<String, Class<?>> commonClassCache = new HashMap<String, Class<?>>(32);
 
-
+	/*初始化四个Map属性变量*/
 	static {
 		primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
 		primitiveWrapperTypeMap.put(Byte.class, byte.class);
@@ -128,6 +132,7 @@ public abstract class ClassUtils {
 
 
 	/**
+	 * 存放通用的Class类型<p>
 	 * Register the given common classes with the ClassUtils cache.
 	 */
 	private static void registerCommonClasses(Class<?>... commonClasses) {
@@ -137,6 +142,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 获取默认类加载器,若获取当前线程上下文类加载器失败则获取当前Class对象类加载器若失败则获取系统类加载器<p>
 	 * Return the default ClassLoader to use: typically the thread context
 	 * ClassLoader, if available; the ClassLoader that loaded the ClassUtils
 	 * class will be used as fallback.
@@ -153,18 +159,18 @@ public abstract class ClassUtils {
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		try {
-			cl = Thread.currentThread().getContextClassLoader();
+			cl = Thread.currentThread().getContextClassLoader();//获取当前线程上下文类加载器
 		}
 		catch (Throwable ex) {
 			// Cannot access thread context ClassLoader - falling back...
 		}
 		if (cl == null) {
 			// No thread context class loader -> use class loader of this class.
-			cl = ClassUtils.class.getClassLoader();
+			cl = ClassUtils.class.getClassLoader();//获取当前Class对象的类加载器
 			if (cl == null) {
 				// getClassLoader() returning null indicates the bootstrap ClassLoader
 				try {
-					cl = ClassLoader.getSystemClassLoader();
+					cl = ClassLoader.getSystemClassLoader();//获取系统类加载器
 				}
 				catch (Throwable ex) {
 					// Cannot access system ClassLoader - oh well, maybe the caller can live with null...
@@ -194,6 +200,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 根据指定的类全名称和类加载器加载类返回Class对象<p>
 	 * Replacement for {@code Class.forName()} that also returns Class instances
 	 * for primitives (e.g. "int") and array class names (e.g. "String[]").
 	 * Furthermore, it is also capable of resolving inner class names in Java source
@@ -209,6 +216,7 @@ public abstract class ClassUtils {
 	public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
 		Assert.notNull(name, "Name must not be null");
 
+		/*如果属于基本类型或常用类型则直接返回*/
 		Class<?> clazz = resolvePrimitiveClassName(name);
 		if (clazz == null) {
 			clazz = commonClassCache.get(name);
@@ -220,7 +228,7 @@ public abstract class ClassUtils {
 		// "java.lang.String[]" style arrays
 		if (name.endsWith(ARRAY_SUFFIX)) {
 			String elementClassName = name.substring(0, name.length() - ARRAY_SUFFIX.length());
-			Class<?> elementClass = forName(elementClassName, classLoader);
+			Class<?> elementClass = forName(elementClassName, classLoader);//使用递归比较灵活,支持多维数组
 			return Array.newInstance(elementClass, 0).getClass();
 		}
 
@@ -239,15 +247,16 @@ public abstract class ClassUtils {
 		}
 
 		ClassLoader clToUse = classLoader;
-		if (clToUse == null) {
+		if (clToUse == null) {//若为空则获取默认类加载器
 			clToUse = getDefaultClassLoader();
 		}
-		try {
+		try {//加载类
 			return (clToUse != null ? clToUse.loadClass(name) : Class.forName(name));
 		}
 		catch (ClassNotFoundException ex) {
+			/*加载失败,有可能是内部类的情况*/
 			int lastDotIndex = name.lastIndexOf('.');
-			if (lastDotIndex != -1) {
+			if (lastDotIndex != -1) {//将类全称替换为类部类的形式重新加载
 				String innerClassName = name.substring(0, lastDotIndex) + '$' + name.substring(lastDotIndex + 1);
 				try {
 					return (clToUse != null ? clToUse.loadClass(innerClassName) : Class.forName(innerClassName));
@@ -288,6 +297,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 如果指定类全称属于基本类型则返回该基本类型的Class对象<p>
 	 * Resolve the given class name as primitive class, if appropriate,
 	 * according to the JVM's naming rules for primitive classes.
 	 * <p>Also supports the JVM's internal class names for primitive arrays.
@@ -341,6 +351,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 如果是CGLIB代理的子对象类型,则返回父类型,否则直接返回传入对象<p>
 	 * Return the user-defined class for the given class: usually simply the given
 	 * class, but the original class in case of a CGLIB-generated subclass.
 	 * @param clazz the class to check
@@ -357,6 +368,8 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 判断是否由安全的类加载器加载,判断传入的类加载器及其父加载器与传入的Class对象的类加载器是否相等<br>
+	 * 抛异常则认为是由系统类加载器加载也返回true<p>
 	 * Check whether the given class is cache-safe in the given context,
 	 * i.e. whether it is loaded by the given ClassLoader or a parent of it.
 	 * @param clazz the class to analyze
@@ -893,6 +906,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 判断左边的类型是否是右边类型的父类或同类<p>
 	 * Check if the right-hand side type may be assigned to the left-hand side
 	 * type, assuming setting by reflection. Considers primitive wrapper
 	 * classes as assignable to the corresponding primitive types.
@@ -904,10 +918,10 @@ public abstract class ClassUtils {
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
 		Assert.notNull(lhsType, "Left-hand side type must not be null");
 		Assert.notNull(rhsType, "Right-hand side type must not be null");
-		if (lhsType.isAssignableFrom(rhsType)) {
+		if (lhsType.isAssignableFrom(rhsType)) {//判断lhsType是否是rhsType的父类或同类
 			return true;
 		}
-		if (lhsType.isPrimitive()) {
+		if (lhsType.isPrimitive()) {//判断指定的lhsType类是否为一个基本类型
 			Class<?> resolvedPrimitive = primitiveWrapperTypeMap.get(rhsType);
 			if (resolvedPrimitive != null && lhsType.equals(resolvedPrimitive)) {
 				return true;

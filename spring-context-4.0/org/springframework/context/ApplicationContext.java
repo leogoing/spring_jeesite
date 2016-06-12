@@ -23,6 +23,7 @@ import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
+ * 应用上下文接口<p>
  * Central interface to provide configuration for an application.
  * This is read-only while the application is running, but may be
  * reloaded if the implementation supports this.
@@ -58,30 +59,35 @@ public interface ApplicationContext extends EnvironmentCapable, ListableBeanFact
 		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
 
 	/**
+	 * 获取当前应用上下文的唯一ID<p>
 	 * Return the unique id of this application context.
 	 * @return the unique id of the context, or {@code null} if none
 	 */
 	String getId();
 
 	/**
+	 * 获取应用上下文名<p>
 	 * Return a name for the deployed application that this context belongs to.
 	 * @return a name for the deployed application, or the empty String by default
 	 */
 	String getApplicationName();
 
 	/**
+	 * 获取应用上下文描述名<p>
 	 * Return a friendly name for this context.
 	 * @return a display name for this context (never {@code null})
 	 */
 	String getDisplayName();
 
 	/**
+	 * 获取当前应用第一次启动的时间戳<p>
 	 * Return the timestamp when this context was first loaded.
 	 * @return the timestamp (ms) when this context was first loaded
 	 */
 	long getStartupDate();
 
 	/**
+	 * 获取当前应用的父应用<p>
 	 * Return the parent context, or {@code null} if there is no parent
 	 * and this is the root of the context hierarchy.
 	 * @return the parent context, or {@code null} if there is no parent
@@ -89,6 +95,7 @@ public interface ApplicationContext extends EnvironmentCapable, ListableBeanFact
 	ApplicationContext getParent();
 
 	/**
+	 * 获取能够自动装配的BeanFactory<p>
 	 * Expose AutowireCapableBeanFactory functionality for this context.
 	 * <p>This is not typically used by application code, except for the purpose
 	 * of initializing bean instances that live outside the application context,

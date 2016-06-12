@@ -23,6 +23,7 @@ import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanFactory;
 
 /**
+ * BeanFactory的实现类,使BeanFactory有自动装配的能力<p>
  * Extension of the {@link org.springframework.beans.factory.BeanFactory}
  * interface to be implemented by bean factories that are capable of
  * autowiring, provided that they want to expose this functionality for

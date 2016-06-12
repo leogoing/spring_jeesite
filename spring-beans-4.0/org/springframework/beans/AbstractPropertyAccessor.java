@@ -47,6 +47,9 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 	}
 
 
+	/**
+	 * 根据指定属性值对象拆分为key和value再设置属性值对象
+	 */
 	@Override
 	public void setPropertyValue(PropertyValue pv) throws BeansException {
 		setPropertyValue(pv.getName(), pv.getValue());
@@ -62,17 +65,26 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 		setPropertyValues(pvs, false, false);
 	}
 
+	/**
+	 * 根据传入属性值集设置属性值集,并判断是否忽略未知属性,默认忽略无效属性
+	 */
 	@Override
 	public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown) throws BeansException {
 		setPropertyValues(pvs, ignoreUnknown, false);
 	}
 
+	/**
+	 * 遍历传入的属性值集对象一个一个的设置属性值对象(将属性值对象拆为key-value进行设置)<br>
+	 * 如果单个属性值设置发生PropertyAccessException异常首先收集起来遍历完成后批量抛出(详细获取所有错误信息)
+	 * @param ignoreUnknown 是否忽略无法写入的属性值对象
+	 * @param ignoreInvalid 是否忽略嵌套路径为空的属性
+	 */
 	@Override
 	public void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown, boolean ignoreInvalid)
 			throws BeansException {
 
 		List<PropertyAccessException> propertyAccessExceptions = null;
-		List<PropertyValue> propertyValues = (pvs instanceof MutablePropertyValues ?
+		List<PropertyValue> propertyValues = (pvs instanceof MutablePropertyValues ?			//判断传入属性值集类型来调用方法返回一个集合
 				((MutablePropertyValues) pvs).getPropertyValueList() : Arrays.asList(pvs.getPropertyValues()));
 		for (PropertyValue pv : propertyValues) {
 			try {
@@ -129,6 +141,7 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 	public abstract Object getPropertyValue(String propertyName) throws BeansException;
 
 	/**
+	 * 设置属性值根据传入对象分别作为key和value(子类扩展)<p>
 	 * Actually set a property value.
 	 * @param propertyName name of the property to set value of
 	 * @param value the new value

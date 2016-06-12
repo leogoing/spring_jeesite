@@ -529,6 +529,7 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 获取文件名(根据传入的路径切割最后一个分隔符后的字符串)<p>
 	 * Extract the filename from the given path,
 	 * e.g. "mypath/myfile.txt" -> "myfile.txt".
 	 * @param path the file path (may be {@code null})
@@ -586,6 +587,7 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 在指定路径文件夹的父级文件夹下拼接传入的相对路径并返回<p>
 	 * Apply the given relative path to the given path,
 	 * assuming standard Java folder separation (i.e. "/" separators).
 	 * @param path the path to start from (usually a full file path)
@@ -608,7 +610,7 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * 将传入路径简洁化并替换'\\'为'/'
+	 * 将传入路径简洁化并替换'\\'为'/'<p>
 	 * Normalize the path by suppressing sequences like "path/.." and
 	 * inner simple dots.
 	 * <p>The result is convenient for path comparison. For other uses,
@@ -837,7 +839,7 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * 将字符串集合转换为字符串数组
+	 * 将字符串集合转换为字符串数组<p>
 	 * Copy the given Collection into a String array.
 	 * The Collection must contain String elements only.
 	 * @param collection the Collection to copy
@@ -992,16 +994,17 @@ public abstract class StringUtils {
 	}
 
 	/**
+	 * 使用StringTokenizer去切割字符串返回字符串数组<p>
 	 * Tokenize the given String into a String array via a StringTokenizer.
 	 * <p>The given delimiters string is supposed to consist of any number of
 	 * delimiter characters. Each of those characters can be used to separate
 	 * tokens. A delimiter is always a single character; for multi-character
 	 * delimiters, consider using {@code delimitedListToStringArray}
 	 * @param str the String to tokenize
-	 * @param delimiters the delimiter characters, assembled as String
+	 * @param delimiters 分隔符  the delimiter characters, assembled as String
 	 * (each of those characters is individually considered as delimiter)
-	 * @param trimTokens trim the tokens via String's {@code trim}
-	 * @param ignoreEmptyTokens omit empty tokens from the result array
+	 * @param trimTokens 分割后的字符串是否去掉空白  trim the tokens via String's {@code trim}
+	 * @param ignoreEmptyTokens 是否忽略切割后为空的字符串  omit empty tokens from the result array
 	 * (only applies to tokens that are empty after trimming; StringTokenizer
 	 * will not consider subsequent delimiters as token in the first place).
 	 * @return an array of the tokens ({@code null} if the input String
@@ -1138,7 +1141,7 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * 将集合元素用delim拼接为字符串
+	 * 将集合元素用指定字符串为中间符拼接为字符串<p>
 	 * Convenience method to return a Collection as a delimited (e.g. CSV)
 	 * String. E.g. useful for {@code toString()} implementations.
 	 * @param coll the Collection to display

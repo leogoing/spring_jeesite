@@ -19,6 +19,7 @@ package org.springframework.core.io;
 import org.springframework.util.ResourceUtils;
 
 /**
+ * 资源与类加载器接口(只定义了getClassLoader和getResource方法,加载类资源时会用到ClassLoader)<p>
  * Strategy interface for loading resources (e.. class path or file system
  * resources). An {@link org.springframework.context.ApplicationContext}
  * is required to provide this functionality, plus extended
@@ -40,11 +41,12 @@ import org.springframework.util.ResourceUtils;
  */
 public interface ResourceLoader {
 
-	/** Pseudo URL prefix for loading from the class path: "classpath:" */
+	/**类路径的前缀"classpath:" <p> Pseudo URL prefix for loading from the class path: "classpath:" */
 	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
 
 
 	/**
+	 * 获取指定路径的资源<p>
 	 * Return a Resource handle for the specified resource.
 	 * The handle should always be a reusable resource descriptor,
 	 * allowing for multiple {@link Resource#getInputStream()} calls.
@@ -66,6 +68,7 @@ public interface ResourceLoader {
 	Resource getResource(String location);
 
 	/**
+	 * 获取类加载器(用来加载类资源)<p>
 	 * Expose the ClassLoader used by this ResourceLoader.
 	 * <p>Clients which need to access the ClassLoader directly can do so
 	 * in a uniform manner with the ResourceLoader, rather than relying

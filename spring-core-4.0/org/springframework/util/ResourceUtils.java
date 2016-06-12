@@ -192,6 +192,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 将URL转换为file返回,description用来日志输出<p>
 	 * Resolve the given resource URL to a {@code java.io.File},
 	 * i.e. to a file in the file system.
 	 * @param resourceUrl the resource URL to resolve
@@ -203,17 +204,17 @@ public abstract class ResourceUtils {
 	 */
 	public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
 		Assert.notNull(resourceUrl, "Resource URL must not be null");
-		if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
+		if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {//如果url不属于文件标示符
 			throw new FileNotFoundException(
 					description + " cannot be resolved to absolute file path " +
 					"because it does not reside in the file system: " + resourceUrl);
 		}
 		try {
-			return new File(toURI(resourceUrl).getSchemeSpecificPart());
+			return new File(toURI(resourceUrl).getSchemeSpecificPart());//将url转为uri再解析为可用的文件路径名
 		}
 		catch (URISyntaxException ex) {
 			// Fallback for URLs that are not valid URIs (should hardly ever happen).
-			return new File(resourceUrl.getFile());
+			return new File(resourceUrl.getFile());//直接转换url为file
 		}
 	}
 
@@ -230,6 +231,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 如果uri资源类型是文件类型,解析为文件可用的路径名后创建文件返回<p>
 	 * Resolve the given resource URI to a {@code java.io.File},
 	 * i.e. to a file in the file system.
 	 * @param resourceUri the resource URI to resolve
@@ -250,6 +252,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 判断URL资源类型是否文件<p>
 	 * Determine whether the given URL points to a resource in the file system,
 	 * that is, has protocol "file", "vfsfile" or "vfs".
 	 * @param url the URL to check
@@ -262,6 +265,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 判断URL资源类型是否jar文件<p>
 	 * Determine whether the given URL points to a resource in a jar file,
 	 * that is, has protocol "jar", "zip", "vfszip" or "wsjar".
 	 * @param url the URL to check
@@ -274,6 +278,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 从给定的URL中提取出实际的jarfile路径再转为URL返回<p>
 	 * Extract the URL for the actual jar file from the given URL
 	 * (which may point to a resource in a jar file or to a jar file itself).
 	 * @param jarUrl the original URL
@@ -282,13 +287,14 @@ public abstract class ResourceUtils {
 	 */
 	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
 		String urlFile = jarUrl.getFile();
-		int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
+		int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);//jar的url和文件路径的分隔符
 		if (separatorIndex != -1) {
 			String jarFile = urlFile.substring(0, separatorIndex);
 			try {
 				return new URL(jarFile);
 			}
 			catch (MalformedURLException ex) {
+				/*可能没有原始jar协议,类似于文件路径,再拼接为url路径后转换为url*/
 				// Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
 				// This usually indicates that the jar file resides in the file system.
 				if (!jarFile.startsWith("/")) {
@@ -303,6 +309,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 根据指定URL(toString方法转为字符串)创建URI对象<p>
 	 * Create a URI instance for the given URL,
 	 * replacing spaces with "%20" URI encoding first.
 	 * <p>Furthermore, this method works on JDK 1.4 as well,
@@ -317,6 +324,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 根据指定路径字符串创建URI对象(将空格替换为"%20")<p>
 	 * Create a URI instance for the given location String,
 	 * replacing spaces with "%20" URI encoding first.
 	 * @param location the location String to convert into a URI instance
@@ -328,6 +336,7 @@ public abstract class ResourceUtils {
 	}
 
 	/**
+	 * 若类名已"JNLP"开头则设置用户缓存<p>
 	 * Set the {@link URLConnection#setUseCaches "useCaches"} flag on the
 	 * given connection, preferring {@code false} but leaving the
 	 * flag at {@code true} for JNLP based resources.

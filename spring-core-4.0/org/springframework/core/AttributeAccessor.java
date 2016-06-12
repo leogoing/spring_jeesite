@@ -17,6 +17,7 @@
 package org.springframework.core;
 
 /**
+ * 定义了添加、删除、访问Attribute的通用规范<p>
  * Interface defining a generic contract for attaching and accessing metadata
  * to/from arbitrary objects.
  *
@@ -26,6 +27,7 @@ package org.springframework.core;
 public interface AttributeAccessor {
 
 	/**
+	 * 设置Attribute<p>
 	 * Set the attribute defined by {@code name} to the supplied	{@code value}.
 	 * If {@code value} is {@code null}, the attribute is {@link #removeAttribute removed}.
 	 * <p>In general, users should take care to prevent overlaps with other
@@ -37,6 +39,7 @@ public interface AttributeAccessor {
 	void setAttribute(String name, Object value);
 
 	/**
+	 * 获取Attribute<p>
 	 * Get the value of the attribute identified by {@code name}.
 	 * Return {@code null} if the attribute doesn't exist.
 	 * @param name the unique attribute key
@@ -45,6 +48,7 @@ public interface AttributeAccessor {
 	Object getAttribute(String name);
 
 	/**
+	 * 删除Attribute<p>
 	 * Remove the attribute identified by {@code name} and return its value.
 	 * Return {@code null} if no attribute under {@code name} is found.
 	 * @param name the unique attribute key
@@ -53,6 +57,7 @@ public interface AttributeAccessor {
 	Object removeAttribute(String name);
 
 	/**
+	 * 判断是否存在指定key的Attribute<p>
 	 * Return {@code true} if the attribute identified by {@code name} exists.
 	 * Otherwise return {@code false}.
 	 * @param name the unique attribute key
@@ -60,6 +65,7 @@ public interface AttributeAccessor {
 	boolean hasAttribute(String name);
 
 	/**
+	 * 返回所有Attribute的key<p>
 	 * Return the names of all attributes.
 	 */
 	String[] attributeNames();

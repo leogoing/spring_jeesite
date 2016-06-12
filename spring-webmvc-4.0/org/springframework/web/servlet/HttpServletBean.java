@@ -87,6 +87,7 @@ public abstract class HttpServletBean extends HttpServlet
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
+	 * HttpServlet必要的配置名的集合<p>
 	 * Set of required properties (Strings) that must be supplied as
 	 * config parameters to this servlet.
 	 */
@@ -96,6 +97,7 @@ public abstract class HttpServletBean extends HttpServlet
 
 
 	/**
+	 * 添加ServletConfig中必备的初始化配置的名称<p>
 	 * Subclasses can invoke this method to specify that this property
 	 * (which must match a JavaBean property they expose) is mandatory,
 	 * and must be supplied as a config parameter. This should be called
@@ -109,6 +111,8 @@ public abstract class HttpServletBean extends HttpServlet
 	}
 
 	/**
+	 * 重写扩展init方法,在创建Servlet时被调用<br>
+	 * 将ServletConfig的配置属性设置到当前对象的属性中<p>
 	 * Map config parameters onto bean properties of this servlet, and
 	 * invoke subclass initialization.
 	 * @throws ServletException if bean properties are invalid (or required
@@ -123,7 +127,7 @@ public abstract class HttpServletBean extends HttpServlet
 		// Set bean properties from init parameters.
 		try {
 			PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);//创建一个bean包装类当前对象为被包装的bean
 			ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
 			bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
 			initBeanWrapper(bw);
@@ -143,6 +147,7 @@ public abstract class HttpServletBean extends HttpServlet
 	}
 
 	/**
+	 * 初始化Bean包装类(自定义扩展spring Servlet的初始化(在init()中被调用))<p>
 	 * Initialize the BeanWrapper for this HttpServletBean,
 	 * possibly with custom editors.
 	 * <p>This default implementation is empty.
@@ -155,6 +160,7 @@ public abstract class HttpServletBean extends HttpServlet
 
 
 	/**
+	 * 返回ServletConfig.getServletName()<p>
 	 * Overridden method that simply returns {@code null} when no
 	 * ServletConfig set yet.
 	 * @see #getServletConfig()
@@ -165,6 +171,7 @@ public abstract class HttpServletBean extends HttpServlet
 	}
 
 	/**
+	 * 返回容器Web应用上下文 getServletConfig().getServletContext()<p>
 	 * Overridden method that simply returns {@code null} when no
 	 * ServletConfig set yet.
 	 * @see #getServletConfig()
@@ -176,6 +183,7 @@ public abstract class HttpServletBean extends HttpServlet
 
 
 	/**
+	 * 自定义扩展,在init()方法最后调用<p>
 	 * Subclasses may override this to perform custom initialization.
 	 * All bean properties of this servlet will have been set before this
 	 * method is invoked.
@@ -210,6 +218,7 @@ public abstract class HttpServletBean extends HttpServlet
 	}
 
 	/**
+	 * 创建一个标准servlet环境类返回<p>
 	 * Create and return a new {@link StandardServletEnvironment}. Subclasses may override
 	 * in order to configure the environment or specialize the environment type returned.
 	 */
@@ -219,11 +228,13 @@ public abstract class HttpServletBean extends HttpServlet
 
 
 	/**
+	 * ServletConfig的属性值集<p>
 	 * PropertyValues implementation created from ServletConfig init parameters.
 	 */
 	private static class ServletConfigPropertyValues extends MutablePropertyValues {
 
 		/**
+		 * 将ServletConfig中初始化配置参数按键值对创建配置属性值对象并存放到配置集中,若ServletConfig中没有指定的必要配置(requiredProperties)则抛异常<p>
 		 * Create new ServletConfigPropertyValues.
 		 * @param config ServletConfig we'll use to take PropertyValues from
 		 * @param requiredProperties set of property names we need, where
@@ -237,6 +248,7 @@ public abstract class HttpServletBean extends HttpServlet
 					new HashSet<String>(requiredProperties) : null;
 
 			Enumeration<String> en = config.getInitParameterNames();
+			/*将ServletConfig的初始化参数存放到配置集中,并在必要配置Set中删除已存放好的配置值*/
 			while (en.hasMoreElements()) {
 				String property = en.nextElement();
 				Object value = config.getInitParameter(property);
@@ -246,6 +258,7 @@ public abstract class HttpServletBean extends HttpServlet
 				}
 			}
 
+			/*若Set中必要的配置还存在(没有删除完)则说明ServletConfig中没有指定的必要的配置*/
 			// Fail if we are still missing properties.
 			if (missingProps != null && missingProps.size() > 0) {
 				throw new ServletException(

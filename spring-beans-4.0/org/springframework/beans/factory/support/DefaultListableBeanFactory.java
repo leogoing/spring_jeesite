@@ -173,6 +173,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	/**
+	 * 指定一个ID用来序列化,如果当前对象想要反序列化可以通过这个ID回来(如果ID为空则会在容器中删除当前的ID)<p>
 	 * Specify an id for serialization purposes, allowing this BeanFactory to be
 	 * deserialized from this id back into the BeanFactory object, if needed.
 	 */

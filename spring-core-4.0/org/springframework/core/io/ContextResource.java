@@ -17,6 +17,7 @@
 package org.springframework.core.io;
 
 /**
+ * 上下文资源
  * Extended interface for a resource that is loaded from an enclosing
  * 'context', e.g. from a {@link javax.servlet.ServletContext} or a
  * {@link javax.portlet.PortletContext} but also from plain classpath paths
@@ -31,6 +32,7 @@ package org.springframework.core.io;
 public interface ContextResource extends Resource {
 
 	/**
+	 * 获取上下文下的资源路径(相对路径相对于上下文)<p>
 	 * Return the path within the enclosing 'context'.
 	 * <p>This is typically path relative to a context-specific root directory,
 	 * e.g. a ServletContext root or a PortletContext root.

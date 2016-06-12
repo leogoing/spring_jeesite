@@ -47,10 +47,19 @@ import org.springframework.web.method.HandlerMethod;
  */
 public class InvocableHandlerMethod extends HandlerMethod {
 
+	/**
+	 * 可以创建WebDataBinder,用于参数解析器ArgumentResolver中
+	 */
 	private WebDataBinderFactory dataBinderFactory;
 
+	/**
+	 * 用于解析参数
+	 */
 	private HandlerMethodArgumentResolverComposite argumentResolvers = new HandlerMethodArgumentResolverComposite();
 
+	/**
+	 * 用来获取参数名,用于MethodParameter中
+	 */
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
 
@@ -142,16 +151,21 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	private Object[] getMethodArgumentValues(NativeWebRequest request, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
+		//到HandlerMethod中获取方法的参数
 		MethodParameter[] parameters = getMethodParameters();
-		Object[] args = new Object[parameters.length];
+		Object[] args = new Object[parameters.length];//用于保存解析参数的值
 		for (int i = 0; i < parameters.length; i++) {
 			MethodParameter parameter = parameters[i];
+			//给parameter设置参数名解析器
 			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
+			//给parameter设置containingClass和parameterType
 			GenericTypeResolver.resolveParameterType(parameter, getBean().getClass());
+			//如果相应类型的参数已经在providedArgs中提供了,则直接设置到parameter
 			args[i] = resolveProvidedArgument(parameter, providedArgs);
 			if (args[i] != null) {
 				continue;
 			}
+			//使用argumentResolvers解析参数
 			if (this.argumentResolvers.supportsParameter(parameter)) {
 				try {
 					args[i] = this.argumentResolvers.resolveArgument(
@@ -165,7 +179,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 					throw ex;
 				}
 			}
-			if (args[i] == null) {
+			if (args[i] == null) {//如果没有解析出参数,则抛出异常
 				String msg = getArgumentResolutionErrorMessage("No suitable resolver for argument", i);
 				throw new IllegalStateException(msg);
 			}

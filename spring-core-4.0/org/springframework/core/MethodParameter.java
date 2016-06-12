@@ -29,6 +29,7 @@ import java.util.Map;
 import org.springframework.util.Assert;
 
 /**
+ * 方法参数对象<p>
  * Helper class that encapsulates the specification of a method parameter, i.e.
  * a Method or Constructor plus a parameter index and a nested type index for
  * a declared generic type. Useful as a specification object to pass along.
@@ -41,24 +42,54 @@ import org.springframework.util.Assert;
  */
 public class MethodParameter {
 
+	/**
+	 * 参数所在的方法
+	 */
 	private final Method method;
 
+	/**
+	 * 参数的构造方法
+	 */
 	private final Constructor<?> constructor;
 
+	/**
+	 * 参数的序号,第几个参数
+	 */
 	private final int parameterIndex;
 
+	/**
+	 * 方法所在类的类型
+	 */
 	private Class<?> containingClass;
 
+	/**
+	 * 参数的类型
+	 */
 	private Class<?> parameterType;
 
+	/**
+	 * Type型的参数的类型
+	 */
 	private Type genericParameterType;
 
+	/**
+	 * 参数的注释
+	 */
 	private Annotation[] parameterAnnotations;
 
+	/**
+	 * 参数名称查找器
+	 */
 	private ParameterNameDiscoverer parameterNameDiscoverer;
 
+	/**
+	 * 参数名
+	 */
 	private String parameterName;
 
+	/**
+	 * 嵌套级别,复合参数会用到,如List<String>
+	 */
 	private int nestingLevel = 1;
 
 	/** Map from Integer level to Integer type index */

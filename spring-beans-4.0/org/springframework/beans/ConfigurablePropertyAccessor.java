@@ -19,6 +19,7 @@ package org.springframework.beans;
 import org.springframework.core.convert.ConversionService;
 
 /**
+ * 可配置的对象属性操作接口<p>
  * Interface that encapsulates configuration methods for a PropertyAccessor.
  * Also extends the PropertyEditorRegistry interface, which defines methods
  * for PropertyEditor management.
@@ -32,23 +33,27 @@ import org.springframework.core.convert.ConversionService;
 public interface ConfigurablePropertyAccessor extends PropertyAccessor, PropertyEditorRegistry, TypeConverter {
 
 	/**
+	 * 设置类型转换服务<p>
 	 * Specify a Spring 3.0 ConversionService to use for converting
 	 * property values, as an alternative to JavaBeans PropertyEditors.
 	 */
 	void setConversionService(ConversionService conversionService);
 
 	/**
+	 * 获取类型转换服务<p>
 	 * Return the associated ConversionService, if any.
 	 */
 	ConversionService getConversionService();
 
 	/**
+	 * 设置是否提取旧属性当对属性进行编辑操作时<p>
 	 * Set whether to extract the old property value when applying a
 	 * property editor to a new value for a property.
 	 */
 	void setExtractOldValueForEditor(boolean extractOldValueForEditor);
 
 	/**
+	 * 判断是否提取旧属性当对属性进行编辑操作时<p>
 	 * Return whether to extract the old property value when applying a
 	 * property editor to a new value for a property.
 	 */

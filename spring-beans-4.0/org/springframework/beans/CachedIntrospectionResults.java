@@ -104,6 +104,7 @@ public class CachedIntrospectionResults {
 	private static final Log logger = LogFactory.getLog(CachedIntrospectionResults.class);
 
 	/**
+	 * 被认可的允许的类加载器集合(即使不是安全的)<p>
 	 * Set of ClassLoaders that this CachedIntrospectionResults class will always
 	 * accept classes from, even if the classes do not qualify as cache-safe.
 	 */
@@ -163,6 +164,7 @@ public class CachedIntrospectionResults {
 	}
 
 	/**
+	 * 先从Class缓存中获取,若不存在则创建并根据其安全性(检查Class对象类加载器是否安全)使用强引用或软引用存放入Class缓存<p>
 	 * Create CachedIntrospectionResults for the given bean class.
 	 * @param beanClass the bean class to analyze
 	 * @return the corresponding CachedIntrospectionResults
@@ -176,21 +178,21 @@ public class CachedIntrospectionResults {
 			value = classCache.get(beanClass);
 		}
 		if (value instanceof Reference) {
-			Reference<CachedIntrospectionResults> ref = (Reference<CachedIntrospectionResults>) value;
-			results = ref.get();
+			Reference<CachedIntrospectionResults> ref = (Reference<CachedIntrospectionResults>) value;//引用对象
+			results = ref.get();//转为强引用
 		}
 		else {
 			results = (CachedIntrospectionResults) value;
 		}
 		if (results == null) {
-			if (ClassUtils.isCacheSafe(beanClass, CachedIntrospectionResults.class.getClassLoader()) ||
-					isClassLoaderAccepted(beanClass.getClassLoader())) {
+			if (ClassUtils.isCacheSafe(beanClass, CachedIntrospectionResults.class.getClassLoader()) ||//检查传入Class对象的加载器是否安全被认可
+					isClassLoaderAccepted(beanClass.getClassLoader())) {//若Class对象通过安检则为其创建新当前对象并放入缓存
 				results = new CachedIntrospectionResults(beanClass);
 				synchronized (classCache) {
 					classCache.put(beanClass, results);
 				}
 			}
-			else {
+			else {//若没有通过安检则为其创建新当前对象使用软引用将其引用后放入缓存
 				if (logger.isDebugEnabled()) {
 					logger.debug("Not strongly caching class [" + beanClass.getName() + "] because it is not cache-safe");
 				}
@@ -204,6 +206,7 @@ public class CachedIntrospectionResults {
 	}
 
 	/**
+	 * 在被接受的加载器列表中查找是否与传入的类加载器及其父加载器相等<p>
 	 * Check whether this CachedIntrospectionResults class is configured
 	 * to accept the given ClassLoader.
 	 * @param classLoader the ClassLoader to check
@@ -226,6 +229,7 @@ public class CachedIntrospectionResults {
 	}
 
 	/**
+	 * 判断左边加载器参数及其父加载器是等于右边的加载器参数<p>
 	 * Check whether the given ClassLoader is underneath the given parent,
 	 * that is, whether the parent is within the candidate's hierarchy.
 	 * @param candidate the candidate ClassLoader to check
@@ -319,19 +323,29 @@ public class CachedIntrospectionResults {
 		return this.beanInfo;
 	}
 
+	/**
+	 * 根据当前对象的beanInfo属性获取bean的Class对象
+	 * @return
+	 */
 	Class<?> getBeanClass() {
 		return this.beanInfo.getBeanDescriptor().getBeanClass();
 	}
 
+	/**
+	 * 根据传入参数作为key从缓存Map获取属性描述对象(无视首字母大小写),不存在则返回空(必须类型为GenericTypeAwarePropertyDescriptor及其子类否则转换)
+	 * @param name
+	 * @return
+	 */
 	PropertyDescriptor getPropertyDescriptor(String name) {
 		PropertyDescriptor pd = this.propertyDescriptorCache.get(name);
 		if (pd == null && StringUtils.hasLength(name)) {
 			// Same lenient fallback checking as in PropertyTypeDescriptor...
-			pd = this.propertyDescriptorCache.get(name.substring(0, 1).toLowerCase() + name.substring(1));
+			pd = this.propertyDescriptorCache.get(name.substring(0, 1).toLowerCase() + name.substring(1));//将首字母小写重新查找缓存
 			if (pd == null) {
-				pd = this.propertyDescriptorCache.get(name.substring(0, 1).toUpperCase() + name.substring(1));
+				pd = this.propertyDescriptorCache.get(name.substring(0, 1).toUpperCase() + name.substring(1));//将首字母大写重写查找缓存
 			}
 		}
+		//若属性描述对象为空或为为GenericTypeAwarePropertyDescriptor及其子类则返回否则将依据其创建一个新GenericTypeAwarePropertyDescriptor对象
 		return (pd == null || pd instanceof GenericTypeAwarePropertyDescriptor ? pd :
 				buildGenericTypeAwarePropertyDescriptor(getBeanClass(), pd));
 	}
@@ -347,6 +361,12 @@ public class CachedIntrospectionResults {
 		return pds;
 	}
 
+	/**
+	 * 根据传入参数返回一个新的GenericTypeAwarePropertyDescriptor对象
+	 * @param beanClass
+	 * @param pd
+	 * @return
+	 */
 	private PropertyDescriptor buildGenericTypeAwarePropertyDescriptor(Class<?> beanClass, PropertyDescriptor pd) {
 		try {
 			return new GenericTypeAwarePropertyDescriptor(beanClass, pd.getName(), pd.getReadMethod(),

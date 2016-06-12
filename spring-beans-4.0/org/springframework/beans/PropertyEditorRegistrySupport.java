@@ -85,6 +85,9 @@ import org.springframework.util.ClassUtils;
  */
 public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 
+	/**
+	 * 表示时区
+	 */
 	private static Class<?> zoneIdClass;
 
 	static {
@@ -136,6 +139,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	//---------------------------------------------------------------------
 
 	/**
+	 * 将defaultEditorsActive属性设为true(激活当前对象的默认编辑器,允许延迟注入默认编辑器)<p>
 	 * Activate the default editors for this registry instance,
 	 * allowing for lazily registering default editors when needed.
 	 */
@@ -268,6 +272,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
+	 * 将当前对象的属性编辑器相关属性复制到指定的属性编辑器注入对象<p>
 	 * Copy the default editors registered in this instance to the given target registry.
 	 * @param target the target registry to copy to
 	 */
@@ -283,11 +288,18 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	// Management of custom editors
 	//---------------------------------------------------------------------
 
+	/**
+	 * 存放自定义编辑器到Map属性(Class对象为键值),并将自定义编辑器缓存Map属性设为空
+	 */
 	@Override
 	public void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor) {
 		registerCustomEditor(requiredType, null, propertyEditor);
 	}
 
+	/**
+	 * 若propertyPath为空则存放自定义编辑器到Map属性(Class对象为键值),并将自定义编辑器缓存Map属性设为空 <br>
+	 * 若不为空则存放以propertyPath为key新创建的单个必要class对象(key)属性编辑器(value)容器类为value到根据路径查找编辑器的Map属性中
+	 */
 	@Override
 	public void registerCustomEditor(Class<?> requiredType, String propertyPath, PropertyEditor propertyEditor) {
 		if (requiredType == null && propertyPath == null) {
@@ -447,6 +459,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
+	 * 复制当前自定义编辑器到指定的属性编辑注入对象从指定嵌套路径后<p>
 	 * Copy the custom editors registered in this instance to the given target registry.
 	 * @param target the target registry to copy to
 	 * @param nestedProperty the nested property path of the target registry, if any.
@@ -512,6 +525,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 
 
 	/**
+	 * 作为一个存放单个Class对象(注入类型(类似key))和属性编辑器对象(类似value)的容器类,提供根据key获取value方法<p>
 	 * Holder for a registered custom editor with property name.
 	 * Keeps the PropertyEditor itself plus the type it was registered for.
 	 */
@@ -534,6 +548,13 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 			return this.registeredType;
 		}
 
+		/**
+		 * 根据传入Class对象获取属性编辑器,必须满足当前对象的registeredType属性(相当于key)为空或
+		 * 传入Class对象与registeredType属性有父子关系或传入对象为空并registeredType属性不为集合数组类型,
+		 * 然后才返回当前对象的属性编辑器对象
+		 * @param requiredType
+		 * @return
+		 */
 		private PropertyEditor getPropertyEditor(Class<?> requiredType) {
 			// Special case: If no required type specified, which usually only happens for
 			// Collection elements, or required type is not assignable to registered type,

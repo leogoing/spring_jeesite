@@ -216,6 +216,7 @@ public abstract class GenericCollectionTypeResolver {
 	}
 
 	/**
+	 * 获取集合泛型类型<p>
 	 * Determine the generic element type of the given Collection return type.
 	 * <p>If the specified nesting level is higher than 1, the element type of
 	 * a nested Collection/Map will be analyzed.
@@ -230,6 +231,7 @@ public abstract class GenericCollectionTypeResolver {
 	}
 
 	/**
+	 * 获取Map的key的泛型类型<p>
 	 * Determine the generic key type of the given Map return type.
 	 * @param method the method to check the return type for
 	 * @return the generic type, or {@code null} if none
@@ -239,6 +241,7 @@ public abstract class GenericCollectionTypeResolver {
 	}
 
 	/**
+	 * 获取Map的value的泛型类型<p>
 	 * Determine the generic key type of the given Map return type.
 	 * @param method the method to check the return type for
 	 * @param nestingLevel the nesting level of the target type

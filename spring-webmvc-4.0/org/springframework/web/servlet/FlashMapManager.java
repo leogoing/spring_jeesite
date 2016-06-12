@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface FlashMapManager {
 
 	/**
+	 * 用于根据上一个FlashMap进行匹配,并删除超时的和已使用过的FlashMap<p>
 	 * Find a FlashMap saved by a previous request that matches to the current
 	 * request, remove it from underlying storage, and also remove other
 	 * expired FlashMap instances.
@@ -43,6 +44,7 @@ public interface FlashMapManager {
 	FlashMap retrieveAndUpdate(HttpServletRequest request, HttpServletResponse response);
 
 	/**
+	 * 将参数保存起来(默认实现一般保存到session中)<p>
 	 * Save the given FlashMap, in some underlying storage and set the start
 	 * of its expiration period.
 	 * <p><strong>NOTE:</strong> Invoke this method prior to a redirect in order

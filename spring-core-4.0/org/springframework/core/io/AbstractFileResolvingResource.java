@@ -27,6 +27,7 @@ import java.net.URLConnection;
 import org.springframework.util.ResourceUtils;
 
 /**
+ * 继承AbstractResource在其对Resource接口的基本实现的基础上有了更具体得实现(主要多了URL资源的判断)<p>
  * Abstract base class for resources which resolve URLs into File references,
  * such as {@link UrlResource} or {@link ClassPathResource}.
  *
@@ -39,6 +40,7 @@ import org.springframework.util.ResourceUtils;
 public abstract class AbstractFileResolvingResource extends AbstractResource {
 
 	/**
+	 * 先获取该资源的URL再根据URL转换为file返回<p>
 	 * This implementation returns a File reference for the underlying class path
 	 * resource, provided that it refers to a file in the file system.
 	 * @see org.springframework.util.ResourceUtils#getFile(java.net.URL, String)
@@ -46,20 +48,21 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 	@Override
 	public File getFile() throws IOException {
 		URL url = getURL();
-		if (url.getProtocol().startsWith(ResourceUtils.URL_PROTOCOL_VFS)) {
+		if (url.getProtocol().startsWith(ResourceUtils.URL_PROTOCOL_VFS)) {//如果url的协议是"vfs"开头(JBoss)
 			return VfsResourceDelegate.getResource(url).getFile();
 		}
 		return ResourceUtils.getFile(url, getDescription());
 	}
 
 	/**
+	 * 获取实际的文件,如资源在一个jar包中<p>
 	 * This implementation determines the underlying File
 	 * (or jar file, in case of a resource in a jar/zip).
 	 */
 	@Override
 	protected File getFileForLastModifiedCheck() throws IOException {
 		URL url = getURL();
-		if (ResourceUtils.isJarURL(url)) {
+		if (ResourceUtils.isJarURL(url)) {//是否属于jar包的URL
 			URL actualUrl = ResourceUtils.extractJarFileURL(url);
 			if (actualUrl.getProtocol().startsWith(ResourceUtils.URL_PROTOCOL_VFS)) {
 				return VfsResourceDelegate.getResource(actualUrl).getFile();
@@ -72,6 +75,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 	}
 
 	/**
+	 * 根据URI获取文件<p>
 	 * This implementation returns a File reference for the underlying class path
 	 * resource, provided that it refers to a file in the file system.
 	 * @see org.springframework.util.ResourceUtils#getFile(java.net.URI, String)
@@ -84,6 +88,9 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 	}
 
 
+	/**
+	 * 判断文件是否存在或能否打开流或URL连接是否成功
+	 */
 	@Override
 	public boolean exists() {
 		try {
@@ -98,8 +105,8 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 				customizeConnection(con);
 				HttpURLConnection httpCon =
 						(con instanceof HttpURLConnection ? (HttpURLConnection) con : null);
-				if (httpCon != null) {
-					int code = httpCon.getResponseCode();
+				if (httpCon != null) {//若为Http连接检查响应是否正常
+					int code = httpCon.getResponseCode();//获取响应状态码
 					if (code == HttpURLConnection.HTTP_OK) {
 						return true;
 					}
@@ -107,15 +114,15 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 						return false;
 					}
 				}
-				if (con.getContentLength() >= 0) {
+				if (con.getContentLength() >= 0) {//若为普通连接检查是否有内容长度
 					return true;
 				}
-				if (httpCon != null) {
+				if (httpCon != null) {//连接失败,关闭连接
 					// no HTTP OK status, and no content-length header: give up
 					httpCon.disconnect();
 					return false;
 				}
-				else {
+				else {//检查是否能打开流
 					// Fall back to stream existence: can we open the stream?
 					InputStream is = getInputStream();
 					is.close();
@@ -128,6 +135,9 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 		}
 	}
 
+	/**
+	 * 若能获取URL则为可读,若URL为文件资源则判断文件是否可读
+	 */
 	@Override
 	public boolean isReadable() {
 		try {
@@ -146,6 +156,9 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 		}
 	}
 
+	/**
+	 * 若为文件则获取文件内容字符长度,若为连接则获取连接后的内容长度
+	 */
 	@Override
 	public long contentLength() throws IOException {
 		URL url = getURL();
@@ -161,6 +174,9 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 		}
 	}
 
+	/**
+	 * 若为文件则获取文件最后修改时间戳,否则建立URL连接获取连接信息中的最后修改时间
+	 */
 	@Override
 	public long lastModified() throws IOException {
 		URL url = getURL();
@@ -178,6 +194,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 
 
 	/**
+	 * 如果必要先添加连接缓存,若为HttpURL连接设置连接请求方法为"HEAD"<p>
 	 * Customize the given {@link URLConnection}, obtained in the course of an
 	 * {@link #exists()}, {@link #contentLength()} or {@link #lastModified()} call.
 	 * <p>Calls {@link ResourceUtils#useCachesIfNecessary(URLConnection)} and
@@ -194,6 +211,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 	}
 
 	/**
+	 * 设置URL连接请求方法为"HEAD"<p>
 	 * Customize the given {@link HttpURLConnection}, obtained in the course of an
 	 * {@link #exists()}, {@link #contentLength()} or {@link #lastModified()} call.
 	 * <p>Sets request method "HEAD" by default. Can be overridden in subclasses.
@@ -206,6 +224,7 @@ public abstract class AbstractFileResolvingResource extends AbstractResource {
 
 
 	/**
+	 * 避免JBoss VFS API在运行时依赖<p>
 	 * Inner delegate class, avoiding a hard JBoss VFS API dependency at runtime.
 	 */
 	private static class VfsResourceDelegate {

@@ -51,6 +51,7 @@ public class JndiLocatorDelegate extends JndiLocatorSupport {
 	}
 
 	/**
+	 * 判断是否JNDI可用的环境(能否创建InitialContext对象)<p>
 	 * Check whether a default JNDI environment, as in a J2EE environment,
 	 * is available on this JVM.
 	 * @return {@code true} if a default InitialContext can be used,

@@ -30,7 +30,7 @@ import org.springframework.core.env.Environment;
 public interface EnvironmentAware extends Aware {
 
 	/**
-	 * 设置环境对象
+	 * 设置环境对象<p>
 	 * Set the {@code Environment} that this object runs in.
 	 */
 	void setEnvironment(Environment environment);

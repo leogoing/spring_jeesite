@@ -25,6 +25,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * 继承属性编辑支持类,融合了资源与类加载类用来加载指定路径资源和属性解析器类来解析占位符(主要set和getAsText两个方法的扩展)<p>
  * {@link java.beans.PropertyEditor Editor} for {@link Resource}
  * descriptors, to automatically convert {@code String} locations
  * e.g. {@code file:C:/myfile.txt} or {@code classpath:myfile.txt} to
@@ -115,6 +116,9 @@ public class ResourceEditor extends PropertyEditorSupport {
 	}
 
 
+	/**
+	 * 若传入字符串有字符则替换占位符后根据字符路径信息获取资源对象否则为null然后设置为value属性同时通知该属性所有监听者内容发生了改变(监听者模式)
+	 */
 	@Override
 	public void setAsText(String text) {
 		if (StringUtils.hasText(text)) {
@@ -127,6 +131,7 @@ public class ResourceEditor extends PropertyEditorSupport {
 	}
 
 	/**
+	 * 替换传入路径的占位符<p>
 	 * Resolve the given path, replacing placeholders with corresponding
 	 * property values from the {@code environment} if necessary.
 	 * @param path the original file path
@@ -143,6 +148,9 @@ public class ResourceEditor extends PropertyEditorSupport {
 	}
 
 
+	/**
+	 * 获取value属性值转为资源对象后获取其URL对象然后构造此 URL的字符串表示形式并返回
+	 */
 	@Override
 	public String getAsText() {
 		Resource value = (Resource) getValue();

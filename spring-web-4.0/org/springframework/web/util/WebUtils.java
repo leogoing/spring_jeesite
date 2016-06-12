@@ -214,6 +214,7 @@ public abstract class WebUtils {
 	}
 
 	/**
+	 * 获取传入servletContext下的指定path的绝对路径
 	 * Return the real path of the given path within the web application,
 	 * as provided by the servlet container.
 	 * <p>Prepends a slash if the path does not already start with a slash,
@@ -414,6 +415,7 @@ public abstract class WebUtils {
 	}
 
 	/**
+	 * 判断是不是include请求(request中的Attribute是否存在include属性名)<p>
 	 * Determine whether the given request is an include request,
 	 * that is, not a top-level HTTP request coming in from the outside.
 	 * <p>Checks the presence of the "javax.servlet.include.request_uri"

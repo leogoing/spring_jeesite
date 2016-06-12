@@ -105,6 +105,7 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	}
 
 	/**
+	 * 将传入的urlMap进行加工(开头加上'/'或去掉空白)再调用父类注册方法注入到handlerMapping中<p>
 	 * Register all handlers specified in the URL map for the corresponding paths.
 	 * @param urlMap Map with URL paths as keys and handler beans or bean names as values
 	 * @throws BeansException if a handler couldn't be registered

@@ -85,6 +85,7 @@ public abstract class WebApplicationContextUtils {
 	}
 
 	/**
+	 * 从传入的ServletContext中获取WebApplicationContext的根应用上下文<p>
 	 * Find the root {@link WebApplicationContext} for this web app, typically
 	 * loaded via {@link org.springframework.web.context.ContextLoaderListener}.
 	 * <p>Will rethrow an exception that happened on root context startup,
@@ -98,6 +99,7 @@ public abstract class WebApplicationContextUtils {
 	}
 
 	/**
+	 * 从传入的ServletContext中根据指定的key获取值,获取的值不正确则抛异常(不包括null)<p>
 	 * Find a custom {@link WebApplicationContext} for this web app.
 	 * @param sc ServletContext to find the web application context for
 	 * @param attrName the name of the ServletContext attribute to look for
@@ -232,6 +234,7 @@ public abstract class WebApplicationContextUtils {
 	}
 
 	/**
+	 * 替换指定配置源集中存在的初始化的servlet配置源桩为传入的servletContext、servletConfig<p>
 	 * Replace {@code Servlet}-based {@link StubPropertySource stub property sources} with
 	 * actual instances populated with the given {@code servletContext} and
 	 * {@code servletConfig} objects.

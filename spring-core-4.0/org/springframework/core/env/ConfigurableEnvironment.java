@@ -107,7 +107,7 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	void setDefaultProfiles(String... profiles);
 
 	/**
-	 * 获取配置源<p>
+	 * 获取配置源集<p>
 	 * Return the {@link PropertySources} for this {@code Environment} in mutable form,
 	 * allowing for manipulation of the set of {@link PropertySource} objects that should
 	 * be searched when resolving properties against this {@code Environment} object.

@@ -91,11 +91,14 @@ public final class ModelFactory {
 	public void initModel(NativeWebRequest request, ModelAndViewContainer mavContainer, HandlerMethod handlerMethod)
 			throws Exception {
 
+		//从SessionAttributes中取出保存的参数,合并到mavContainer中
 		Map<String, ?> attributesInSession = this.sessionAttributesHandler.retrieveAttributes(request);
 		mavContainer.mergeAttributes(attributesInSession);
 
+		//执行注释了@ModelAttribute的方法并将结果设置到Model
 		invokeModelAttributeMethods(request, mavContainer);
 
+		//遍历即注释了@ModelAttribute又注释了@SessionAttribute的参数
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
 			if (!mavContainer.containsAttribute(name)) {
 				Object value = this.sessionAttributesHandler.retrieveAttribute(request, name);
@@ -115,11 +118,13 @@ public final class ModelFactory {
 			throws Exception {
 
 		for (InvocableHandlerMethod attrMethod : this.attributeMethods) {
+			//获取注释@ModelAttribute中设置的value作为参数名
 			String modelName = attrMethod.getMethodAnnotation(ModelAttribute.class).value();
-			if (mavContainer.containsAttribute(modelName)) {
+			if (mavContainer.containsAttribute(modelName)) {//如果参数名已经在mavContainer中则跳过
 				continue;
 			}
 
+			//执行注释中的方法
 			Object returnValue = attrMethod.invokeForRequest(request, mavContainer);
 
 			if (!attrMethod.isVoid()){

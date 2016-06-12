@@ -19,6 +19,7 @@ package org.springframework.beans;
 import java.beans.PropertyDescriptor;
 
 /**
+ * Bean包装接口,设置和获取Bean的属性<p>
  * The central interface of Spring's low-level JavaBeans infrastructure.
  *
  * <p>Typically not used directly but rather implicitly via a
@@ -49,12 +50,14 @@ import java.beans.PropertyDescriptor;
 public interface BeanWrapper extends ConfigurablePropertyAccessor {
 
 	/**
+	 * 获取被包装的bean对象<p>
 	 * Return the bean instance wrapped by this object, if any.
 	 * @return the bean instance, or {@code null} if none set
 	 */
 	Object getWrappedInstance();
 
 	/**
+	 * 获取这个对象的bean包装类的Class类型<p>
 	 * Return the type of the wrapped JavaBean object.
 	 * @return the type of the wrapped bean instance,
 	 * or {@code null} if no wrapped object has been set
@@ -62,6 +65,7 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	Class<?> getWrappedClass();
 
 	/**
+	 * 获取属性的描述类数组<p>
 	 * Obtain the PropertyDescriptors for the wrapped object
 	 * (as determined by standard JavaBeans introspection).
 	 * @return the PropertyDescriptors for the wrapped object
@@ -69,6 +73,7 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	PropertyDescriptor[] getPropertyDescriptors();
 
 	/**
+	 * 获取指定属性名的属性描述类<p>
 	 * Obtain the property descriptor for a specific property
 	 * of the wrapped object.
 	 * @param propertyName the property to obtain the descriptor for
@@ -79,6 +84,7 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	PropertyDescriptor getPropertyDescriptor(String propertyName) throws InvalidPropertyException;
 
 	/**
+	 * 设置自动扩展嵌套访问路径<p>
 	 * Set whether this BeanWrapper should attempt to "auto-grow" a
 	 * nested path that contains a {@code null} value.
 	 * <p>If {@code true}, a {@code null} path location will be populated
@@ -90,17 +96,20 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	void setAutoGrowNestedPaths(boolean autoGrowNestedPaths);
 
 	/**
+	 * 判断是否自动扩展嵌套访问路径<p>
 	 * Return whether "auto-growing" of nested paths has been activated.
 	 */
 	boolean isAutoGrowNestedPaths();
 
 	/**
+	 * 设置自动扩展集合界限<p>
 	 * Specify a limit for array and collection auto-growing.
 	 * <p>Default is unlimited on a plain BeanWrapper.
 	 */
 	void setAutoGrowCollectionLimit(int autoGrowCollectionLimit);
 
 	/**
+	 * 获取自动扩展集合的界限<p>
 	 * Return the limit for array and collection auto-growing.
 	 */
 	int getAutoGrowCollectionLimit();

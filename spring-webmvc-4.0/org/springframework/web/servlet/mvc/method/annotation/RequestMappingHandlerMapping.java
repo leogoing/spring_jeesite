@@ -175,6 +175,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	}
 
 	/**
+	 * 如果没有@RequestMapping注释则返回null,有则根据注释的内容创建RequestMappingInfo类型的匹配条件对象<p>
 	 * Uses method and type-level @{@link RequestMapping} annotations to create
 	 * the RequestMappingInfo.
 	 * @return the created RequestMappingInfo, or {@code null} if the method

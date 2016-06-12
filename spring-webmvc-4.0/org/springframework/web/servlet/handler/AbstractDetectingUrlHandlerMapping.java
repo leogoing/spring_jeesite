@@ -59,6 +59,8 @@ public abstract class AbstractDetectingUrlHandlerMapping extends AbstractUrlHand
 	}
 
 	/**
+	 * 先从当前应用上下文及父上下文中找到所有bean的beanName然后解析出每个bean的url,
+	 * 如果解析结果不为空则将url与beanName注册到父类的handlerMapping中<p>
 	 * Register all handlers found in the current ApplicationContext.
 	 * <p>The actual URL determination for a handler is up to the concrete
 	 * {@link #determineUrlsForHandler(String)} implementation. A bean for

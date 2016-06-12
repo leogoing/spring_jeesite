@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import org.springframework.core.MethodParameter;
 
 /**
+ * 类型转换接口<p>
  * Interface that defines type conversion methods. Typically (but not necessarily)
  * implemented in conjunction with the {@link PropertyEditorRegistry} interface.
  *
@@ -36,6 +37,7 @@ import org.springframework.core.MethodParameter;
 public interface TypeConverter {
 
 	/**
+	 * 将指定对象转换为指定的所需的类型<p>
 	 * Convert the value to the required type (if necessary from a String).
 	 * <p>Conversions from String to any type will typically use the {@code setAsText}
 	 * method of the PropertyEditor class, or a Spring Converter in a ConversionService.

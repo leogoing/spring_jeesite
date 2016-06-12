@@ -66,6 +66,9 @@ public class BeanNameViewResolver extends WebApplicationObjectSupport implements
 	}
 
 
+	/**
+	 * 根据试图名从spring上下文中查找Bean,如果找不到或者查到后不是View类型则返回null否则返回Bean
+	 */
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws BeansException {
 		ApplicationContext context = getApplicationContext();

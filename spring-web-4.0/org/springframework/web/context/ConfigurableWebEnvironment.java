@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
+ * 适用于web应用的可配置环境接口(添加初始化配置集(web配置)方法)<p>
  * Specialization of {@link ConfigurableEnvironment} allowing initialization of
  * servlet-related {@link org.springframework.core.env.PropertySource} objects at the
  * earliest moment that the {@link ServletContext} and (optionally) {@link ServletConfig}
@@ -34,6 +35,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 public interface ConfigurableWebEnvironment extends ConfigurableEnvironment {
 
 	/**
+	 * 初始化配置集,将servletContext和servletConfig加入配置集<p>
 	 * Replace any {@linkplain
 	 * org.springframework.core.env.PropertySource.StubPropertySource stub property source}
 	 * instances acting as placeholders with real servlet context/config property sources

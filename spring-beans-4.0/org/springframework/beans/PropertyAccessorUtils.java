@@ -57,6 +57,7 @@ public abstract class PropertyAccessorUtils {
 	}
 
 	/**
+	 * 从指定属性路径的第一个算起获取第一个分隔符'.'的下标位置(忽略'[]'里的分隔符)<p>
 	 * Determine the first nested property separator in the
 	 * given property path, ignoring dots in keys (like "map[my.key]").
 	 * @param propertyPath the property path to check
@@ -67,6 +68,7 @@ public abstract class PropertyAccessorUtils {
 	}
 
 	/**
+	 * 从指定属性路径的最后一个算起获取第一个分隔符'.'的下标位置(忽略'[]'里的分隔符)<p>
 	 * Determine the first nested property separator in the
 	 * given property path, ignoring dots in keys (like "map[my.key]").
 	 * @param propertyPath the property path to check
@@ -77,6 +79,7 @@ public abstract class PropertyAccessorUtils {
 	}
 
 	/**
+	 * 获取指定属性路径的第一个分隔符'.'的下标位置(忽略'[]'里的分隔符),根据传入参数判断是从路径最后数起还是第一个开始算<p>
 	 * Determine the first (or last) nested property separator in the
 	 * given property path, ignoring dots in keys (like "map[my.key]").
 	 * @param propertyPath the property path to check

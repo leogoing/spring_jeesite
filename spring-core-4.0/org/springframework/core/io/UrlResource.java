@@ -134,6 +134,7 @@ public class UrlResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 根据指定路径字符串进行简洁化后创建URL返回若无法转换为URL则返回传入的URL<p>
 	 * Determine a cleaned URL for the given original URL.
 	 * @param originalUrl the original URL
 	 * @param originalPath the original URL path
@@ -153,6 +154,7 @@ public class UrlResource extends AbstractFileResolvingResource {
 
 
 	/**
+	 * 开启url连接获取url连接的输入流<p>
 	 * This implementation opens an InputStream for the given URL.
 	 * It sets the "UseCaches" flag to {@code false},
 	 * mainly to avoid jar file locking on Windows.

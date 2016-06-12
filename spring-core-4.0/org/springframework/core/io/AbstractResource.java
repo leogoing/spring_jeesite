@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;
 
 /**
+ * Resource接口的基本实现,大部分方法为默认实现(抽象类:必须被扩展)<p>
  * Convenience base class for {@link Resource} implementations,
  * pre-implementing typical behavior.
  *
@@ -42,6 +43,7 @@ import org.springframework.util.ResourceUtils;
 public abstract class AbstractResource implements Resource {
 
 	/**
+	 * 判断是否存在文件或输入流<p>
 	 * This implementation checks whether a File can be opened,
 	 * falling back to whether an InputStream can be opened.
 	 * This will cover both directories and content resources.
@@ -50,12 +52,12 @@ public abstract class AbstractResource implements Resource {
 	public boolean exists() {
 		// Try file existence: can we find the file in the file system?
 		try {
-			return getFile().exists();
+			return getFile().exists();//是否能找到文件
 		}
 		catch (IOException ex) {
 			// Fall back to stream existence: can we open the stream?
 			try {
-				InputStream is = getInputStream();
+				InputStream is = getInputStream();//是否能获取到输入流
 				is.close();
 				return true;
 			}
@@ -66,6 +68,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 默认返回true(由子类扩展)<p>
 	 * This implementation always returns {@code true}.
 	 */
 	@Override
@@ -74,6 +77,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 默认返回false(由子类扩展)<p>
 	 * This implementation always returns {@code false}.
 	 */
 	@Override
@@ -82,6 +86,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 默认抛异常(由子类扩展)<p>
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that the resource cannot be resolved to a URL.
 	 */
@@ -91,6 +96,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 根据该资源的URL创建URI对象返回<p>
 	 * This implementation builds a URI based on the URL returned
 	 * by {@link #getURL()}.
 	 */
@@ -106,6 +112,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 获取文件默认抛异常(由子类扩展)<p>
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that the resource cannot be resolved to an absolute file path.
 	 */
@@ -115,6 +122,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 获取输入流查看资源内容字符长度(按255Byte算)<p>
 	 * This implementation reads the entire InputStream to calculate the
 	 * content length. Subclasses will almost always be able to provide
 	 * a more optimal version of this, e.g. checking a File length.
@@ -144,6 +152,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 获取最后修改后的文件的时间戳<p>
 	 * This implementation checks the timestamp of the underlying File,
 	 * if available.
 	 * @see #getFileForLastModifiedCheck()
@@ -159,6 +168,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 获取文件并最后修改时核对,默认返回资源文件(由子类扩展)<p>
 	 * Determine the File to use for timestamp checking.
 	 * <p>The default implementation delegates to {@link #getFile()}.
 	 * @return the File to use for timestamp checking (never {@code null})
@@ -170,6 +180,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 根据指定路径创建相对资源,默认抛异常(由子类扩展)<p>
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that relative resources cannot be created for this resource.
 	 */
@@ -179,6 +190,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 获取资源文件名,默认返回null(由子类扩展)<p>
 	 * This implementation always returns {@code null},
 	 * assuming that this resource type does not have a filename.
 	 */
@@ -189,6 +201,7 @@ public abstract class AbstractResource implements Resource {
 
 
 	/**
+	 * 重写返回资源描述信息<p>
 	 * This implementation returns the description of this resource.
 	 * @see #getDescription()
 	 */
@@ -198,6 +211,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 重写根据资源描述字符串比较<p>
 	 * This implementation compares description strings.
 	 * @see #getDescription()
 	 */
@@ -208,6 +222,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 重写返回资源描述字符串的hashCode值<p>
 	 * This implementation returns the description's hash code.
 	 * @see #getDescription()
 	 */

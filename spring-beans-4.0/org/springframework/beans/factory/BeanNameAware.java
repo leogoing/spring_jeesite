@@ -17,6 +17,7 @@
 package org.springframework.beans.factory;
 
 /**
+ * 实现类能获取BeanName<p>
  * Interface to be implemented by beans that want to be aware of their
  * bean name in a bean factory. Note that it is not usually recommended
  * that an object depend on its bean name, as this represents a potentially
@@ -36,6 +37,7 @@ package org.springframework.beans.factory;
 public interface BeanNameAware extends Aware {
 
 	/**
+	 * 设置BeanName<p>
 	 * Set the name of the bean in the bean factory that created this bean.
 	 * <p>Invoked after population of normal bean properties but before an
 	 * init callback such as {@link InitializingBean#afterPropertiesSet()}

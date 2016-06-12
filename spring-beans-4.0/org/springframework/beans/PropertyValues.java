@@ -17,6 +17,7 @@
 package org.springframework.beans;
 
 /**
+ * 属性值对象PropertyValue集<p>
  * Holder containing one or more {@link PropertyValue} objects,
  * typically comprising one update for a specific target bean.
  *
@@ -28,11 +29,13 @@ package org.springframework.beans;
 public interface PropertyValues {
 
 	/**
+	 * 返回属性值对象数组<p>
 	 * Return an array of the PropertyValue objects held in this object.
 	 */
 	PropertyValue[] getPropertyValues();
 
 	/**
+	 * 获取指定属性值对象<p>
 	 * Return the property value with the given name, if any.
 	 * @param propertyName the name to search for
 	 * @return the property value, or {@code null}
@@ -40,6 +43,7 @@ public interface PropertyValues {
 	PropertyValue getPropertyValue(String propertyName);
 
 	/**
+	 * 返回当前对象与传入对象的差异量<p>
 	 * Return the changes since the previous PropertyValues.
 	 * Subclasses should also override {@code equals}.
 	 * @param old old property values
@@ -50,6 +54,7 @@ public interface PropertyValues {
 	PropertyValues changesSince(PropertyValues old);
 
 	/**
+	 * 判断是否包含指定属性值对象<p>
 	 * Is there a property value (or other processing entry) for this property?
 	 * @param propertyName the name of the property we're interested in
 	 * @return whether there is a property value for this property
@@ -57,6 +62,7 @@ public interface PropertyValues {
 	boolean contains(String propertyName);
 
 	/**
+	 * 判断是否为空没有属性值对象<p>
 	 * Does this holder not contain any PropertyValue objects at all?
 	 */
 	boolean isEmpty();

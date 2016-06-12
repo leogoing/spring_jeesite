@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * spring web应用上下文,每个Servlet都拥有唯一的spring上下文<p>
  * Interface to provide configuration for a web application. This is read-only while
  * the application is running, but may be reloaded if the implementation supports this.
  *
@@ -44,6 +45,7 @@ import org.springframework.context.ApplicationContext;
 public interface WebApplicationContext extends ApplicationContext {
 
 	/**
+	 * 用来作为key将web应用上下文存放<p>
 	 * Context attribute to bind root WebApplicationContext to on successful startup.
 	 * <p>Note: If the startup of the root context fails, this attribute can contain
 	 * an exception or error as value. Use WebApplicationContextUtils for convenient
@@ -103,6 +105,7 @@ public interface WebApplicationContext extends ApplicationContext {
 
 
 	/**
+	 * 获取当前应用的ServletContext<p>
 	 * Return the standard Servlet API ServletContext for this application.
 	 * <p>Also available for a Portlet application, in addition to the PortletContext.
 	 */

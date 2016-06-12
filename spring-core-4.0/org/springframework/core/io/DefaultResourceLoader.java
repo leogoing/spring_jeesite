@@ -24,6 +24,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 资源与类加载接口的默认实现,只有ClassLoader属性(子类可扩展添加其他资源属性)<p>
  * Default implementation of the {@link ResourceLoader} interface.
  * Used by {@link ResourceEditor}, and serves as base class for
  * {@link org.springframework.context.support.AbstractApplicationContext}.
@@ -64,6 +65,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 
 	/**
+	 * 设置类加载器用来加载类路径下资源<p>
 	 * Specify the ClassLoader to load class path resources with, or {@code null}
 	 * for using the thread context class loader at the time of actual resource access.
 	 * <p>The default is that ClassLoader access will happen using the thread context
@@ -74,6 +76,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 	}
 
 	/**
+	 * 获取类加载器,为空则返回默认类加载器<p>
 	 * Return the ClassLoader to load class path resources with.
 	 * <p>Will get passed to ClassPathResource's constructor for all
 	 * ClassPathResource objects created by this resource loader.
@@ -88,19 +91,20 @@ public class DefaultResourceLoader implements ResourceLoader {
 	@Override
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
-		if (location.startsWith("/")) {
+		if (location.startsWith("/")) {//如果是文件路径
 			return getResourceByPath(location);
 		}
-		else if (location.startsWith(CLASSPATH_URL_PREFIX)) {
+		else if (location.startsWith(CLASSPATH_URL_PREFIX)) {//如果是类路径
 			return new ClassPathResource(location.substring(CLASSPATH_URL_PREFIX.length()), getClassLoader());
 		}
 		else {
 			try {
+				/*作为URL去查找*/
 				// Try to parse the location as a URL...
 				URL url = new URL(location);
 				return new UrlResource(url);
 			}
-			catch (MalformedURLException ex) {
+			catch (MalformedURLException ex) {//失败则作为文件资源解析
 				// No URL -> resolve as resource path.
 				return getResourceByPath(location);
 			}
@@ -108,6 +112,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 	}
 
 	/**
+	 * 返回一个新类路径资源及上下文资源(支持相对路径获取)实现类<p>
 	 * Return a Resource handle for the resource at the given path.
 	 * <p>The default implementation supports class path locations. This should
 	 * be appropriate for standalone implementations but can be overridden,
@@ -124,6 +129,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 
 	/**
+	 * 类路径资源,通过实现上下文资源来获取相对于上下文的路径<p>
 	 * ClassPathResource that explicitly expresses a context-relative path
 	 * through implementing the ContextResource interface.
 	 */
@@ -133,6 +139,9 @@ public class DefaultResourceLoader implements ResourceLoader {
 			super(path, classLoader);
 		}
 
+		/**
+		 * 获取类路径下的资源路径classPath:(相对路径)
+		 */
 		@Override
 		public String getPathWithinContext() {
 			return getPath();

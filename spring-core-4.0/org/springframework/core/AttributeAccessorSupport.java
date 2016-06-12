@@ -23,6 +23,7 @@ import java.util.Map;
 import org.springframework.util.Assert;
 
 /**
+ * Attribute访问操作接口的基本实现<p>
  * Support class for {@link AttributeAccessor AttributeAccessors}, providing
  * a base implementation of all methods. To be extended by subclasses.
  *
@@ -35,7 +36,7 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public abstract class AttributeAccessorSupport implements AttributeAccessor, Serializable {
 
-	/** Map with String keys and Object values */
+	/**Attribute容器<p> Map with String keys and Object values */
 	private final Map<String, Object> attributes = new LinkedHashMap<String, Object>(0);
 
 
@@ -75,6 +76,7 @@ public abstract class AttributeAccessorSupport implements AttributeAccessor, Ser
 
 
 	/**
+	 * 从指定的Attribute访问操作接口类中复制到Attribute容器中<p>
 	 * Copy the attributes from the supplied AttributeAccessor to this accessor.
 	 * @param source the AttributeAccessor to copy from
 	 */

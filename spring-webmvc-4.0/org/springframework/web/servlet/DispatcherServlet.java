@@ -444,6 +444,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 上下文刷新时被调用<p>
 	 * This implementation calls {@link #initStrategies}.
 	 */
 	@Override
@@ -456,15 +457,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
-		initMultipartResolver(context);
-		initLocaleResolver(context);
-		initThemeResolver(context);
-		initHandlerMappings(context);
-		initHandlerAdapters(context);
-		initHandlerExceptionResolvers(context);
-		initRequestToViewNameTranslator(context);
-		initViewResolvers(context);
-		initFlashMapManager(context);
+		initMultipartResolver(context);//文件上传解析，如果请求类型是multipart将通过MultipartResolver进行文件上传解析
+		initLocaleResolver(context); //本地化解析
+		initThemeResolver(context); //主题解析
+		initHandlerMappings(context); //通过HandlerMapping，将请求映射到处理器
+		initHandlerAdapters(context);  //通过HandlerAdapter支持多种类型的处理器
+		initHandlerExceptionResolvers(context); //如果执行过程中遇到异常将交给HandlerExceptionResolver来解析
+		initRequestToViewNameTranslator(context); //从request中获取视图名
+		initViewResolvers(context); //通过ViewResolver解析逻辑视图名到具体视图实现
+		initFlashMapManager(context);  //flash映射管理器
 	}
 
 	/**
@@ -831,6 +832,8 @@ public class DispatcherServlet extends FrameworkServlet {
 
 
 	/**
+	 * 首先判断是不是include请求(处理另一个servlet处理过后的内容),如果是则对request的Attribute做个快照备份,
+	 * 等doDispatch处理完之后(如果不是异步调用且为完成)进行还原,在做完快照后又对request设置了一些属性<p>
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
 	 */
@@ -842,6 +845,7 @@ public class DispatcherServlet extends FrameworkServlet {
 					" processing " + request.getMethod() + " request for [" + getRequestUri(request) + "]");
 		}
 
+		//如果是include请求则对Attribute做快照备份
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
 		Map<String, Object> attributesSnapshot = null;
@@ -876,6 +880,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			if (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
 				return;
 			}
+			//还原备份的request的快照属性
 			// Restore the original attribute snapshot, in case of an include.
 			if (attributesSnapshot != null) {
 				restoreAttributesAfterInclude(request, attributesSnapshot);
@@ -884,6 +889,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
+	 * 根据request找到Handler,根据Handler找到对应的HandlerAdapter,用HandlerAdapter处理Handler,
+	 * 调用processDispatchResult方法处理上面的结果<p>
 	 * Process the actual dispatching to the handler.
 	 * <p>The handler will be obtained by applying the servlet's HandlerMappings in order.
 	 * The HandlerAdapter will be obtained by querying the servlet's installed HandlerAdapters
@@ -906,9 +913,11 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				//检查是不是上传请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
+				//根据request找到Handler
 				// Determine handler for the current request.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null || mappedHandler.getHandler() == null) {
@@ -916,9 +925,11 @@ public class DispatcherServlet extends FrameworkServlet {
 					return;
 				}
 
+				//根据Handler找到HandlerAdapter
 				// Determine handler adapter for the current request.
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
+				//处理GET和HEAD请求的Last-Modified
 				// Process last-modified header, if supported by the handler.
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
@@ -932,26 +943,32 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				//执行相应的Interceptor的preHandler
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				try {
+					//HandlerAdapter使用Handler处理请求
 					// Actually invoke the handler.
 					mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 				}
 				finally {
+					//如果需要异步处理,直接返回(不是指ajax一类的异步)
 					if (asyncManager.isConcurrentHandlingStarted()) {
 						return;
 					}
 				}
 
+				//当view为空时(如Handler返回值为void)根据request设置默认view
 				applyDefaultViewName(request, mv);
+				//执行相应的Intercept的postHandler
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
 				dispatchException = ex;
 			}
+			//处理返回结果,包括处理异常渲染画面发出完成通知触发Intercept的afterCompletion
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
@@ -961,11 +978,13 @@ public class DispatcherServlet extends FrameworkServlet {
 			triggerAfterCompletionWithError(processedRequest, response, mappedHandler, err);
 		}
 		finally {
+			//判断是否执行异步请求(不是指ajax一类的异步)
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				// Instead of postHandle and afterCompletion
 				mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
 				return;
 			}
+			//删除上传请求的资源
 			// Clean up any resources used by a multipart request.
 			if (multipartRequestParsed) {
 				cleanupMultipart(processedRequest);
@@ -991,6 +1010,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		boolean errorView = false;
 
+		//如果请求处理的过程中有异常抛出则处理
 		if (exception != null) {
 			if (exception instanceof ModelAndViewDefiningException) {
 				logger.debug("ModelAndViewDefiningException encountered", exception);
@@ -1003,6 +1023,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
+		//渲染页面
 		// Did the handler return a view to render?
 		if (mv != null && !mv.wasCleared()) {
 			render(mv, request, response);
@@ -1017,11 +1038,13 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
+		//如果启动了异常处理则返回
 		if (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
 			// Concurrent handling started during a forward
 			return;
 		}
 
+		//发出请求处理完成的通知,触发Interceptor的afterCompletion
 		if (mappedHandler != null) {
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}

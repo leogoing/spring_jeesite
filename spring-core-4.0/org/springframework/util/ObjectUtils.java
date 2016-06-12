@@ -504,6 +504,7 @@ public abstract class ObjectUtils {
 	//---------------------------------------------------------------------
 
 	/**
+	 * 以字符串形式(类名+@+内存地址HashCode值的16进制字符串)生成传入对象的ID<p>
 	 * Return a String representation of an object's overall identity.
 	 * @param obj the object (may be {@code null})
 	 * @return the object's identity as String representation,
@@ -517,6 +518,7 @@ public abstract class ObjectUtils {
 	}
 
 	/**
+	 * 先根据传入对象内存地址来计算HashCode值再将HashCode值转换为16进制字符串<p>
 	 * Return a hex String form of an object's identity hash code.
 	 * @param obj the object
 	 * @return the object's identity code in hex notation
@@ -526,6 +528,7 @@ public abstract class ObjectUtils {
 	}
 
 	/**
+	 * 获取传入对象的toString形式(为数组则转为{,,...}形式)<p>
 	 * Return a content-based String representation if {@code obj} is
 	 * not {@code null}; otherwise returns an empty String.
 	 * <p>Differs from {@link #nullSafeToString(Object)} in that it returns
@@ -552,6 +555,7 @@ public abstract class ObjectUtils {
 	}
 
 	/**
+	 * 根据传入对象的类型返回可辨别的字符串(主要支持基本类型的数组形式)<p>
 	 * Return a String representation of the specified Object.
 	 * <p>Builds a String representation of the contents in case of an array.
 	 * Returns {@code "null"} if {@code obj} is {@code null}.
@@ -597,6 +601,7 @@ public abstract class ObjectUtils {
 	}
 
 	/**
+	 * 返回传入数组的可辨别的形式字符串({,,,...})<p>
 	 * Return a String representation of the contents of the specified array.
 	 * <p>The String representation consists of a list of the array's elements,
 	 * enclosed in curly braces ({@code "{}"}). Adjacent elements are separated

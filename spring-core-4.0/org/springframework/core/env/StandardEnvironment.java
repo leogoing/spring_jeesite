@@ -17,6 +17,7 @@
 package org.springframework.core.env;
 
 /**
+ * 标准环境类,扩展配置源集设置方法(添加系统环境和配置)<p>
  * {@link Environment} implementation suitable for use in 'standard' (i.e. non-web)
  * applications.
  *
@@ -61,6 +62,7 @@ public class StandardEnvironment extends AbstractEnvironment {
 
 
 	/**
+	 * 重写父类方法,将系统配置和系统环境加入配置源集<p>
 	 * Customize the set of property sources with those appropriate for any standard
 	 * Java environment:
 	 * <ul>

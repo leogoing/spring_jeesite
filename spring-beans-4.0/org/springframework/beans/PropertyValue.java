@@ -23,6 +23,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 保存单个bean属性的信息和值<p>
  * Object to hold information and value for an individual bean property.
  * Using an object here, rather than just storing all properties in
  * a map keyed by property name, allows for more flexibility, and the
@@ -46,6 +47,9 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 
 	private final Object value;
 
+	/**
+	 * 存放父级元素
+	 */
 	private Object source;
 
 	private boolean optional = false;
@@ -119,6 +123,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	}
 
 	/**
+	 * 返回属性的value值<p>
 	 * Return the value of the property.
 	 * <p>Note that type conversion will <i>not</i> have occurred here.
 	 * It is the responsibility of the BeanWrapper implementation to
@@ -129,6 +134,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	}
 
 	/**
+	 * 获取当前对象的根元素<p>
 	 * Return the original PropertyValue instance for this value holder.
 	 * @return the original PropertyValue (either a source of this
 	 * value holder or this value holder itself).
@@ -150,6 +156,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	}
 
 	/**
+	 * 判断当前对象是否已经包含了要转换的值<p>
 	 * Return whether this holder contains a converted value already ({@code true}),
 	 * or whether the value still needs to be converted ({@code false}).
 	 */
@@ -158,6 +165,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	}
 
 	/**
+	 * 设置要转换的值<p>
 	 * Set the converted value of the constructor argument,
 	 * after processed type conversion.
 	 */
@@ -167,6 +175,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	}
 
 	/**
+	 * 获取转换的值<p>
 	 * Return the converted value of the constructor argument,
 	 * after processed type conversion.
 	 */

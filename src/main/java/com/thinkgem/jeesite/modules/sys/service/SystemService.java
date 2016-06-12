@@ -397,7 +397,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 	
 	/**
-	 * 获取Key加载信息
+	 * 控制台输出
 	 */
 	public static boolean printKeyLoadMessage(){
 		StringBuilder sb = new StringBuilder();

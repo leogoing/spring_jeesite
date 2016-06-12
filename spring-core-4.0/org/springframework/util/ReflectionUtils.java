@@ -446,6 +446,7 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
+	 * 设置传入构造函数访问权限为公开的<p>
 	 * Make the given constructor accessible, explicitly setting it accessible
 	 * if necessary. The {@code setAccessible(true)} method is only called
 	 * when actually necessary, to avoid unnecessary conflicts with a JVM

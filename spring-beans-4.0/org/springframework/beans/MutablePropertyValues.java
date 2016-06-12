@@ -26,6 +26,7 @@ import java.util.Set;
 import org.springframework.util.StringUtils;
 
 /**
+ * PropertyValues的默认实现,可变的属性值集<p>
  * Default implementation of the {@link PropertyValues} interface.
  * Allows simple manipulation of properties, and provides constructors
  * to support deep copy and construction from a Map.
@@ -109,6 +110,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 
 
 	/**
+	 * 获取属性值对象集合<p>
 	 * Return the underlying List of PropertyValue objects in its raw form.
 	 * The returned List can be modified directly, although this is not recommended.
 	 * <p>This is an accessor for optimized access to all PropertyValue objects.
@@ -119,6 +121,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 返回属性值对象集合大小<p>
 	 * Return the number of PropertyValue entries in the list.
 	 */
 	public int size() {
@@ -126,6 +129,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 添加传入的属性值对象集(创建新对象而不是传递引用)<p>
 	 * Copy all given PropertyValues into this object. Guarantees PropertyValue
 	 * references are independent, although it can't deep copy objects currently
 	 * referenced by individual PropertyValue objects.
@@ -143,6 +147,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 将传入的Map根据键和值创建属性值对象并添加到属性值对象集合<p>
 	 * Add all property values from the given Map.
 	 * @param other Map with property values keyed by property name,
 	 * which must be a String
@@ -158,6 +163,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 添加属性值对象,如果存在则替换或合并(支持才合并)<p>
 	 * Add a PropertyValue object, replacing any existing one for the
 	 * corresponding property or getting merged with it (if applicable).
 	 * @param pv PropertyValue object to add
@@ -177,6 +183,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 根据传入的键和值创建属性值对象并添加到属性值对象集<p>
 	 * Overloaded version of {@code addPropertyValue} that takes
 	 * a property name and a property value.
 	 * <p>Note: As of Spring 3.0, we recommend using the more concise
@@ -190,6 +197,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 根据传入的键和值创建属性值对象并添加到属性值对象集,返回当前对象<p>
 	 * Add a PropertyValue object, replacing any existing one for the
 	 * corresponding property or getting merged with it (if applicable).
 	 * @param propertyName name of the property
@@ -202,6 +210,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 设置传入的属性值对象到指定下标<p>
 	 * Modify a PropertyValue object held in this object.
 	 * Indexed from 0.
 	 */
@@ -210,6 +219,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 如果允许,合并指定的属性值对象<p>
 	 * Merges the value of the supplied 'new' {@link PropertyValue} with that of
 	 * the current {@link PropertyValue} if merging is supported and enabled.
 	 * @see Mergeable
@@ -227,6 +237,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 删除指定属性值对象<p>
 	 * Remove the given PropertyValue, if contained.
 	 * @param pv the PropertyValue to remove
 	 */
@@ -235,6 +246,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 根据属性值对象name属性删除该对象<p>
 	 * Overloaded version of {@code removePropertyValue} that takes a property name.
 	 * @param propertyName name of the property
 	 * @see #removePropertyValue(PropertyValue)
@@ -260,6 +272,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * 根据指定属性对象name属性返回对应value值<p>
 	 * Get the raw property value, if any.
 	 * @param propertyName the name to search for
 	 * @return the raw property value, or {@code null}
@@ -274,10 +287,11 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	@Override
 	public PropertyValues changesSince(PropertyValues old) {
 		MutablePropertyValues changes = new MutablePropertyValues();
-		if (old == this) {
+		if (old == this) {//如果没有改变则返回空对象
 			return changes;
 		}
 
+		/*若当前属性值对象集在旧集中name属性没有存在的或对象不相等的则放入返回队列*/
 		// for each property value in the new set
 		for (PropertyValue newPv : this.propertyValueList) {
 			// if there wasn't an old one, add it

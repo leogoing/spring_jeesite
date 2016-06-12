@@ -178,6 +178,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 将指定的name属性的配置源替换为给定的配置源对象<p>
 	 * Replace the property source with the given name with the given property source object.
 	 * @param name the name of the property source to find and replace
 	 * @param propertySource the replacement property source
@@ -194,6 +195,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 返回配置源集的大小<p>
 	 * Return the number of {@link PropertySource} objects contained.
 	 */
 	public int size() {
@@ -210,6 +212,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 确保指定的配置源name属性为指定字符串,否则抛异常<p>
 	 * Ensure that the given property source is not being added relative to itself.
 	 */
 	protected void assertLegalRelativeAddition(String relativePropertySourceName, PropertySource<?> propertySource) {
@@ -219,6 +222,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 删除指定配置源<p>
 	 * Remove the given property source if it is present.
 	 */
 	protected void removeIfPresent(PropertySource<?> propertySource) {
@@ -228,6 +232,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 添加配置源到指定位置<p>
 	 * Add the given property source at a particular index in the list.
 	 */
 	private void addAtIndex(int index, PropertySource<?> propertySource) {
@@ -236,6 +241,7 @@ public class MutablePropertySources implements PropertySources {
 	}
 
 	/**
+	 * 判断是否存在指定name属性的配置源<p>
 	 * Assert that the named property source is present and return its index.
 	 * @param name the {@linkplain PropertySource#getName() name of the property source}
 	 * to find

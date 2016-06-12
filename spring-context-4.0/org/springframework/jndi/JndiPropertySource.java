@@ -21,6 +21,7 @@ import javax.naming.NamingException;
 import org.springframework.core.env.PropertySource;
 
 /**
+ * JNDI配置源<p>
  * {@link PropertySource} implementation that reads properties from an underlying Spring
  * {@link JndiLocatorDelegate}.
  *
@@ -71,6 +72,7 @@ public class JndiPropertySource extends PropertySource<JndiLocatorDelegate> {
 
 
 	/**
+	 * 通过JNDI查找指定name的对象<p>
 	 * This implementation looks up and returns the value associated with the given
 	 * name from the underlying {@link JndiLocatorDelegate}. If a {@link NamingException}
 	 * is thrown during the call to {@link JndiLocatorDelegate#lookup(String)}, returns

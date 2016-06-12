@@ -30,11 +30,13 @@ package org.springframework.beans;
 public interface Mergeable {
 
 	/**
+	 * 是否合并当前对象<p>
 	 * Is merging enabled for this particular instance?
 	 */
 	boolean isMergeEnabled();
 
 	/**
+	 * 返回合并当前对象与指定对象后的对象<p>
 	 * Merge the current value set with that of the supplied object.
 	 * <p>The supplied object is considered the parent, and values in
 	 * the callee's value set must override those of the supplied object.

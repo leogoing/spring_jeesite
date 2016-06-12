@@ -87,6 +87,7 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * 先检查不是接口然后根据传入的Class对象的构造函数实例化对象<p>
 	 * Instantiate a class using its no-arg constructor.
 	 * As this method doesn't try to load classes by name, it should avoid
 	 * class-loading issues.
@@ -110,6 +111,7 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * 先判断传入Class对象是否父子关系再实例化成对象<p>
 	 * Instantiate a class using its no-arg constructor and return the new instance
 	 * as the the specified assignable type.
 	 * <p>Useful in cases where
@@ -131,6 +133,7 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * 先设置传入构造函数为公开的再实例化<p>
 	 * Convenience method to instantiate a class using the given constructor.
 	 * As this method doesn't try to load classes by name, it should avoid
 	 * class-loading issues.

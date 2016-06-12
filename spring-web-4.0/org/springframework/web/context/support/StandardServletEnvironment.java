@@ -29,6 +29,7 @@ import org.springframework.jndi.JndiPropertySource;
 import org.springframework.web.context.ConfigurableWebEnvironment;
 
 /**
+ * 标准servlet环境类<p>
  * {@link Environment} implementation to be used by {@code Servlet}-based web
  * applications. All web-related (servlet-based) {@code ApplicationContext} classes
  * initialize an instance by default.
@@ -54,6 +55,7 @@ public class StandardServletEnvironment extends StandardEnvironment implements C
 
 
 	/**
+	 * 重写父类方法,在之前基础上加入servlet配置源(servletConfig、servletContext、JNDI)<p>
 	 * Customize the set of property sources with those contributed by superclasses as
 	 * well as those appropriate for standard servlet-based environments:
 	 * <ul>
@@ -81,14 +83,17 @@ public class StandardServletEnvironment extends StandardEnvironment implements C
 	 */
 	@Override
 	protected void customizePropertySources(MutablePropertySources propertySources) {
-		propertySources.addLast(new StubPropertySource(SERVLET_CONFIG_PROPERTY_SOURCE_NAME));
-		propertySources.addLast(new StubPropertySource(SERVLET_CONTEXT_PROPERTY_SOURCE_NAME));
+		propertySources.addLast(new StubPropertySource(SERVLET_CONFIG_PROPERTY_SOURCE_NAME));//添加的为配置源桩无实际意义
+		propertySources.addLast(new StubPropertySource(SERVLET_CONTEXT_PROPERTY_SOURCE_NAME));//添加的为配置源桩无实际意义
 		if (JndiLocatorDelegate.isDefaultJndiEnvironmentAvailable()) {
 			propertySources.addLast(new JndiPropertySource(JNDI_PROPERTY_SOURCE_NAME));
 		}
 		super.customizePropertySources(propertySources);
 	}
 
+	/**
+	 * 初始化配置集,将配置源集中的桩类替换为传入的servletContext、servletConfig
+	 */
 	@Override
 	public void initPropertySources(ServletContext servletContext, ServletConfig servletConfig) {
 		WebApplicationContextUtils.initServletPropertySources(getPropertySources(), servletContext, servletConfig);

@@ -118,6 +118,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	void addBeanFactoryPostProcessor(BeanFactoryPostProcessor beanFactoryPostProcessor);
 
 	/**
+	 * 添加一个新的ApplicationListener对环境事件的通知如上下文刷新和上下文关闭<p>
 	 * Add a new ApplicationListener that will be notified on context events
 	 * such as context refresh and context shutdown.
 	 * <p>Note that any ApplicationListener registered here will be applied
@@ -163,6 +164,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	void close();
 
 	/**
+	 * 确定这个应用程序上下文是否活跃的,也就是说是否已经至少更新一次,还没有被关闭<p>
 	 * Determine whether this application context is active, that is,
 	 * whether it has been refreshed at least once and has not been closed yet.
 	 * @return whether the context is still active

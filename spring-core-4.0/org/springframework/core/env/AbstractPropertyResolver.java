@@ -118,6 +118,9 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		}
 	}
 
+	/**
+	 * 验证必要的属性是否存在,将所有不存在的属性一起抛异常
+	 */
 	@Override
 	public void validateRequiredProperties() {
 		MissingRequiredPropertiesException ex = new MissingRequiredPropertiesException();

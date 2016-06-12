@@ -17,6 +17,7 @@
 package org.springframework.beans.factory;
 
 /**
+ * 可被销毁的bean接口(含唯一的销毁方法)<p>
  * Interface to be implemented by beans that want to release resources
  * on destruction. A BeanFactory is supposed to invoke the destroy
  * method if it disposes a cached singleton. An application context
@@ -34,6 +35,7 @@ package org.springframework.beans.factory;
 public interface DisposableBean {
 
 	/**
+	 * bean工厂销毁bean时调用<p>
 	 * Invoked by a BeanFactory on destruction of a singleton.
 	 * @throws Exception in case of shutdown errors.
 	 * Exceptions will get logged but not rethrown to allow

@@ -27,6 +27,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 类路径资源<p>
  * {@link Resource} implementation for class path resources.
  * Uses either a given ClassLoader or a given Class for loading resources.
  *
@@ -111,6 +112,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 
 
 	/**
+	 * 获取资源路径(无法重写)<p>
 	 * Return the path for this resource (as resource path within the class path).
 	 */
 	public final String getPath() {
@@ -118,6 +120,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 获取类加载器,为空则获取该类Class对象的类加载器(无法重写)<p>
 	 * Return the ClassLoader that this resource will be obtained from.
 	 */
 	public final ClassLoader getClassLoader() {
@@ -126,6 +129,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 
 
 	/**
+	 * 根据path属性判断URL资源是否存在与classes目录下<p>
 	 * This implementation checks for the resolution of a resource URL.
 	 * @see java.lang.ClassLoader#getResource(String)
 	 * @see java.lang.Class#getResource(String)
@@ -136,15 +140,16 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 返回classes目录下的path属性标明的文件资源作为URL返回<p>
 	 * Resolves a URL for the underlying class path resource.
 	 * @return the resolved URL, or {@code null} if not resolvable
 	 */
 	protected URL resolveURL() {
 		if (this.clazz != null) {
-			return this.clazz.getResource(this.path);
+			return this.clazz.getResource(this.path);//返回classes目录下的path文件路径资源
 		}
 		else if (this.classLoader != null) {
-			return this.classLoader.getResource(this.path);
+			return this.classLoader.getResource(this.path);//此时需要path为完成带包名的路径
 		}
 		else {
 			return ClassLoader.getSystemResource(this.path);
@@ -152,6 +157,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 返回classes目录下的path属性标明的文件资源转为URL再打开一个连接到这个URL用于读取并返回这个InputStream的连接<p>
 	 * This implementation opens an InputStream for the given class path resource.
 	 * @see java.lang.ClassLoader#getResourceAsStream(String)
 	 * @see java.lang.Class#getResourceAsStream(String)
@@ -175,6 +181,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 获取类路径下的资源URL<p>
 	 * This implementation returns a URL for the underlying class path resource,
 	 * if available.
 	 * @see java.lang.ClassLoader#getResource(String)
@@ -190,6 +197,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 在当前资源路径的父级文件夹下并拼接传入路径字符串创建相同资源对象<p>
 	 * This implementation creates a ClassPathResource, applying the given path
 	 * relative to the path of the underlying resource of this descriptor.
 	 * @see org.springframework.util.StringUtils#applyRelativePath(String, String)
@@ -201,6 +209,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 获取path属性文件名<p>
 	 * This implementation returns the name of the file that this class path
 	 * resource refers to.
 	 * @see org.springframework.util.StringUtils#getFilename(String)
@@ -211,6 +220,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	}
 
 	/**
+	 * 资源路径描述<p>
 	 * This implementation returns a description that includes the class path location.
 	 */
 	@Override

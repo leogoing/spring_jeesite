@@ -160,6 +160,7 @@ public class ContextLoader {
 	private static final String INIT_PARAM_DELIMITERS = ",; \t\n";
 
 	/**
+	 * 上下文默认配置文件<p>
 	 * Name of the class path resource (relative to the ContextLoader class)
 	 * that defines ContextLoader's default strategy names.
 	 */
@@ -168,6 +169,9 @@ public class ContextLoader {
 
 	private static final Properties defaultStrategies;
 
+	/**
+	 * 加载当前路径下的ContextLoader.properties文件来获取默认的web应用上下文XmlWebApplicationContext
+	 */
 	static {
 		// Load default strategy implementations from properties file.
 		// This is currently strictly internal and not meant to be customized
@@ -262,6 +266,7 @@ public class ContextLoader {
 	}
 
 	/**
+	 * 初始化web应用上下文默认创建XmlWebApplicationContext,并将线程的上下文类加载器与其建立对应关系<p>
 	 * Initialize Spring's web application context for the given servlet context,
 	 * using the application context provided at construction time, or creating a new one
 	 * according to the "{@link #CONTEXT_CLASS_PARAM contextClass}" and
@@ -340,6 +345,8 @@ public class ContextLoader {
 	}
 
 	/**
+	 * 创建web应用上下文<br>
+	 * 根据web.xml中配置的上下文类名实例化没有则默认查找当前配置文件下配置的XmlWebApplicationContext来实例化<p>
 	 * Instantiate the root WebApplicationContext for this loader, either the
 	 * default context class or a custom context class if specified.
 	 * <p>This implementation expects custom contexts to implement the
@@ -452,6 +459,8 @@ public class ContextLoader {
 	}
 
 	/**
+	 * 根据传入ServletContext获取web.xml中配置的Spring上下文类没有则获取默认配置文件中配置的XmlWebApplicationContext<br>
+	 * 再通过反射获取其Class对象<p>
 	 * Return the WebApplicationContext implementation class to use, either the
 	 * default XmlWebApplicationContext or a custom context class if specified.
 	 * @param servletContext current servlet context
@@ -460,7 +469,7 @@ public class ContextLoader {
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected Class<?> determineContextClass(ServletContext servletContext) {
-		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
+		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);//获取web.xml指定的初始化上下文类
 		if (contextClassName != null) {
 			try {
 				return ClassUtils.forName(contextClassName, ClassUtils.getDefaultClassLoader());

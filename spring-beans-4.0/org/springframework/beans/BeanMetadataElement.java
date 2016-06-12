@@ -17,6 +17,7 @@
 package org.springframework.beans;
 
 /**
+ * 传送配置源对象的超级接口(唯一方法getSource())<p>
  * Interface to be implemented by bean metadata elements
  * that carry a configuration source object.
  *
@@ -26,6 +27,7 @@ package org.springframework.beans;
 public interface BeanMetadataElement {
 
 	/**
+	 * 获取配置源对象<p>
 	 * Return the configuration source {@code Object} for this metadata element
 	 * (may be {@code null}).
 	 */

@@ -266,6 +266,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			HttpServletRequest request, HttpServletResponse response, int cacheSeconds, boolean lastModified)
 			throws ServletException {
 
+		//检查请求的类型是否支持
 		// Check whether we should support the request method.
 		String method = request.getMethod();
 		if (this.supportedMethods != null && !this.supportedMethods.contains(method)) {
@@ -273,6 +274,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 					method, StringUtils.toStringArray(this.supportedMethods));
 		}
 
+		//如果session是必须存在的,判断session实际是否存在
 		// Check whether a session is required.
 		if (this.requireSession) {
 			if (request.getSession(false) == null) {
@@ -280,6 +282,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			}
 		}
 
+		//设置request缓存过期时间
 		// Do declarative cache control.
 		// Revalidate if the controller supports last-modified.
 		applyCacheSeconds(response, cacheSeconds, lastModified);
