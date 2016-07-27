@@ -14,13 +14,13 @@
 	<bean name="shiroFilterChainDefinitions" class="java.lang.String">
 		<constructor-arg>
 			<value>
-				/static/** = anon
+				/static/** = anon		
 				/userfiles/** = anon
 				${adminPath}/cas = cas
-				${adminPath}/login = authc
+				${adminPath}/login = authc	<!-- authc 表示需要认证才能访问的页面 -->
 				${adminPath}/logout = logout
 				${adminPath}/** = user
-				/act/rest/service/editor/** = perms[act:model:edit]
+				/act/rest/service/editor/** = perms[act:model:edit]		<!-- 表示需要对应角色的资源才能访问 -->
 				/act/rest/service/model/** = perms[act:model:edit]
 				/act/rest/service/** = user
 				/ReportServer/** = user
@@ -52,7 +52,7 @@
 	
 	<!-- 定义Shiro安全管理配置 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="systemAuthorizingRealm" />
+		<property name="realm" ref="systemAuthorizingRealm" /><!-- 自定义权限验证 -->
 		<property name="sessionManager" ref="sessionManager" />
 		<property name="cacheManager" ref="shiroCacheManager" />
 	</bean>

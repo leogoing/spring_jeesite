@@ -36,7 +36,7 @@ public class SessionCacheManager implements CacheManager {
 	}
 
 	/**
-	 * SESSION缓存管理类
+	 * SESSION缓存管理类,将数据存放到session或request中
 	 */
 	public class SessionCache<K, V> implements Cache<K, V> {
 
@@ -64,6 +64,9 @@ public class SessionCacheManager implements CacheManager {
 			return session;
 		}
 		
+		/**
+		 * 先从request中获取数据不存在则从session获取并设置到request中
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public V get(K key) throws CacheException {

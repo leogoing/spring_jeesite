@@ -57,7 +57,7 @@ import org.springframework.web.util.UrlPathHelper;
 public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		implements HandlerMapping, Ordered {
 
-	private int order = Integer.MAX_VALUE;  // default: same as non-Ordered
+	private int order = Integer.MAX_VALUE;  // default: same as non-Ordered  相当于没有排序
 
 	private Object defaultHandler;
 

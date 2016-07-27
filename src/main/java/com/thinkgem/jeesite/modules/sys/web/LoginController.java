@@ -198,16 +198,16 @@ public class LoginController extends BaseController{
 	}
 	
 	/**
-	 * 是否是验证码登录
+	 * 是否是验证码登录(返回登陆失败次数是否大于等于3次)
 	 * @param useruame 用户名
-	 * @param isFail 计数加1
-	 * @param clean 计数清零
+	 * @param isFail 计数加1(登陆失败次数)
+	 * @param clean 计数清零(登陆失败次数)
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static boolean isValidateCodeLogin(String useruame, boolean isFail, boolean clean){
 		Map<String, Integer> loginFailMap = (Map<String, Integer>)CacheUtils.get("loginFailMap");
-		if (loginFailMap==null){
+		if (loginFailMap==null){//登陆失败缓存用来存放失败次数
 			loginFailMap = Maps.newHashMap();
 			CacheUtils.put("loginFailMap", loginFailMap);
 		}

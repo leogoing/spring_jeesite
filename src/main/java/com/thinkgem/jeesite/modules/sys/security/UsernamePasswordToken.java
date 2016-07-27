@@ -12,6 +12,9 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 验证码
+	 */
 	private String captcha;
 	private boolean mobileLogin;
 	
@@ -26,6 +29,10 @@ public class UsernamePasswordToken extends org.apache.shiro.authc.UsernamePasswo
 		this.mobileLogin = mobileLogin;
 	}
 
+	/**
+	 * 获取验证码
+	 * @return
+	 */
 	public String getCaptcha() {
 		return captcha;
 	}

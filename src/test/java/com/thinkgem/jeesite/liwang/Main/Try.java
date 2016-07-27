@@ -3,12 +3,16 @@ package com.thinkgem.jeesite.liwang.Main;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.FrameworkServlet;
+import javax.inject.Named;
 
-class Try implements Serializable{
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Named
+class Try extends c implements Serializable{
 	
 	/**
 	 * 
@@ -31,20 +35,22 @@ class Try implements Serializable{
 		System.out.println(888);
 		for(String a:d)
 			System.out.println(a);*/
-		System.out.println( );
+		new c().b();
+		
+		String a="uu:ads:rt";
+		System.out.println(a.matches("(\\S+:|)ads(:\\S+|)"));
 		
 	}
 	
-	  String subTime(String firstTime,String lastTime){
-		return subTime(firstTime,lastTime,"hhmm");
+	public void a(){
+		System.out.println(123);
 	}
-	protected  String subTime(String firstTime,String lastTime,String reg){
-		SimpleDateFormat sdf=new SimpleDateFormat(reg);
-		try {
-			long dif=sdf.parse(lastTime).getTime()-sdf.parse(firstTime).getTime();
-			return dif/1000/60/60+"个小时"+(dif/1000/60-(dif/1000/60/60)*60)+"分钟";
-		} catch (ParseException e) {
-			return "";
-		}
+}
+class c {
+	public void b(){
+		a();
+	}
+	public  void a() {
+		System.out.println(456);
 	}
 }

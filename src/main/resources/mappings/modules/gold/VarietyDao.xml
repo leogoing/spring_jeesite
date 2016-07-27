@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.VarietyDao">
+
+	
+	<sql id="varietyClumns">
+		v.id,
+		v.currency,
+		v.currency_name CurrencyName,
+		v.variety,
+		v.variety_name VarietyName,
+		v.storage,
+		v.unit,
+		v.status,
+		v.type,
+		v.group_str GroupStr,
+		v.sys_time SysTime 
+	</sql>
+	
+	<sql id="setClumns">
+		<if test="status != null">
+			v.status=#{status},
+		</if>
+		<if test="type != null">
+			v.type=#{type},
+		</if>
+		<if test="currency != null and currency !=''">
+			v.currency=#{currency},
+		</if>
+		<if test="variety != null">
+			v.variety=#{variety},
+		</if>
+		<if test="varietyName != null and varietyName !=''">
+			v.variety_name=#{varietyName},
+		</if>
+		<if test="storage != null">
+			v.storage=#{storage},
+		</if>
+		<if test="unit != null and unit !=''">
+			v.unit=#{unit},
+		</if>
+		<if test="groupStr != null and groupStr !=''">
+			v.group_str=#{groupStr},
+		</if>
+		<if test="currencyName != null and currencyName !=''">
+			v.currency_name=#{currencyName},
+		</if> 
+			v.sys_time=systimestamp
+	</sql>
+	<sql id="judgeClumns">
+		<if test="status != null">
+			and v.status=#{status}
+		</if>
+		<if test="type != null">
+			and v.type=#{type}
+		</if>
+		<if test="currency != null and currency !=''">
+			and v.currency=#{currency}
+		</if>
+		<if test="variety != null">
+			and v.variety=#{variety}
+		</if>
+		<if test="varietyName != null and varietyName !=''">
+			and v.variety_name=#{varietyName}
+		</if>
+		<if test="storage != null">
+			and v.storage=#{storage}
+		</if>
+		<if test="unit != null and unit !=''">
+			and v.unit=#{unit}
+		</if>
+		<if test="groupStr != null and groupStr !=''">
+			and permission_compare(#{groupStr},v.group_str,#{operat},v.id)=0 <!-- 调用函数处理 -->
+		</if>
+		<if test="currencyName != null and currencyName !=''">
+			and v.currency_name=#{currencyName}
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and v.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeClumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Variety">
+		select 
+		<include refid="varietyClumns"/> 
+		from GOLD_VARIETY v 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_VARIETY v set
+		<if test="id != null">
+			v.id=#{id},
+		</if>
+		<include refid="setClumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		insert into GOLD_VARIETY v 
+				(
+				id,
+				<if test="currency != null and currency !=''">currency,</if>
+				currency_name,
+				<if test="variety != null ">variety,</if>
+				<if test="storage != null">storage,</if>
+				<if test="unit != null">unit,</if>
+				<if test="status != null">status,</if> 
+				<if test="type != null">type,</if> 
+				<if test="groupId != null and groupId !=''">group_str,</if>
+				<if test="sysTime != null">sys_time,</if>
+				variety_name
+				)
+			values
+				(<if test="id != null">#{id},</if><if test="id == null">variety_primary_seq.nextval,</if>
+				<if test="currency != null and currency !=''">#{currency},</if>
+				#{currencyName},
+				<if test="variety != null ">#{variety},</if>
+				<if test="storage != null">#{storage},</if>
+				<if test="unit != null">#{unit},</if>
+				<if test="status != null">#{status},</if> 
+				<if test="type != null">#{type},</if> 
+				<if test="groupId != null and groupId !=''">#{groupId},</if>
+				<if test="sysTime != null">#{sysTime},</if>
+				#{varietyName}
+				)
+	</insert>
+
+</mapper>
+

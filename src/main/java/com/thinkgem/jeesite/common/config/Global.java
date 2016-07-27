@@ -29,7 +29,7 @@ public class Global {
 	/**
 	 * 保存全局属性值
 	 */
-	private static Map<String, String> map = Maps.newHashMap();
+	private static Map<String, String> map = Maps.newHashMap();//简化HashMap的创建
 	
 	/**
 	 * 属性文件加载对象

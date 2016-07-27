@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
+import org.liwang.entity.Group;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
@@ -36,6 +37,8 @@ public class Role extends DataEntity<Role> {
 //	private List<User> userList = Lists.newArrayList(); // 拥有用户列表
 	private List<Menu> menuList = Lists.newArrayList(); // 拥有菜单列表
 	private List<Office> officeList = Lists.newArrayList(); // 按明细设置数据范围
+	
+	private List<Group> groupList =Lists.newArrayList();//设置组
 
 	// 数据范围（1：所有数据；2：所在公司及以下数据；3：所在公司数据；4：所在部门及以下数据；5：所在部门数据；8：仅本人数据；9：按明细设置）
 	public static final String DATA_SCOPE_ALL = "1";
@@ -227,6 +230,43 @@ public class Role extends DataEntity<Role> {
 		if (officeIds != null){
 			String[] ids = StringUtils.split(officeIds, ",");
 			setOfficeIdList(Lists.newArrayList(ids));
+		}
+	}
+	
+	public List<Group> getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(List<Group> groupList) {
+		this.groupList = groupList;
+	}
+
+	public List<String> getGroupIdList() {
+		List<String> groupIdList = Lists.newArrayList();
+		for (Group group : groupList) {
+			groupIdList.add(String.valueOf(group.getId()));
+		}
+		return groupIdList;
+	}
+
+	public void setGroupIdList(List<String> groupIdList) {
+		groupList = Lists.newArrayList();
+		for (String groupId : groupIdList) {
+			Group group = new Group();
+			group.setId(Integer.parseInt(groupId));
+			groupList.add(group);
+		}
+	}
+
+	public String getGroupIds() {
+		return StringUtils.join(getGroupIdList(), ",");
+	}
+	
+	public void setGroupIds(String groupIds) {
+		groupList = Lists.newArrayList();
+		if (groupIds != null){
+			String[] ids = StringUtils.split(groupIds, ",");
+			setGroupIdList(Lists.newArrayList(ids));
 		}
 	}
 	

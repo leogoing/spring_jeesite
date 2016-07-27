@@ -160,16 +160,17 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		Object target = null;
 
 		try {
-			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
+			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {//如果目标对象没有重写equals方法
 				// The target does not implement the equals(Object) method itself.
 				return equals(args[0]);
 			}
-			if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
+			if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {//如果目标对象没有重写hashCode方法
 				// The target does not implement the hashCode() method itself.
 				return hashCode();
 			}
 			if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&
 					method.getDeclaringClass().isAssignableFrom(Advised.class)) {
+				//根据代理对象的配置来调用服务
 				// Service invocations on ProxyConfig with the proxy config...
 				return AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
 			}
@@ -184,23 +185,24 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 			// May be null. Get as late as possible to minimize the time we "own" the target,
 			// in case it comes from a pool.
-			target = targetSource.getTarget();
+			target = targetSource.getTarget();//获取目标对象
 			if (target != null) {
 				targetClass = target.getClass();
 			}
 
+			//获取定义好的拦截器链
 			// Get the interception chain for this method.
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
 			// reflective invocation of the target, and avoid creating a MethodInvocation.
-			if (chain.isEmpty()) {
+			if (chain.isEmpty()) {//如果没有拦截器链则直接调用目标的对应方法
 				// We can skip creating a MethodInvocation: just invoke the target directly
 				// Note that the final invoker must be an InvokerInterceptor so we know it does
 				// nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, args);
 			}
-			else {
+			else {//先调拦截器再调目标对应的相应方法
 				// We need to create a method invocation...
 				invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
 				// Proceed to the joinpoint through the interceptor chain.

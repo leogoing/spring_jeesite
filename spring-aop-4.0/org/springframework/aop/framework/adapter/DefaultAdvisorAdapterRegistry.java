@@ -40,10 +40,14 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
 @SuppressWarnings("serial")
 public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Serializable {
 
+	/**
+	 * 与Spring中AOP的advice实现相对应的
+	 */
 	private final List<AdvisorAdapter> adapters = new ArrayList<AdvisorAdapter>(3);
 
 
 	/**
+	 * 把已有的advice实现的Adapter加入<p>
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
 	public DefaultAdvisorAdapterRegistry() {
@@ -75,13 +79,17 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		throw new UnknownAdviceTypeException(advice);
 	}
 
+	/**
+	 * 在DefaultAdvisorChainFactory中启动
+	 */
 	@Override
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>(3);
-		Advice advice = advisor.getAdvice();
-		if (advice instanceof MethodInterceptor) {
+		Advice advice = advisor.getAdvice();//从Advisor通知器配置中取得advice通知
+		if (advice instanceof MethodInterceptor) {//如果通知是MethodInterceptor类型则直接加入interceptors的List中不需要适配
 			interceptors.add((MethodInterceptor) advice);
 		}
+		//对通知进行适配使用已经配置好的Adapter然后取出封装好的AOP编织功能的拦截器
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));

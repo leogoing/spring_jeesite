@@ -22,6 +22,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.liwang.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.sys.web.LoginController;
 
 /**
- * 系统安全认证实现类
+ * 系统安全认证实现类(对用户执行认证（登录）和授权（访问控制）验证)
  * @author ThinkGem
  * @version 2014-7-5
  */
@@ -51,23 +52,26 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private SystemService systemService;
-
+	
+	private GroupService groupService;
+	
 	/**
-	 * 认证回调函数, 登录时调用
+	 * 认证回调函数, 登录时调用(获取身份验证相关信息)
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		
-		int activeSessionSize = getSystemService().getSessionDao().getActiveSessions(false).size();
 		if (logger.isDebugEnabled()){
+			//获取活跃的会话数量
+			int activeSessionSize = getSystemService().getSessionDao().getActiveSessions(false).size();
 			logger.debug("login submit, active session size: {}, username: {}", activeSessionSize, token.getUsername());
 		}
 		
 		// 校验登录验证码
 		if (LoginController.isValidateCodeLogin(token.getUsername(), false, false)){
 			Session session = UserUtils.getSession();
-			String code = (String)session.getAttribute(ValidateCodeServlet.VALIDATE_CODE);
+			String code = (String)session.getAttribute(ValidateCodeServlet.VALIDATE_CODE);//获取session中验证码
 			if (token.getCaptcha() == null || !token.getCaptcha().toUpperCase().equals(code)){
 				throw new AuthenticationException("msg:验证码错误, 请重试.");
 			}
@@ -77,7 +81,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		User user = getSystemService().getUserByLoginName(token.getUsername());
 		if (user != null) {
 			if (Global.NO.equals(user.getLoginFlag())){
-				throw new AuthenticationException("msg:该已帐号禁止登录.");
+				throw new AuthenticationException("msg:该帐号已禁止登录.");
 			}
 			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
 			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()), 
@@ -92,19 +96,19 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		Principal principal = (Principal) getAvailablePrincipal(principals);
+		Principal principal = (Principal) getAvailablePrincipal(principals);//获取主凭证
 		// 获取当前已登录的用户
-		if (!Global.TRUE.equals(Global.getConfig("user.multiAccountLogin"))){
+		if (!Global.TRUE.equals(Global.getConfig("user.multiAccountLogin"))){//如果不是多点登陆
 			Collection<Session> sessions = getSystemService().getSessionDao().getActiveSessions(true, principal, UserUtils.getSession());
 			if (sessions.size() > 0){
-				// 如果是登录进来的，则踢出已在线用户
-				if (UserUtils.getSubject().isAuthenticated()){
+				// 如果是登录进来的，则踢出之前登陆的已在线用户
+				if (UserUtils.getSubject().isAuthenticated()){//如果通过验证
 					for (Session session : sessions){
 						getSystemService().getSessionDao().delete(session);
 					}
 				}
 				// 记住我进来的，并且当前用户已登录，则退出当前用户提示信息。
-				else{
+				else{//如果不存在session了则验证会失败那么做登出操作(session被别人登陆时删了)
 					UserUtils.getSubject().logout();
 					throw new AuthenticationException("msg:账号已在其它地方登录，请重新登录。");
 				}
@@ -124,10 +128,14 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			}
 			// 添加用户权限
 			info.addStringPermission("user");
+			
+			List<Role> role_list=user.getRoleList();
 			// 添加用户角色信息
-			for (Role role : user.getRoleList()){
+			for (Role role : role_list){
 				info.addRole(role.getEnname());
 			}
+			getGroupService().addPermission(role_list, info);
+			
 			// 更新登录IP和时间
 			getSystemService().updateUserLoginInfo(user);
 			// 记录登录日志
@@ -218,6 +226,16 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			systemService = SpringContextHolder.getBean(SystemService.class);
 		}
 		return systemService;
+	}
+	
+	/**
+	 * 获取系统业务对象
+	 */
+	public GroupService getGroupService() {
+		if (groupService == null){
+			groupService = SpringContextHolder.getBean(GroupService.class);
+		}
+		return groupService;
 	}
 	
 	/**

@@ -17,7 +17,7 @@
 package org.springframework.core.env;
 
 /**
- * 表示各种环境配置<p>
+ * 对剖面的访问,用于环境的切换<p>
  * Interface representing the environment in which the current application is running.
  * Models two key aspects of the application environment: <em>profiles</em> and
  * <em>properties</em>. Methods related to property access are exposed via the
@@ -98,7 +98,7 @@ public interface Environment extends PropertyResolver {
 	String[] getDefaultProfiles();
 
 	/**
-	 * 是否接受某些剖面<p>
+	 * 是否支持给定的剖面(判断给定的剖面是否有激活的或默认的剖面)<p>
 	 * Return whether one or more of the given profiles is active or, in the case of no
 	 * explicit active profiles, whether one or more of the given profiles is included in
 	 * the set of default profiles. If a profile begins with '!' the logic is inverted,

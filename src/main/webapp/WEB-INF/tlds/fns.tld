@@ -235,6 +235,22 @@
     <example>${fns:pastDays(date)}</example>  
   </function>
   
+  <function>
+  	<description>根据操作符筛选权限</description>
+  	<name>screenByOperat</name>
+  	<function-class>org.liwang.util.ShiroUtil</function-class>
+  	<function-signature>java.lang.String screenByOperat(java.lang.String,java.lang.String)</function-signature>
+  	<example>${fns:screenByOperat(perms,operat)}</example>
+  </function>
+  
+  <function>
+  	<description>判断是否有该数据权限</description>
+  	<name>hasAnyPermssion</name>
+  	<function-class>org.liwang.util.ShiroUtil</function-class>
+  	<function-signature>boolean hasAnyPermssion(java.lang.String,java.lang.String,java.lang.String)</function-signature>
+  	<example>${fns:hasAnyPermssion(perms,operat,id)}</example>
+  </function>
+  
   <!-- JsonMapper -->
   <function>
     <description>对象转换JSON字符串</description>

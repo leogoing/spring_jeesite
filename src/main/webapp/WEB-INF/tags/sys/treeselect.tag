@@ -22,6 +22,7 @@
 <%@ attribute name="hideBtn" type="java.lang.Boolean" required="false" description="是否显示按钮"%>
 <%@ attribute name="disabled" type="java.lang.String" required="false" description="是否限制选择，如果限制，设置为disabled"%>
 <%@ attribute name="dataMsgRequired" type="java.lang.String" required="false" description=""%>
+<%@ attribute name="isGroup" type="java.lang.Boolean" required="false" description="判断是否为分组类型的数据"%>
 <div class="input-append">
 	<input id="${id}Id" name="${name}" class="${cssClass}" type="hidden" value="${value}"/>
 	<input id="${id}Name" name="${labelName}" ${allowInput?'':'readonly="readonly"'} type="text" value="${labelValue}" data-msg-required="${dataMsgRequired}"
@@ -34,10 +35,11 @@
 			return true;
 		}
 		// 正常打开	
-		top.$.jBox.open("iframe:${ctx}/tag/treeselect?url="+encodeURIComponent("${url}")+"&module=${module}&checked=${checked}&extId=${extId}&isAll=${isAll}", "选择${title}", 300, 420, {
+		top.$.jBox.open("iframe:${ctx}/tag/treeselect?url="+encodeURIComponent("${url}")+"&module=${module}&checked=${checked}&extId=${extId}&isAll=${isAll}&isGroup=${isGroup}", "选择${title}", 300, 420, {
 			ajaxData:{selectIds: $("#${id}Id").val()},buttons:{"确定":"ok", ${allowClear?"\"清除\":\"clear\", ":""}"关闭":true}, submit:function(v, h, f){
 				if (v=="ok"){
 					var tree = h.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+					
 					var ids = [], names = [], nodes = [];
 					if ("${checked}" == "true"){
 						nodes = tree.getCheckedNodes(true);
@@ -63,9 +65,17 @@
 							top.$.jBox.tip("不能选择当前栏目以外的栏目模型，请重新选择。");
 							return false;
 						}//</c:if>
-						ids.push(nodes[i].id);
-						names.push(nodes[i].name);//<c:if test="${!checked}">
-						break; // 如果为非复选框选择，则返回第一个选择  </c:if>
+						
+						if("${isGroup}"=="true"){//将选中的节点加工拼接所有的父级
+							var keyVal={group:'',name:''};
+							appendParents(nodes[i],keyVal);
+							ids.push(keyVal.group);
+							names.push(keyVal.name);
+						}else{
+							ids.push(nodes[i].id);
+							names.push(nodes[i].name);//
+						}
+						break; // 如果为非复选框选择，则返回第一个选择  
 					}
 					$("#${id}Id").val(ids.join(",").replace(/u_/ig,""));
 					$("#${id}Name").val(names.join(","));
@@ -82,4 +92,14 @@
 			}
 		});
 	});
+	
+	function appendParents(node,obj){//只用于分组类型
+		var parent=node.getParentNode();
+		if(parent && parent.id!=0){
+			obj.group=node.group+(obj.group?':'+obj.group:'');
+			obj.name=node.name+(obj.name?':'+obj.name:'');
+			appendParents(parent,obj);
+		}
+	}
+	
 </script>

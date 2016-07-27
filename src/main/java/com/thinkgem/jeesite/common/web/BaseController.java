@@ -113,7 +113,7 @@ public abstract class BaseController {
 	}
 	
 	/**
-	 * 添加Model消息
+	 * 添加Model消息,把mesages数组用br标签分隔存放进model中(key为'message')
 	 * @param message
 	 */
 	protected void addMessage(Model model, String... messages) {
@@ -125,7 +125,7 @@ public abstract class BaseController {
 	}
 	
 	/**
-	 * 添加Flash消息
+	 * 添加Flash消息,添加消息到flash保存用于重定向获取
 	 * @param message
 	 */
 	protected void addMessage(RedirectAttributes redirectAttributes, String... messages) {

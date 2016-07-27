@@ -70,7 +70,7 @@ public class UserUtils {
 	}
 	
 	/**
-	 * 根据登录名获取用户
+	 * 根据登录名获取用户(从缓存中获取不存在则查找数据库并设置角色)
 	 * @param loginName
 	 * @return 取不到返回null
 	 */
@@ -246,9 +246,13 @@ public class UserUtils {
 		return null;
 	}
 	
+	/**
+	 * 通过当前subject获取当前用户session
+	 * @return
+	 */
 	public static Session getSession(){
 		try{
-			Subject subject = SecurityUtils.getSubject();
+			Subject subject = SecurityUtils.getSubject();//获取当前subject
 			Session session = subject.getSession(false);
 			if (session == null){
 				session = subject.getSession();

@@ -28,6 +28,14 @@
 						ids2.push(nodes2[i].id);
 					}
 					$("#officeIds").val(ids2);
+					var ids3 = [], nodes3 = tree3.getCheckedNodes(true);
+					for(var i=0; i<nodes3.length; i++) {
+						if(nodes3[i].isParent && nodes3[i].getCheckStatus().half){//半选状态的checkbox不会放进去
+							continue;
+						}
+						ids3.push(nodes3[i].id);
+					}
+					$("#groupIds").val(ids3);
 					loading('正在提交，请稍等...');
 					form.submit();
 				},
@@ -86,6 +94,24 @@
 			$("#dataScope").change(function(){
 				refreshOfficeTree();
 			});
+			
+			// 用户-分组
+			var zNodes3=[
+					<c:forEach items="${groupList}" var="group">{id:"${group.id}", pId:"${not empty group.parentId?group.parentId:0}", name:"${not empty group.parentId?group.groupName:'分组列表'}"},
+		            </c:forEach>];
+			// 初始化树结构
+			var tree3 = $.fn.zTree.init($("#groupTree"), setting, zNodes3);
+			// 不选择父节点
+			tree3.setting.check.chkboxType = { "Y" : "s", "N" : "ps" };
+			// 默认选择节点
+			var ids3 = "${role.groupIds}".split(",");
+			for(var i=0; i<ids3.length; i++) {
+				var node = tree3.getNodeByParam("id", ids3[i]);
+				try{tree3.checkNode(node, true, false);}catch(e){}
+			}
+			// 默认展开全部节点
+			tree3.expandAll(true);
+			
 		});
 		function refreshOfficeTree(){
 			if($("#dataScope").val()==9){
@@ -176,6 +202,8 @@
 				<form:hidden path="menuIds"/>
 				<div id="officeTree" class="ztree" style="margin-left:100px;margin-top:3px;float:left;"></div>
 				<form:hidden path="officeIds"/>
+				<div id="groupTree" class="ztree" style="margin-left:100px;margin-top:3px;float:left;"></div>
+				<form:hidden path="groupIds"/><!-- 加设置组 -->
 			</div>
 		</div>
 		<div class="control-group">

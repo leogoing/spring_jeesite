@@ -280,6 +280,10 @@ public class User extends DataEntity<User> {
 		return roleList;
 	}
 	
+	/**
+	 * 设置拥有的角色
+	 * @param roleList
+	 */
 	public void setRoleList(List<Role> roleList) {
 		this.roleList = roleList;
 	}

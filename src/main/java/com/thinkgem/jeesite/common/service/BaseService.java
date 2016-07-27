@@ -16,7 +16,7 @@ import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
- * Service基类
+ * Service基类,主要包含数据权限范围过滤的方法
  * @author ThinkGem
  * @version 2014-05-16
  */

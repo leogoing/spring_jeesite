@@ -52,6 +52,10 @@
 				// 初始化树结构
 				tree = $.fn.zTree.init($("#tree"), setting, zNodes);
 				
+				if("${isGroup}"=="true"){//设置勾选或取消勾选都不影响父级和子级
+					tree.setting.check.chkboxType={"Y":"","N":""};
+				}
+				
 				// 默认展开一级节点
 				var nodes = tree.getNodesByParam("level", 0);
 				for(var i=0; i<nodes.length; i++) {

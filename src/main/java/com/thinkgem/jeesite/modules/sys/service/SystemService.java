@@ -11,6 +11,7 @@ import java.util.List;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.shiro.session.Session;
+import org.liwang.dao.manager.GroupDaoManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,9 @@ public class SystemService extends BaseService implements InitializingBean {
 	private SessionDAO sessionDao;
 	@Autowired
 	private SystemAuthorizingRealm systemRealm;
+	
+	@Autowired
+	private GroupDaoManager groupDaoManager;
 	
 	public SessionDAO getSessionDao() {
 		return sessionDao;
@@ -281,6 +285,10 @@ public class SystemService extends BaseService implements InitializingBean {
 		if (role.getOfficeList().size() > 0){
 			roleDao.insertRoleOffice(role);
 		}
+		
+		//更新角色与分组的关联
+		groupDaoManager.updateGroupRole(role);
+		
 		// 同步到Activiti
 		saveActivitiGroup(role);
 		// 清除用户角色缓存

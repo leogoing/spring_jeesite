@@ -64,7 +64,7 @@ public class LogUtils {
 	}
 
 	/**
-	 * 保存日志线程
+	 * 保存日志线程(插入到数据库)
 	 */
 	public static class SaveLogThread extends Thread{
 		

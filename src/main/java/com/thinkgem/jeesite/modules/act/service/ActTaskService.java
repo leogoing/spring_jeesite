@@ -69,6 +69,9 @@ public class ActTaskService extends BaseService {
 	@Autowired
 	private ActDao actDao;
 	
+	/**
+	 * 与Spring整合的流程引擎
+	 */
 	@Autowired
 	private ProcessEngineFactoryBean processEngine;
 	@Autowired

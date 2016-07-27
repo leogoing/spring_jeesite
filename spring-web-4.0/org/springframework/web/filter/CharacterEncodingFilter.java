@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 指定字符集过滤器
+ * 指定字符集过滤器<p>
  * Servlet 2.3/2.4 Filter that allows one to specify a character encoding for
  * requests. This is useful because current browsers typically do not set a
  * character encoding even if specified in the HTML page or form.

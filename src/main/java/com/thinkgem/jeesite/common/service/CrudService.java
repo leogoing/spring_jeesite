@@ -13,7 +13,7 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 import com.thinkgem.jeesite.common.persistence.Page;
 
 /**
- * Service基类
+ * Service基类，包含查询、分页、增加、删除这些方法
  * @author ThinkGem
  * @version 2014-05-16
  */

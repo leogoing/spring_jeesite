@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.GroupDao">
+	
+	<sql id="columns">
+		g.id,
+		g.group_id groupId,
+		g.group_name groupName,
+		g.parent_id parentId,
+		g.status,
+		g.sys_time sysTime 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			g.status=#{status},
+		</if>
+		<if test="groupName != null and groupName !=''">
+			g.group_name=#{groupName},
+		</if>
+		<if test="groupId != null">
+			g.group_id=#{groupId},
+		</if>
+		<if test="parentId != null">
+			g.parent_id=#{parentId},
+		</if>
+			g.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and g.status=#{status}
+		</if>
+		<if test="groupName != null and groupName !=''">
+			and g.group_name=#{groupName}
+		</if>
+		<if test="groupId != null">
+			and g.group_id=#{groupId}
+		</if>
+		<if test="parentId != null">
+			and g.parent_id=#{parentId}
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and g.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Group">
+		select 
+		<include refid="columns"/> 
+		from GOLD_GROUP g 
+		<include refid="condition"/>
+	</select>
+	
+	<select id="get" resultType="org.liwang.entity.Group">
+		select 
+		<include refid="columns"/>, g2.group_name parentName 
+		from GOLD_GROUP g left join GOLD_GROUP g2 on g.parent_id=g2.id 
+		where g.id=#{id} 
+	</select>
+	
+	<select id="getGroupInfoByRoles" resultType="org.liwang.entity.Group">
+		select 
+			<include refid="columns"/>
+		from GOLD_GROUP g where g.id in (select r.group_id from GOLD_GROUP_ROLE r where r.role_id in 
+		<foreach collection="roles" item="role" separator="," open="(" close=")">
+			#{role.id}
+		</foreach>
+		 group by r.group_id )
+	</select>
+	
+	<select id="getGroupByRole" resultType="org.liwang.entity.Group">
+		select g.group_id id from GOLD_GROUP_ROLE g where g.role_id=#{id}
+	</select>
+	
+	<select id="getGroupIdsByRole" resultType="int">
+		select g.group_id from GOLD_GROUP_ROLE g where g.role_id=#{id} group by g.group_id 
+	</select>
+	
+	<select id="getGroupIdsByRoles" resultType="int">
+		select g.group_id from GOLD_GROUP_ROLE g where g.role_id in 
+		<foreach collection="roles" item="role" separator="," open="(" close=")">
+			#{role.id}
+		</foreach>
+		 group by g.group_id 
+	</select>
+	
+	<select id="getPermByGroups" resultType="org.liwang.entity.Group">
+		 select 
+		 <if test="group == null" >connect_by_root g.id id,</if>
+		 <include refid="columns"/> from Gold_Group g start with g.id in 
+		 <foreach collection="coll" item="group_id" separator="," open="(" close=")">
+		 	#{group_id}
+		 </foreach>
+		 <if test="group != null" ><!-- 这里传参都要直接传不能预加载,可能是层次查询的限制 -->
+		 	<if test="group.status != null">
+				and g.status=${group.status}
+			</if>
+			<if test="group.groupName != null and group.groupName !=''">
+				and g.group_name='${group.groupName}'
+			</if>
+			<if test="group.groupId != null">
+				and g.group_id='${group.groupId}'
+			</if>
+			<if test="group.parentId != null">
+				and g.parent_id='${group.parentId}'
+			</if>
+		 </if>
+		  connect by prior g.parent_id=g.id order by connect_by_root g.id,level desc
+	</select>
+	
+	<select id="getPermByGroup" resultType="String">
+		select g.group_id from Gold_Group g  start with g.id=1 connect by g.id=#{id} prior g.id=g.parent_id
+	</select>
+	
+	<delete id="deleteGroupRole">
+		DELETE FROM GOLD_GROUP_ROLE WHERE role_id = #{id}
+	</delete>
+	
+	<insert id="insertGroupRole">
+		INSERT INTO GOLD_GROUP_ROLE(role_id, group_id)
+		<foreach collection="groupList" item="group" separator=" union all ">
+			SELECT #{id}, #{group.id}	FROM dual
+		</foreach>
+	</insert>
+	
+	
+</mapper>

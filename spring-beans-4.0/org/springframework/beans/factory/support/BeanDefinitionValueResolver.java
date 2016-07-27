@@ -310,12 +310,13 @@ class BeanDefinitionValueResolver {
 
 	/**
 	 * Resolve a reference to another bean in the factory.
+	 * @param ref 在载入BeanDefinition时根据配置生成的
 	 */
 	private Object resolveReference(Object argName, RuntimeBeanReference ref) {
 		try {
 			String refName = ref.getBeanName();
 			refName = String.valueOf(evaluate(refName));
-			if (ref.isToParent()) {
+			if (ref.isToParent()) {//如果ref是在双亲Ioc容器中,那就到父容器中去取
 				if (this.beanFactory.getParentBeanFactory() == null) {
 					throw new BeanCreationException(
 							this.beanDefinition.getResourceDescription(), this.beanName,
@@ -324,7 +325,7 @@ class BeanDefinitionValueResolver {
 				}
 				return this.beanFactory.getParentBeanFactory().getBean(refName);
 			}
-			else {
+			else {//从当前容器中去取Bean
 				Object bean = this.beanFactory.getBean(refName);
 				this.beanFactory.registerDependentBean(refName, this.beanName);
 				return bean;

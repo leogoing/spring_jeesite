@@ -23,7 +23,9 @@ import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
- * 应用上下文接口<p>
+ * 应用上下文接口<br>
+ * 通过扩展MessageResource接口支持不同语言的信息源,间接继承ResourceLoader可以访问资源,继承ApplicationEventPublisher支持应用事件
+ * 继承EnvironmentCapable获取环境属性以及间接继承BeanFactory<p>
  * Central interface to provide configuration for an application.
  * This is read-only while the application is running, but may be
  * reloaded if the implementation supports this.

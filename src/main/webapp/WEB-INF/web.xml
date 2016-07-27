@@ -64,7 +64,7 @@
 		<url-pattern>*.html</url-pattern>
 	</filter-mapping>-->
 
-	<!-- SiteMesh -->
+	<!-- SiteMesh 网页布局和修饰的框架 -->
 	<filter>
 		<filter-name>sitemeshFilter</filter-name>
 		<filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
@@ -121,7 +121,7 @@
 		<url-pattern>/druid/*</url-pattern>
 	</servlet-mapping>
 	
-	<!-- CKFinder -->
+	<!-- CKFinder Ajax文件管理器 -->
 	<servlet>
 		<servlet-name>CKFinderConnectorServlet</servlet-name>
 		<servlet-class>com.thinkgem.jeesite.common.web.CKFinderConnectorServlet</servlet-class>

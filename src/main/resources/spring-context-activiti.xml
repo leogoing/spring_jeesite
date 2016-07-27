@@ -10,9 +10,11 @@
     <!-- 加载配置属性文件 -->
 	<context:property-placeholder ignore-unresolvable="true" location="classpath:jeesite.properties" />
 	
-	<!-- Activiti begin -->
+	<!-- Activiti处理引擎的配置，交由Spring管理  Activiti begin -->
 	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<!-- 配置数据源,和系统使用同一个数据源 -->
 		<property name="dataSource" ref="dataSource" />
+		<!-- 统一的事务管理 -->
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="deploymentResources" value="classpath*:/act/deployments/**/*.bar"/>
 		<property name="databaseSchemaUpdate" value="true" />
@@ -23,7 +25,7 @@
         <!-- UUID作为主键生成策略 -->
         <property name="idGenerator" ref="idGen" />
         
-        <!-- 生成流程图的字体 -->
+        <!-- 生成流程图的字体 避免中文乱码-->
         <property name="activityFontName" value="${activiti.diagram.activityFontName}"/>
         <property name="labelFontName" value="${activiti.diagram.labelFontName}"/>
         
@@ -37,16 +39,23 @@
         
 	</bean>
 	
+	<!-- 与Spring整合的流程引擎 -->
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
-	
+	<!-- 提供了管理和控制发布包和流程定义的操作 -->
 	<bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+	<!-- 负责启动一个流程定义的新实例,用来获取和保存流程变量 -->
 	<bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+	<!-- 提供了启动表单和任务表单两个概念,启动表单会在流程实例启动之前展示给用户， 任务表单会在用户完成任务时展示 -->
 	<bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
+	<!-- 可以管理（创建，更新，删除，查询...）群组和用户 -->
 	<bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+	<!-- 查询分配给用户或组的任务,创建独立运行任务,手工设置任务的执行者或者这些用户通过何种方式与任务关联 ,认领并完成一个任务-->
 	<bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+	<!-- 提供了Activiti引擎手机的所有历史数据 -->
 	<bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+	<!-- 查询数据库的表和表的元数据,提供了查询和管理异步操作的功能 -->
 	<bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
 	<!-- Activiti end -->
 	

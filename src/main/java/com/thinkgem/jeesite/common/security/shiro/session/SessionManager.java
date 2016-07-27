@@ -37,22 +37,25 @@ public class SessionManager extends DefaultWebSessionManager {
 		super();
 	}
 	
+	/**
+	 * 请求中存在sid则返回sid否则返回
+	 */
 	@Override
 	protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
 		// 如果参数中包含“__sid”参数，则使用此sid会话。 例如：http://localhost/project?__sid=xxx&__cookie=true
-		String sid = request.getParameter("__sid");
+		String sid = request.getParameter("__sid");//sid：安全标识符，是标识用户、组和计算机帐户的唯一的号码
 		if (StringUtils.isNotBlank(sid)) {
 			// 是否将sid保存到cookie，浏览器模式下使用此参数。
-			if (WebUtils.isTrue(request, "__cookie")){
+			if (WebUtils.isTrue(request, "__cookie")){//'__cookie'的值是否为'true'或'1'或't'等类似true的值
 		        HttpServletRequest rq = (HttpServletRequest)request;
 		        HttpServletResponse rs = (HttpServletResponse)response;
 				Cookie template = getSessionIdCookie();
 		        Cookie cookie = new SimpleCookie(template);
-				cookie.setValue(sid); cookie.saveTo(rq, rs);
+				cookie.setValue(sid); cookie.saveTo(rq, rs);//保存到指定请求的cookie
 			}
 			// 设置当前session状态
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
-                    ShiroHttpServletRequest.URL_SESSION_ID_SOURCE); // session来源与url
+                    ShiroHttpServletRequest.URL_SESSION_ID_SOURCE); // session来源于url
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, sid);
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);
         	return sid;

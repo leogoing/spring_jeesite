@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.liwang.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +48,9 @@ public class RoleController extends BaseController {
 	@Autowired
 	private OfficeService officeService;
 	
+	@Autowired
+	private GroupService groupService;
+	
 	@ModelAttribute("role")
 	public Role get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -70,9 +74,12 @@ public class RoleController extends BaseController {
 		if (role.getOffice()==null){
 			role.setOffice(UserUtils.getUser().getOffice());
 		}
+		
+		role.setGroupList(groupService.getGroupByRole(role));
 		model.addAttribute("role", role);
 		model.addAttribute("menuList", systemService.findAllMenu());
 		model.addAttribute("officeList", officeService.findAll());
+		model.addAttribute("groupList", groupService.findAll());
 		return "modules/sys/roleForm";
 	}
 	

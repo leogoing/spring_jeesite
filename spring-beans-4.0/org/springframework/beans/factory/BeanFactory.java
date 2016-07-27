@@ -107,6 +107,7 @@ import org.springframework.beans.BeansException;
 public interface BeanFactory {
 
 	/**
+	 * 用来和普通Bean区分的FactoryBean的前缀<p>
 	 * Used to dereference a {@link FactoryBean} instance and distinguish it from
 	 * beans <i>created</i> by the FactoryBean. For example, if the bean named
 	 * {@code myJndiObject} is a FactoryBean, getting {@code &myJndiObject}

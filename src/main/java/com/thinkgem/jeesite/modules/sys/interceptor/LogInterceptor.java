@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
@@ -41,9 +43,19 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, 
 			ModelAndView modelAndView) throws Exception {
-		if (modelAndView != null){
-			logger.info("ViewName: " + modelAndView.getViewName());
+		StringBuilder sb = new StringBuilder();
+		sb.append("\r\n=================================================================\r\n");
+		sb.append("  URL: "+request.getRequestURL().toString());//Url请求路径
+		if(HandlerMethod.class.isAssignableFrom(handler.getClass())){
+			HandlerMethod controller=(HandlerMethod)handler;
+			sb.append("\r\n  Controller: "+controller.getBean().getClass().getName()+
+						"["+controller.getMethod().getName()+"(...)]");
 		}
+		
+		if(modelAndView != null)
+			sb.append("\r\n  ViewName: " + modelAndView.getViewName());//返回的视图
+		sb.append("\r\n=================================================================\r\n");
+		logger.info(sb.toString());
 	}
 
 	@Override
