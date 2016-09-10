@@ -78,7 +78,14 @@
 		function selectCheckNode(){
 			var ids = "${selectIds}".split(",");
 			for(var i=0; i<ids.length; i++) {
-				var node = tree.getNodeByParam("id", (type==3?"u_":"")+ids[i]);
+				var node;
+				if("${isGroup}"){
+					var perm=ids[i];
+					var permArr=perm.split(':');
+					node = tree.getNodeByParam("group", permArr[permArr.length-1]);
+				}else{
+					node = tree.getNodeByParam("id", (type==3?"u_":"")+ids[i]);
+				}
 				if("${checked}" == "true"){
 					try{tree.checkNode(node, true, true);}catch(e){}
 					tree.selectNode(node, false);

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.TemplateDao">
+
+	
+	<sql id="Columns">
+		t.id,
+		t.condition_pass "conditionPass.id",
+        t.subject_id "subject.id" ,
+        t.first_subject_variable "firstSubjectVariable.id",
+        t.second_subject_variable "secondSubjectVariable.id",
+        t.third_subject_variable "thirdSubjectVariable.id",
+        t.relative_subject_variable "relativeSubjectVariable.id",
+        t.money_variable "moneyVariable.id",
+        t.d_c_flag_variable "dcFlagVariable.id",
+        t.module,
+        t.name,
+        t.SYS_TIME sysTime,
+        t.GROUP_STR groupStr,
+        t.STATUS ,
+        s.name "subject.name",
+        c1.name "conditionPass.name",
+        c2.name "firstSubjectVariable.name",
+        c3.name "secondSubjectVariable.name",
+        c4.name "thirdSubjectVariable.name",
+        c5.name "relativeSubjectVariable.name",
+        c6.name "moneyVariable.name",
+        c7.name "dcFlagVariable.name" 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			t.status=#{status},
+		</if>
+		<if test="conditionPass != null and conditionPass.id!=null">
+			t.condition_pass=#{conditionPass.id},
+		</if>
+		<if test="subject != null and subject.id!=null">
+			t.subject_id=#{subject.id},
+		</if>
+		<if test="firstSubjectVariable != null and firstSubjectVariable.id != null">
+			t.first_subject_variable=#{firstSubjectVariable.id},
+		</if>
+		<if test="secondSubjectVariable != null and secondSubjectVariable.id != null">
+			t.second_subject_variable=#{secondSubjectVariable.id},
+		</if>
+		<if test="thirdSubjectVariable != null and thirdSubjectVariable.id != null">
+			t.third_subject_variable=#{thirdSubjectVariable.id},
+		</if>
+		<if test="relativeSubjectVariable != null and relativeSubjectVariable.id != null">
+			t.relative_subject_variable=#{relativeSubjectVariable.id},
+		</if>
+		<if test="moneyVariable !=null and moneyVariable.id!=null">
+			t.money_variable=#{moneyVariable.id},
+		</if>
+		<if test="dcFlagVariable !=null and dcFlagVariable.id!=null">
+			t.d_c_flag_variable=#{dcFlagVariable.id},
+		</if>
+		<if test="name!=null and name!=''">
+			t.name=#{name},
+		</if>
+		<if test="module !=null and module!=''">
+			t.module=#{module},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			t.group_str=#{groupStr},
+		</if>
+			t.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and t.status=#{status}
+		</if>
+		<if test="conditionPass != null and conditionPass.id!=null">
+			and t.condition_pass=#{conditionPass.id}
+		</if>
+		<if test="subject != null and subject.id!=null">
+			and t.subject_id=#{subject.id}
+		</if>
+		<if test="firstSubjectVariable != null and firstSubjectVariable.id != null">
+			and t.first_subject_variable=#{firstSubjectVariable.id}
+		</if>
+		<if test="secondSubjectVariable != null and secondSubjectVariable.id != null">
+			and t.second_subject_variable=#{secondSubjectVariable.id}
+		</if>
+		<if test="thirdSubjectVariable != null and thirdSubjectVariable.id != null">
+			and t.third_subject_variable=#{thirdSubjectVariable.id}
+		</if>
+		<if test="relativeSubjectVariable != null and relativeSubjectVariable.id != null">
+			and t.relative_subject_variable=#{relativeSubjectVariable.id}
+		</if>
+		<if test="moneyVariable !=null and moneyVariable.id!=null">
+			and t.money_variable=#{moneyVariable.id}
+		</if>
+		<if test="dcFlagVariable !=null and dcFlagVariable.id!=null">
+			and t.d_c_flag_variable=#{dcFlagVariable.id}
+		</if>
+		<if test="name!=null and name!=''">
+			and t.name=#{name}
+		</if>
+		<if test="module !=null and module!=''">
+			and t.module=#{module}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},t.group_str,#{operat},t.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and t.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Template">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Template t left join GOLD_SUBJECT s on t.subject_id=s.id left join GOLD_CONDITION c1 on 
+		t.condition_pass=c1.id left join GOLD_CONDITION c2 on t.first_subject_variable=c2.id left join 
+		GOLD_CONDITION c3 on t.second_subject_variable=c2.id left join GOLD_CONDITION c4 on t.third_subject_variable=c4.id 
+		left join GOLD_CONDITION c5 on t.relative_subject_variable=c5.id left join GOLD_CONDITION c6 on t.money_variable=c6.id 
+		left join GOLD_CONDITION c7 on t.d_c_flag_variable=c7.id 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.Template">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Template t left join GOLD_SUBJECT s on t.subject_id=s.id left join GOLD_CONDITION c1 on 
+		t.condition_pass=c1.id left join GOLD_CONDITION c2 on t.first_subject_variable=c2.id left join 
+		GOLD_CONDITION c3 on t.second_subject_variable=c2.id left join GOLD_CONDITION c4 on t.third_subject_variable=c4.id 
+		left join GOLD_CONDITION c5 on t.relative_subject_variable=c5.id left join GOLD_CONDITION c6 on t.money_variable=c6.id 
+		left join GOLD_CONDITION c7 on t.d_c_flag_variable=c7.id 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_Template t set
+		<if test="id != null">
+			t.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select Template_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_Template t 
+				(
+				id,status,condition_pass,
+				<if test="subject != null and subject.id!=null">subject_id,</if>
+				<if test="firstSubjectVariable != null and firstSubjectVariable.id != null">
+					first_subject_variable,
+				</if>
+				<if test="secondSubjectVariable != null and secondSubjectVariable.id != null">
+					second_subject_variable,
+				</if>
+				<if test="thirdSubjectVariable != null and thirdSubjectVariable.id != null">
+					third_subject_variable,
+				</if>
+				<if test="groupStr !=null and groupStr !=''">group_str,</if>
+				<if test="name!=null and name!=''">name,</if>
+				relative_subject_variable,money_variable,d_c_flag_variable,module
+				)
+			values
+				(#{id},
+				#{status},#{conditionPass.id},
+				<if test="subject != null and subject.id!=null">#{subject.id},</if>
+				<if test="firstSubjectVariable != null and firstSubjectVariable.id != null">
+					#{firstSubjectVariable.id},
+				</if>
+				<if test="secondSubjectVariable != null and secondSubjectVariable.id != null">
+					#{secondSubjectVariable.id},
+				</if>
+				<if test="thirdSubjectVariable != null and thirdSubjectVariable.id != null">
+					#{thirdSubjectVariable.id},
+				</if>
+				<if test="groupStr !=null and groupStr !=''">#{groupStr},</if>
+				<if test="name!=null and name!=''">#{name},</if>
+				#{relativeSubjectVariable.id},#{moneyVariable.id},#{dcFlagVariable.id},#{module}
+				)
+	</insert>
+
+</mapper>
+

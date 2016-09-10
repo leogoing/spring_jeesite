@@ -53,6 +53,17 @@ public class User extends DataEntity<User> {
 	private Role role;	// 根据角色查询用户条件
 	
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
+	
+	/**是否自动签收流程*/
+	private Integer autoSignFlag;
+
+	public Integer getAutoSignFlag() {
+		return autoSignFlag;
+	}
+
+	public void setAutoSignFlag(Integer autoSignFlag) {
+		this.autoSignFlag = autoSignFlag;
+	}
 
 	public User() {
 		super();

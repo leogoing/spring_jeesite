@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.SubjectDao">
+
+	
+	<sql id="Columns">
+		s.id,
+        s.first_subject firstSubject,
+        s.second_subject secondSubject,
+        s.third_subject thirdSubject,
+        s.balance,
+        s.subject_type subjectType,
+        s.NAME ,
+        s.SYS_TIME sysTime,
+        s.module ,
+        s.group_str groupStr,
+        s.STATUS 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			s.status=#{status},
+		</if>
+		<if test="firstSubject != null ">
+			s.first_subject=#{firstSubject},
+		</if>
+		<if test="secondSubject != null">
+			s.second_subject=#{secondSubject},
+		</if>
+		<if test="thirdSubject != null">
+			s.third_subject=#{thirdSubject},
+		</if>
+		<if test="balance !=null">
+			s.balance=#{balance},
+		</if>
+		<if test="subjectType!=null">
+			s.subject_type=#{subjectType},
+		</if>
+		<if test="name != null and name != ''">
+			s.name=#{name},
+		</if>
+		<if test="module !=null and module !=''">
+			s.module=#{module},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			s.group_str=#{groupStr},
+		</if>
+			s.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and s.status=#{status}
+		</if>
+		<if test="firstSubject != null ">
+			and s.first_subject=#{firstSubject}
+		</if>
+		<if test="secondSubject != null">
+			and s.second_subject=#{secondSubject}
+		</if>
+		<if test="thirdSubject != null">
+			and s.third_subject=#{thirdSubject}
+		</if>
+		<if test="balance !=null">
+			and s.balance=#{balance}
+		</if>
+		<if test="subjectType!=null">
+			and s.subject_type=#{subjectType}
+		</if>
+		<if test="name != null and name != ''">
+			and s.name=#{name}
+		</if>
+		<if test="module !=null and module !=''">
+			and s.module=#{module}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},s.group_str,#{operat},s.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="Subject">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and s.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Subject">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Subject s 
+		<include refid="Subject"/> ORDER BY first_subject,second_subject,third_subject
+	</select>
+	<select id="get" resultType="org.liwang.entity.Subject">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Subject s 
+		<include refid="Subject"/>
+	</select>
+
+	<update id="update">
+		update GOLD_Subject s set
+		<if test="id != null">
+			s.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="Subject"/>
+	</update>
+	
+	<delete id="delete">
+		delete from  GOLD_Subject s <include refid="Subject"/>
+	</delete>
+	
+	<update id="addBalance">
+		update GOLD_Subject s set balance=balance+#{balance} <include refid="Subject"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select Subject_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_Subject s 
+				(
+				id,status,first_subject
+				<if test="secondSubject != null">,second_subject</if>
+				<if test="thirdSubject != null">,third_subject</if>
+				,balance,subject_type,name,module
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{firstSubject}
+				<if test="secondSubject != null">,#{secondSubject}</if>
+				<if test="thirdSubject != null">,#{thirdSubject}</if>
+				,#{balance},
+				#{subjectType},#{name},#{module}
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

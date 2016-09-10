@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.AccountDao">
+
+	
+	<sql id="Columns">
+		a.ID ,
+        a.DEALNO dealNo,
+        a.BUSINESS_LINES businessLines,
+        a.FIRST_SUBJECT firstSubject,
+        a.SECOND_SUBJECT secondSubject,
+        a.THIRD_SUBJECT thirdSubject,
+        a.MONEY ,
+        a.D_C_FLAG dcFlag,
+        a.RELATIVE_SUBJECT relativeSubject,
+        a.BUSINESS_DAY businessDay,
+        a.STATUS ,
+        a.SYSTIME 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			a.status=#{status},
+		</if>
+		<if test="dealNo != null and dealNo!=''">
+			a.dealNo=#{dealNo},
+		</if>
+		<if test="businessLines != null and businessLines!=''">
+			a.business_Lines=#{businessLines},
+		</if>
+		<if test="firstSubject != null and firstSubject != ''">
+			a.first_subject=#{firstSubject},
+		</if>
+		<if test="secondSubject != null and secondSubject != ''">
+			a.second_subject=#{secondSubject},
+		</if>
+		<if test="thirdSubject != null and thirdSubject != ''">
+			a.third_subject=#{thirdSubject},
+		</if>
+		<if test="relativeSubject != null and relativeSubject != ''">
+			a.relative_subject=#{relativeSubject},
+		</if>
+		<if test="money !=null ">
+			a.money=#{money},
+		</if>
+		<if test="dcFlag !=null ">
+			a.d_c_flag=#{dcFlag},
+		</if>
+		<if test="businessDay !=null and businessDay!=''">
+			a.businessDay=#{businessDay},
+		</if>
+			a.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and a.status=#{status}
+		</if>
+		<if test="dealNo != null and dealNo!=''">
+			and a.dealNo=#{dealNo}
+		</if>
+		<if test="businessLines != null and businessLines!=''">
+			and a.business_Lines=#{businessLines}
+		</if>
+		<if test="firstSubject != null and firstSubject != ''">
+			and a.first_subject=#{firstSubject}
+		</if>
+		<if test="secondSubject != null and secondSubject != ''">
+			and a.second_subject=#{secondSubject}
+		</if>
+		<if test="thirdSubject != null and thirdSubject != ''">
+			and a.third_subject=#{thirdSubject}
+		</if>
+		<if test="relativeSubject != null and relativeSubject != ''">
+			and a.relative_subject=#{relativeSubject}
+		</if>
+		<if test="money !=null ">
+			and a.money=#{money}
+		</if>
+		<if test="dcFlag !=null ">
+			and a.d_c_flag=#{dcFlag}
+		</if>
+		<if test="businessDay !=null and businessDay!=''">
+			and a.businessDay=#{businessDay}
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and a.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Account">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_ACCOUNT a 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.Account">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_ACCOUNT a
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_ACCOUNT a set
+		<if test="id != null">
+			a.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select account_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_ACCOUNT a 
+				(
+				id,status,dealNo,business_lines,first_Subject,second_Subject,third_Subject,
+				<if test="status!=null">,status</if>,business_Day
+				<if test="relativeSubject != null and relativeSubject != ''">,#{relative_subject}</if>
+				,money,d_c_flag
+				)
+			values
+				(#{id},
+				#{status},#{dealNo},#{businessLines},#{firstSubject},#{secondSubject},#{thirdSubject}
+				,<if test="status!=null">,#{status}</if>#{businessDay}
+				<if test="relativeSubject != null and relativeSubject != ''">,#{relativeSubject}</if>
+				,#{money},#{dcFlag}
+				)
+	</insert>
+
+</mapper>
+

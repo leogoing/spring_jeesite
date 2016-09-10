@@ -9,12 +9,15 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.liwang.util.ShiroUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thinkgem.jeesite.common.persistence.Page;
 
 /**
- * 通用实体bean类
+ * 通用实体bean类(包含基本属性和权限部分)<br>
+ * 可以考虑将权限部分分开再加个抽象类
  * @author liwang
  *
  */
@@ -25,6 +28,8 @@ public abstract class BaseLEntity<T> extends LEntity implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private static final Logger log=LoggerFactory.getLogger(BaseLEntity.class);
+	
 	private Page<T> page;
 	
 	private Date sysTime;
@@ -33,12 +38,34 @@ public abstract class BaseLEntity<T> extends LEntity implements Serializable{
 	
 	private String groupStr;
 	
+	/**
+	 * 当前用户所有的权限字符窜用来传进函数比较
+	 */
+	private String userGroupStr;
+	
+	private String operat;
+	
+	public String getUserGroupStr() {
+		return userGroupStr;
+	}
+
+	public void setUserGroupStr(String userGroupStr) {
+		this.userGroupStr = userGroupStr;
+	}
 
 	public String getGroupStr() {
 		return groupStr;
 	}
 
-	public void setGroupId(String groupStr) {
+	public String getOperat() {
+		return operat;
+	}
+
+	public void setOperat(String operat) {
+		this.operat = operat;
+	}
+
+	public void setGroupStr(String groupStr) {
 		this.groupStr = groupStr;
 	}
 	
@@ -67,12 +94,30 @@ public abstract class BaseLEntity<T> extends LEntity implements Serializable{
 	}
 	
 	/**
-	 * 由子类重写,解析权限为组
+	 * 由子类重写,解析权限集合为组字符串
 	 * @param permissions
 	 */
 	public void parseGroupStr(Set<String> permissions,String operatFlg){
 		
 	}
+	
+	/**
+	 * 获取别名,一般为类名小写,用于通用controller
+	 * @return
+	 */
+	public abstract String alias();
+	
+	/**
+	 * 视图路径前缀,用于通用controller
+	 * @return
+	 */
+	public abstract String viewPrefix();
+	
+	/**
+	 * 创建默认的初始化实体对象
+	 * @return
+	 */
+	public abstract T initObject();
 
 	public Integer getStatus() {
 		return status;

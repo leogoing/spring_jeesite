@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.BusinessDayCtrDao">
+
+	
+	<sql id="Columns">
+		b.id,
+		b.BUSINESS_REGEX businessRegex,
+        b.BUSINESS_START businessStart,
+        b.BUSINESS_END businessEnd,
+        b.SYS_TIME  sysTime,
+        b.PRIORITY,
+        b.group_str groupStr,
+        b.STATUS  
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			b.status=#{status},
+		</if>
+		<if test="businessRegex != null and businessRegex!=''">
+			b.business_regex=#{businessRegex},
+		</if>
+		<if test="businessStart != null">
+			b.business_start=#{businessStart},
+		</if>
+		<if test="businessEnd != null">
+			b.business_end=#{businessEnd},
+		</if>
+		<if test="priority !=null">
+			b.priority=#{priority},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			b.group_str=#{groupStr},
+		</if>
+			b.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and b.status=#{status}
+		</if>
+		<if test="businessRegex != null and businessRegex!=''">
+			and b.business_regex=#{businessRegex}
+		</if>
+		<if test="businessStart != null">
+			and b.business_start=#{businessStart}
+		</if>
+		<if test="businessEnd != null">
+			and b.business_end=#{businessEnd}
+		</if>
+		<if test="priority !=null">
+			and b.priority=#{priority}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},b.group_str,#{operat},b.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and b.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.BusinessDayCtr">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_BUSINESS_CONTROL b 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.BusinessDayCtr">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_BUSINESS_CONTROL b 
+		<include refid="condition"/>
+	</select>
+	
+	<!-- 根据id查找营业日明细 -->
+	<select id="findBusinessHistory" resultType="org.liwang.entity.BusinessDayDetail">
+		select d.*,u.name "changeDayUser.name" from GOLD_BUSINESS_DETAIL d left join sys_user u 
+		on d.change_day_user=u.id 
+		<where>
+			<if test="id != null">
+				d.BUSINESS_CONTROL_ID=#{id}
+			</if>
+		</where>
+	</select>
+
+	<update id="update">
+		update GOLD_BUSINESS_CONTROL b set
+		<if test="id != null">
+			b.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="addHistory">
+		insert into GOLD_BUSINESS_DETAIL (id,status,business_start,
+										  <if test="businessEnd !=null">
+										    business_end,</if>BUSINESS_CONTROL_ID,CHANGE_DAY_USER,
+										  <if test="closeAccountUser!=null and closeAccountUser.id!=null">
+										  	CLOSE_ACCOUNT_USER,</if>BUSINESS_DAY) 
+								  values (businessDayDetail_primary_seq.nextval,
+											#{status},#{businessStart},<if test="businessEnd !=null">
+										    #{businessEnd},</if>#{businessDayCtr.id},#{changeDayUser.id},
+										  <if test="closeAccountUser!=null and closeAccountUser.id!=null">
+										  	#{closeAccountUser.id},</if>#{businessDay})
+	</insert>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select businessDayCtr_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_BUSINESS_CONTROL b 
+				(
+				id,status,business_regex,business_start,business_end,priority
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{businessRegex},#{businessStart},#{businessEnd},#{priority}
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

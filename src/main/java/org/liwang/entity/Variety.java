@@ -2,7 +2,7 @@ package org.liwang.entity;
 
 import java.util.Set;
 
-
+import org.liwang.annotion.Variabled;
 import org.liwang.commen.entity.BaseLEntity;
 import org.liwang.util.ShiroUtil;
 
@@ -12,6 +12,7 @@ import org.liwang.util.ShiroUtil;
  * @author liwang
  *
  */
+@Variabled("品种")
 public class Variety extends BaseLEntity<Variety>{
 
 	/**
@@ -40,13 +41,19 @@ public class Variety extends BaseLEntity<Variety>{
 	public static final int TYPE_FX_GOLD=0;
 	
 	/**
-	 * 代表当前数据类别的权限的字符串
+	 * 别名代表当前数据类别的权限的字符串
 	 */
-	public static final String PERMISSION_PREFIX=Variety.class.getSimpleName();
+	public static final String ALIAS=Variety.class.getSimpleName().toLowerCase();
+	
+	/**
+	 * 视图路径前缀
+	 */
+	public static final String VIEW_PREFIX="gold/deal/"+ALIAS;
 	
 	/**
 	 * 币种
 	 */
+	@Variabled("币种")
 	private String currency;
 	
 	/**
@@ -57,6 +64,7 @@ public class Variety extends BaseLEntity<Variety>{
 	/**
 	 * 品种号
 	 */
+	@Variabled("品种二级科目")
 	private Integer variety;
 	
 	/**
@@ -67,6 +75,7 @@ public class Variety extends BaseLEntity<Variety>{
 	/**
 	 * 库存
 	 */
+	@Variabled("库存")
 	private Long storage;
 	
 	/**
@@ -88,9 +97,11 @@ public class Variety extends BaseLEntity<Variety>{
 	/**
 	 * 重写
 	 */
-	public void parseGroup(Set<String> permissions,String operatFlag){
-		if(super.getGroupStr() ==null)
-			super.setGroupId(ShiroUtil.parseGroup(permissions,PERMISSION_PREFIX, operatFlag));
+	public void parseGroupStr(Set<String> permissions,String operatFlag){
+		if(super.getUserGroupStr() ==null){
+			super.setUserGroupStr(ShiroUtil.parseGroup(permissions,ALIAS, operatFlag));
+			super.setOperat(operatFlag);
+		}
 	}
 	
 	public String getCurrencyName() {
@@ -150,7 +161,7 @@ public class Variety extends BaseLEntity<Variety>{
 	}
 
 
-	public static Variety defVariety(){
+	public  Variety initObject(){
 		Variety variety=new Variety();
 		variety.setStatus(STATUS_NEW);
 		variety.setType(TYPE_FX_GOLD);
@@ -159,6 +170,22 @@ public class Variety extends BaseLEntity<Variety>{
 		variety.setVariety(1);
 		variety.setVarietyName("其它品种");
 		return variety;
+	}
+
+	@Override
+	public String alias() {
+		return ALIAS;
+	} 
+	
+	@Override
+	public String viewPrefix() {
+		return VIEW_PREFIX;
+	}
+
+	@Override
+	public String toString() {
+		return "Variety [currency=" + currency + ", type=" + type + ", variety=" + variety + ", varietyName="
+				+ varietyName + ", storage=" + storage + ", unit=" + unit + ", currencyName=" + currencyName + "]";
 	}
 
 }

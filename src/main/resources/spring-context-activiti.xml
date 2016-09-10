@@ -16,24 +16,31 @@
 		<property name="dataSource" ref="dataSource" />
 		<!-- 统一的事务管理 -->
 		<property name="transactionManager" ref="transactionManager" />
-		<property name="deploymentResources" value="classpath*:/act/deployments/**/*.bar"/>
-		<property name="databaseSchemaUpdate" value="true" />
-		<property name="jobExecutorActivate" value="false" />
-		<property name="history" value="full" />
+		<property name="deploymentResources" value="classpath*:/act/deployments/**/*.bar"/><!-- 自动部署 -->
+		<property name="databaseSchemaUpdate" value="true" /><!-- 数据库脚本更新策略，true表不存在时自动创建并会检查更新数据库表版本 -->
+		<property name="jobExecutorActivate" value="false" /><!-- 设置是否启用作业执行功能，true不停刷新作业表检查是否有需要执行的作业有则执行 -->
+		<property name="history" value="full" /><!-- 设置记录历史记录的级别，full保存最完整的记录 -->
 		<property name="processDefinitionCacheLimit" value="10"/>
+
+		<!-- 由Spring管理变量 -->
+		<property name="beans">
+			<map>
+				<entry key="deal" value-ref="deal"></entry>
+			</map>
+		</property>
 
         <!-- UUID作为主键生成策略 -->
         <property name="idGenerator" ref="idGen" />
         
         <!-- 生成流程图的字体 避免中文乱码-->
-        <property name="activityFontName" value="${activiti.diagram.activityFontName}"/>
-        <property name="labelFontName" value="${activiti.diagram.labelFontName}"/>
+        <property name="activityFontName" value="${activiti.diagram.activityFontName}"/><!-- 宋体 -->
+        <property name="labelFontName" value="${activiti.diagram.labelFontName}"/><!-- 宋体 -->
         
         <!-- 自定义用户权限 -->
         <property name="customSessionFactories"> 
             <list>
 				<bean class="com.thinkgem.jeesite.modules.act.service.ext.ActUserEntityServiceFactory"/>
-				<bean class="com.thinkgem.jeesite.modules.act.service.ext.ActGroupEntityServiceFactory"/>
+				<!-- TODO  要改 --><bean class="com.thinkgem.jeesite.modules.act.service.ext.ActGroupEntityServiceFactory"/>
             </list>
     	</property>
         
@@ -43,6 +50,8 @@
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
+	
+	<!-- 为工厂bean,工厂方法为getObject(),返回获得对象的factory-method的方法值 -->
 	<!-- 提供了管理和控制发布包和流程定义的操作 -->
 	<bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
 	<!-- 负责启动一个流程定义的新实例,用来获取和保存流程变量 -->

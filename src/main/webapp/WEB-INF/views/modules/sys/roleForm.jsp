@@ -102,7 +102,7 @@
 			// 初始化树结构
 			var tree3 = $.fn.zTree.init($("#groupTree"), setting, zNodes3);
 			// 不选择父节点
-			tree3.setting.check.chkboxType = { "Y" : "s", "N" : "ps" };
+			tree3.setting.check.chkboxType = { "Y" : "", "N" : "p" };
 			// 默认选择节点
 			var ids3 = "${role.groupIds}".split(",");
 			for(var i=0; i<ids3.length; i++) {
@@ -113,6 +113,7 @@
 			tree3.expandAll(true);
 			
 		});
+		
 		function refreshOfficeTree(){
 			if($("#dataScope").val()==9){
 				$("#officeTree").show();
@@ -165,7 +166,7 @@
 					<form:option value="user">普通角色</form:option>
 				</form:select>
 				<span class="help-inline" title="activiti有3种预定义的组类型：security-role、assignment、user 如果使用Activiti Explorer，需要security-role才能看到manage页签，需要assignment才能claim任务">
-					工作流组用户组类型（任务分配：assignment、管理角色：security-role、普通角色：user）</span>
+					工作流组用户组类型（任务分配：assignment、管理角色：security-role、普通角色：user[需要security-role才能看到manage页签，需要assignment才能claim任务]）</span>
 			</div>
 		</div>
 		<div class="control-group">

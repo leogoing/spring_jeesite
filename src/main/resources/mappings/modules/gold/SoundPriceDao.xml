@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.SoundPriceDao">
+
+	
+	<sql id="dealColumns">
+		s.id,
+		s.business_day businessDay,
+        s.variety_id "variety.id",
+        s.sound_price soundPrice,
+        s.price_source priceSource,
+        s.SYS_TIME sysTime,
+        s.GROUP_STR groupStr,
+        s.STATUS ,
+        v.variety_name "variety.varietyName" 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			s.status=#{status},
+		</if>
+		<if test="businessDay != null and businessDay!=''">
+			s.business_day =#{businessDay},
+		</if>
+		<if test="variety!=null and variety.id != null">
+			s.variety_id =#{variety.id},
+		</if>
+		<if test="soundPrice != null">
+			s.sound_price =#{soundPrice},
+		</if>
+		<if test="priceSource != null and priceSource !=''">
+			s.price_source =#{priceSource},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			s.group_str=#{groupStr},
+		</if>
+			s.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and s.status=#{status}
+		</if>
+		<if test="businessDay != null and businessDay!=''">
+			and s.business_day =#{businessDay}
+		</if>
+		<if test="variety!=null and variety.id != null">
+			and s.variety_id =#{variety.id}
+		</if>
+		<if test="soundPrice != null">
+			and s.sound_price =#{soundPrice}
+		</if>
+		<if test="priceSource != null and priceSource !=''">
+			and s.price_source =#{priceSource}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},s.group_str,#{operat},s.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and s.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.SoundPrice">
+		select 
+		<include refid="dealColumns"/> 
+		from GOLD_Sound_Price s left join GOLD_VARIETY v on s.variety_id=v.id 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.SoundPrice">
+		select 
+		<include refid="dealColumns"/> 
+		from GOLD_Sound_Price s left join GOLD_VARIETY v on s.variety_id=v.id 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_Sound_Price s set
+		<if test="id != null">
+			s.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select soundPrice_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_Sound_Price s 
+				(
+				id,status,business_day,variety_id,sound_price
+				<if test="priceSource !=null and priceSource!=''">,price_source</if>
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{businessDay},#{variety.id},#{soundPrice}
+				<if test="priceSource !=null and priceSource!=''">,#{priceSource}</if>
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

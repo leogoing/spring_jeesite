@@ -9,7 +9,7 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Activiti Group Entity Factory
+ * Activiti Group Entity Factory TODO  重新添加新的分组管理
  * @author ThinkGem
  * @version 2013-11-03
  */

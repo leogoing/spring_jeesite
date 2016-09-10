@@ -12,6 +12,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.shiro.session.Session;
 import org.liwang.dao.manager.GroupDaoManager;
+import org.liwang.util.ShiroUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -293,6 +294,10 @@ public class SystemService extends BaseService implements InitializingBean {
 		saveActivitiGroup(role);
 		// 清除用户角色缓存
 		UserUtils.removeCache(UserUtils.CACHE_ROLE_LIST);
+		
+		//TODO:这里可以放到线程队列执行
+//		ShiroUtil.getUser().hasRole("Check");//触发加载权限信息到缓存
+		
 //		// 清除权限缓存
 //		systemRealm.clearAllCachedAuthorizationInfo();
 	}

@@ -75,10 +75,10 @@
 					${fns:getDictLabel(variety.status,'gold_variety_status','未知')}
 				</td>
 				<c:if test="true"><td>
-					<c:if test="${fns:hasAnyPermssion(variety.groupStr,'update',variety.id) }">
+					<c:if test="${fns:hasAnyPermission(variety.groupStr,'update',variety.id,'gold:variety:') }">
 						<a href="${ctx}/gold/variety/preUpdate?id=${variety.id}">修改</a>
 					</c:if>
-					<c:if test="${fns:hasAnyPermssion(variety.groupStr,'delete',variety.id) }">
+					<c:if test="${fns:hasAnyPermission(variety.groupStr,'delete',variety.id,'gold:variety:') }">
 						<a href="${ctx}/gold/variety/delete?id=${variety.id}" onclick="return confirmx('确认要删除该通知吗？', this.href)">删除</a>
 					</c:if>
 				</td></c:if>

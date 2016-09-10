@@ -1,6 +1,6 @@
 package org.liwang.commen.controller;
 
-import org.liwang.common.service.AbstractLService;
+import org.liwang.common.service.DefaultLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  * @param <T>
  */
-public class DefaultController<T extends AbstractLService> extends AbstractLController{
+public class DefaultLController<T extends DefaultLService> extends AbstractLController{
 
 	@Autowired
 	protected T service;

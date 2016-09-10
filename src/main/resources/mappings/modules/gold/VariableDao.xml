@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.VariableDao">
+
+	
+	<sql id="Columns">
+		v.id,
+		v.data_source dataSource,
+        v.variable_path variablePath,
+        v.variable_name variableName,
+        v.visual_name visualName,
+        v.SYS_TIME sysTime,
+        v.variable_type variableType,
+        v.group_str groupStr,
+        v.module,
+        v.depend,
+        v.dict,
+        v.STATUS 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			v.status=#{status},
+		</if>
+		<if test="dataSource != null">
+			v.data_source=#{dataSource},
+		</if>
+		<if test="variablePath != null and variablePath!=''">
+			v.variable_path=#{variablePath},
+		</if>
+		<if test="variableName != null and variableName != ''">
+			v.variable_name=#{variableName},
+		</if>
+		<if test="visualName !=null and visualName !=''">
+			v.visual_name=#{visualName},
+		</if>
+		<if test="variableType !=null and variableType !=''">
+			v.variable_type=#{variableType},
+		</if>
+		<if test="depend !=null and depend !=''">
+			v.depend=#{depend},
+		</if>
+		<if test="dict !=null and dict !=''">
+			v.dict=#{dict},
+		</if>
+		<if test="module!=null">
+			v.module=#{module},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			v.group_str=#{groupStr},
+		</if>
+			v.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and v.status=#{status}
+		</if>
+		<if test="dataSource != null">
+			and v.data_source=#{dataSource}
+		</if>
+		<if test="variablePath != null and variablePath!=''">
+			and v.variable_path=#{variablePath}
+		</if>
+		<if test="variableName != null and variableName != ''">
+			and v.variable_name=#{variableName}
+		</if>
+		<if test="visualName !=null and visualName !=''">
+			and v.visual_name=#{visualName}
+		</if>
+		<if test="variableType !=null and variableType !=''">
+			and v.variable_type=#{variableType}
+		</if>
+		<if test="depend !=null and depend !=''">
+			and v.depend=#{depend}
+		</if>
+		<if test="dict !=null and dict !=''">
+			and v.dict=#{dict}
+		</if>
+		<if test="module!=null">
+			and v.module=#{module}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},v.group_str,#{operat},v.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and v.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Variable">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Variable v 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.Variable">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Variable v 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_Variable v set
+		<if test="id != null">
+			v.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<delete id="delete">
+		delete from GOLD_Variable v 
+		<include refid="condition"/>
+	</delete>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select Variable_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_Variable v 
+				(
+				id,status,data_source,variable_path,variable_name,visual_name,variable_type,module
+				<if test="depend !=null and depend !=''">,depend</if>
+				<if test="dict !=null and dict !=''">,dict</if>
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{dataSource},#{variablePath},#{variableName},#{visualName},#{variableType},#{module}
+				<if test="depend !=null and depend !=''">,#{depend}</if>
+				<if test="dict !=null and dict !=''">,#{dict}</if>
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

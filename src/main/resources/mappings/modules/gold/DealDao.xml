@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.DealDao">
+
+	
+	<sql id="dealColumns">
+		d.id,
+		d.DEAL_NO dealNo,
+        d.S_F_FLAG sfFlag,
+        d.BUY_CUR buyCur,
+        d.DEAL_TYPE dealType,
+        d.SELL_CUR sellCur,
+        d.AMOUNT ,
+        d.MONEY ,
+        d.DEAL_DATE dealDate,
+        d.DELIVERY_DATE deliveryDate,
+        d.BORN_OF bornOf,
+        d.EARLY_PAY earlyPay,
+        d.COUNTERPARTY_ID "counterparty.id",
+        d.DEAL_ACCOUNT_ID "dealAccount.id",
+        d.APPROVE ,
+        d.module,
+        d.SYS_TIME sysTime,
+        d.GROUP_STR groupStr,
+        d.process_id processId,
+        d.STATUS ,
+        c1.name "counterparty.name",
+        c2.name "dealAccount.name"
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			d.status=#{status},
+		</if>
+		<if test="dealNo != null and dealNo !=''">
+			d.deal_no=#{dealNo},
+		</if>
+		<if test="sfFlag != null">
+			d.s_f_flag=#{sfFlag},
+		</if>
+		<if test="buyCur != null and buyCur != ''">
+			d.buy_cur=#{buyCur},
+		</if>
+		<if test="dealType != null ">
+			d.deal_type=#{dealType},
+		</if>
+		<if test="sellCur != null and sellCur !=''">
+			d.sell_cur=#{sellCur},
+		</if>
+		<if test="amount != null ">
+			d.amount=#{amount},
+		</if>
+		<if test="money != null">
+			d.money=#{money},
+		</if>
+		<if test="dealDate != null ">
+			d.deal_date=#{dealDate},
+		</if> 
+		<if test="deliveryDate !=null">
+			d.delivery_date=#{deliveryDate},
+		</if>
+		<if test="bornOf !=null">
+			d.born_of=#{bornOf},
+		</if>
+		<if test="earlyPay !=null">
+			d.early_pay=#{earlyPay},
+		</if>
+		<if test="counterparty !=null">
+			d.counterparty_id=#{counterparty.id},
+		</if>
+		<if test="dealAccount !=null">
+			d.deal_account_id=#{dealAccount.id},
+		</if>
+		<if test="approve !=null">
+			d.approve=#{approve},
+		</if>
+		<if test="processId !=null and processId!=''">
+			d.process_id=#{processId},
+		</if>
+		<if test="module != null">
+			d.module=#{module},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			d.group_str=#{groupStr},
+		</if>
+			d.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and d.status=#{status}
+		</if>
+		<if test="dealNo != null and dealNo !=''">
+			and d.deal_no=#{dealNo}
+		</if>
+		<if test="sfFlag != null">
+			and d.s_f_flag=#{sfFlag}
+		</if>
+		<if test="buyCur != null and buyCur != ''">
+			and d.buy_cur=#{buyCur}
+		</if>
+		<if test="dealType != null ">
+			and d.deal_type=#{dealType}
+		</if>
+		<if test="sellCur != null and sellCur !=''">
+			and d.sell_cur=#{sellCur}
+		</if>
+		<if test="amount != null ">
+			and d.amount=#{amount}
+		</if>
+		<if test="money != null">
+			and d.money=#{money}
+		</if>
+		<if test="dealDate != null ">
+			and d.deal_date=#{dealDate}
+		</if> 
+		<if test="deliveryDate !=null">
+			and d.delivery_date=#{deliveryDate}
+		</if>
+		<if test="bornOf !=null">
+			and d.born_of=#{bornOf}
+		</if>
+		<if test="earlyPay !=null">
+			and d.early_pay=#{earlyPay}
+		</if>
+		<if test="counterparty !=null">
+			and d.counterparty_id=#{counterparty.id}
+		</if>
+		<if test="dealAccount !=null">
+			and d.deal_account_id=#{dealAccount.id}
+		</if>
+		<if test="module != null">
+			and d.module=#{module} 
+		</if>
+		<if test="processId !=null and processId!=''">
+			d.process_id=#{processId},
+		</if>
+		<if test="approve !=null">
+			and d.approve=#{approve}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},d.group_str,#{operat},d.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and d.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Deal">
+		select 
+		<include refid="dealColumns"/> 
+		from GOLD_DEAL d 
+		left join GOLD_Counterparty c1 on d.Counterparty_id=c1.id 
+		left join GOLD_Counterparty c2 on d.DEAL_ACCOUNT_ID=c2.id 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.Deal">
+		select 
+		<include refid="dealColumns"/> 
+		from GOLD_DEAL d 
+		left join GOLD_Counterparty c1 on d.Counterparty_id=c1.id 
+		left join GOLD_Counterparty c2 on d.DEAL_ACCOUNT_ID=c2.id 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_DEAL d set
+		<if test="id != null">
+			d.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select deal_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_DEAL d 
+				(
+				id,status,deal_no,s_f_flag,buy_cur,deal_type,sell_cur,
+				amount,money,deal_date,delivery_date,
+				<if test="module != null">module,</if>
+				<if test="bornOf !=null">born_of,</if>
+				<if test="earlyPay !=null">early_pay,</if>
+				counterparty_id,deal_account_id
+				<if test="processId !=null and processId!=''">,process_id</if>
+				<if test="approve !=null">,approve</if>
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{dealNo},#{sfFlag},#{buyCur},#{dealType},#{sellCur},
+				#{amount},#{money},#{dealDate},#{deliveryDate},
+				<if test="module != null">#{module},</if>
+				<if test="bornOf !=null">#{bornOf},</if>
+				<if test="earlyPay !=null">#{earlyPay},</if>
+				#{counterparty.id},#{dealAccount.id}
+				<if test="processId !=null and processId!=''">,#{processId}</if>
+				<if test="approve !=null">,#{approve}</if>
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

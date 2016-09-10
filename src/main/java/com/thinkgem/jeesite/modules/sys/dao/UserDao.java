@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
@@ -16,6 +17,13 @@ import com.thinkgem.jeesite.modules.sys.entity.User;
  */
 @MyBatisDao
 public interface UserDao extends CrudDao<User> {
+	
+	/**
+	 * 提取出传入的用户id为自动签核的用户
+	 * @param users
+	 * @return
+	 */
+	public List<User> extractAutoSign(Collection<org.activiti.engine.identity.User> users);
 	
 	/**
 	 * 根据登录名称查询用户

@@ -69,8 +69,8 @@
 		<if test="unit != null and unit !=''">
 			and v.unit=#{unit}
 		</if>
-		<if test="groupStr != null and groupStr !=''">
-			and permission_compare(#{groupStr},v.group_str,#{operat},v.id)=0 <!-- 调用函数处理 -->
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},v.group_str,#{operat},v.id)=0 <!-- 调用函数处理 -->
 		</if>
 		<if test="currencyName != null and currencyName !=''">
 			and v.currency_name=#{currencyName}
@@ -106,6 +106,10 @@
 		<include refid="condition"/>
 	</update>
 	
+	<update id="addStorage">
+		update GOLD_VARIETY v set storage=storage+#{storage} <include refid="condition"/>
+	</update>
+	
 	<insert id="save">
 		insert into GOLD_VARIETY v 
 				(
@@ -117,7 +121,7 @@
 				<if test="unit != null">unit,</if>
 				<if test="status != null">status,</if> 
 				<if test="type != null">type,</if> 
-				<if test="groupId != null and groupId !=''">group_str,</if>
+				<if test="groupStr != null and groupStr !=''">group_str,</if>
 				<if test="sysTime != null">sys_time,</if>
 				variety_name
 				)
@@ -130,7 +134,7 @@
 				<if test="unit != null">#{unit},</if>
 				<if test="status != null">#{status},</if> 
 				<if test="type != null">#{type},</if> 
-				<if test="groupId != null and groupId !=''">#{groupId},</if>
+				<if test="groupStr != null and groupStr !=''">#{groupStr},</if>
 				<if test="sysTime != null">#{sysTime},</if>
 				#{varietyName}
 				)

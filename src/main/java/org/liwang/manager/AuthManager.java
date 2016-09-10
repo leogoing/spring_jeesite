@@ -107,6 +107,11 @@ public class AuthManager implements InitializingBean{
 		return getAuthInfo(null);
 	}
 	
+	/**
+	 * 根据用户id获取权限容器
+	 * @param id
+	 * @return
+	 */
 	public SimpleAuthorizationInfo getAuthInfo(String id){
 		
 		Object principal=null;

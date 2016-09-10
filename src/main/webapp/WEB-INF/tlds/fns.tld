@@ -245,10 +245,18 @@
   
   <function>
   	<description>判断是否有该数据权限</description>
-  	<name>hasAnyPermssion</name>
+  	<name>hasAnyPermission</name>
   	<function-class>org.liwang.util.ShiroUtil</function-class>
-  	<function-signature>boolean hasAnyPermssion(java.lang.String,java.lang.String,java.lang.String)</function-signature>
-  	<example>${fns:hasAnyPermssion(perms,operat,id)}</example>
+  	<function-signature>boolean hasAnyPermission(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+  	<example>${fns:hasAnyPermission(perms,operat,id,prefix)}</example>
+  </function>
+  
+  <function>
+  	<description>判断是否有该数据权限</description>
+  	<name>toMicrometer</name>
+  	<function-class>org.liwang.util.NumUtil</function-class>
+  	<function-signature>java.lang.String toMicrometer(double)</function-signature>
+  	<example>${fns:toMicrometer(num)}</example>
   </function>
   
   <!-- JsonMapper -->

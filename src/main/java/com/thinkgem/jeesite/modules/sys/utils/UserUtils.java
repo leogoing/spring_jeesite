@@ -144,6 +144,7 @@ public class UserUtils {
 			}else{
 				Role role = new Role();
 				role.getSqlMap().put("dsf", BaseService.dataScopeFilter(user.getCurrentUser(), "o", "u"));
+				role.setUser(user);//设置用户,不然查询时不会查找当前用户的角色
 				roleList = roleDao.findList(role);
 			}
 			putCache(CACHE_ROLE_LIST, roleList);

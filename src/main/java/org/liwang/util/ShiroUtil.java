@@ -33,9 +33,13 @@ public abstract class ShiroUtil {
 	 * 查看权限字符串
 	 */
 	public static final String VIEW_PERMISSION_STR="view";
-	public static final String CREATE_PERMISSION_STR="creat";
+	public static final String CREATE_PERMISSION_STR="create";
 	public static final String UPDATE_PERMISSION_STR="update";
 	public static final String DELETE_PERMISSION_STR="delete";
+	/**放行*/
+	public static final String APPROVE_PERMISSION_STR="approve";
+	/**复核*/
+	public static final String RECHECK_PERMISSION_STR="recheck";
 	
 	/**
 	 * 根节点无实际分组意义
@@ -75,12 +79,19 @@ public abstract class ShiroUtil {
 	 * 是否存在操作标识的正则表达式
 	 */
 	public static final String HAS_OPERAT_REGEX="(\\S+:|)"+VIEW_PERMISSION_STR+"(:\\S+|)|(\\S+:|)"+CREATE_PERMISSION_STR+
-												"(:\\S+|)|(\\S+:|)"+UPDATE_PERMISSION_STR+"(:\\S+|)|(\\S+:|)"+DELETE_PERMISSION_STR;
+												"(:\\S+|)|(\\S+:|)"+UPDATE_PERMISSION_STR+"(:\\S+|)|(\\S+:|)"+DELETE_PERMISSION_STR+
+												"(:\\S+|)|(\\S+:|)"+APPROVE_PERMISSION_STR+"(:\\S+|)|(\\S+:|)"+RECHECK_PERMISSION_STR;
+	
+	/**
+	 * 根权限
+	 */
+	public static final String FIRST_PERMISSION="gold";
 	
 	/**
 	 * 贵金属权限字符串前缀
 	 */
-	public static final String GOLD_PERMISSION_PREFIX="gold"+PERMISSION_SEPARATOR;
+	public static final String GOLD_PERMISSION_PREFIX=FIRST_PERMISSION+PERMISSION_SEPARATOR;
+	
 	
 	public static final Subject getUser(){
 		return SecurityUtils.getSubject();
@@ -100,13 +111,18 @@ public abstract class ShiroUtil {
 		for(String perm : permissions){
 			int index=perm.indexOf(GOLD_PERMISSION_PREFIX+prefix);
 			if(index<0){//前缀不对
+				if(FIRST_PERMISSION.equals(perm) || perm.equals(FIRST_PERMISSION+PERMISSION_SEPARATOR+operatFlag)){
+					return PASS_PERMISSION_STR;
+				}
 				continue;
+			}else if(index==0){
+				return PASS_PERMISSION_STR;
 			}
 			if(!perm.contains(operatFlag) && hasOperat(perm)){//操作权限不对应
 				continue;
 			}
 			
-			String suffix= perm.substring(index+prefixLength);
+			String suffix= perm.substring(index+prefixLength+1);
 			
 			suffix=suffix.replaceAll("\\s+","");//去掉空格
 			if(suffix.isEmpty() || suffix.equals(operatFlag)){
@@ -126,7 +142,7 @@ public abstract class ShiroUtil {
 			
 		}
 		
-		return buf.toString();//不用去掉最后一个;号
+		return buf.toString();//不用去掉最后一个,号
 	}
 	
 	/**
@@ -135,6 +151,10 @@ public abstract class ShiroUtil {
 	 * @param info
 	 */
 	public static void addGroupPermission(List<Group> groups,SimpleAuthorizationInfo info){
+		if(groups==null || info==null){
+			return;
+		}
+		
 		StringBuilder buid=new StringBuilder();
 		int temp_id=-1;
 		
@@ -143,7 +163,7 @@ public abstract class ShiroUtil {
 			if(temp_id!=-1 && buid.length()>0){
 				if(temp_id!=id){
 					if(log.isDebugEnabled()){
-						log.debug("addGroupPermission: "+buid.toString());
+						log.debug("addGroupPermission to info: "+buid.toString());
 					}
 					info.addStringPermission(buid.toString());
 					temp_id=id;
@@ -179,7 +199,7 @@ public abstract class ShiroUtil {
 	 * @param operat	数据被允许的权限
 	 * @return
 	 */
-	public static boolean hasAnyPermssion(String groupStr,String operat,String id){
+	public static boolean hasAnyPermission(String groupStr,String operat,String id,String prefix){
 		if(groupStr ==null || groupStr.trim().isEmpty()){
 			return true;
 		}
@@ -188,7 +208,7 @@ public abstract class ShiroUtil {
 		
 		Subject user=getUser();
 		for(String perm : perms){
-			if(user.isPermitted(perm)){
+			if(user.isPermitted(prefix+perm)){
 				return true;
 			}
 		}

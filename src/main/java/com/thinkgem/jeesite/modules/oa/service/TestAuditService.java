@@ -41,7 +41,7 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 	}
 	
 	/**
-	 * 审核新增或编辑
+	 * 审核新增或编辑并启动流程如果为修改则完成流程
 	 * @param testAudit
 	 */
 	@Transactional(readOnly = false)
@@ -52,13 +52,13 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 			testAudit.preInsert();
 			dao.insert(testAudit);
 			
-			// 启动流程
+			// 启动流程   TODO  需要变动 根据业务变
 			actTaskService.startProcess(ActUtils.PD_TEST_AUDIT[0], ActUtils.PD_TEST_AUDIT[1], testAudit.getId(), testAudit.getContent());
 			
 		}
 		
 		// 重新编辑申请		
-		else{
+		else{//在被退回后修改资料重新开始
 			testAudit.preUpdate();
 			dao.update(testAudit);
 

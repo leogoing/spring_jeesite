@@ -23,6 +23,10 @@
 <%@ attribute name="disabled" type="java.lang.String" required="false" description="是否限制选择，如果限制，设置为disabled"%>
 <%@ attribute name="dataMsgRequired" type="java.lang.String" required="false" description=""%>
 <%@ attribute name="isGroup" type="java.lang.Boolean" required="false" description="判断是否为分组类型的数据"%>
+<%@ attribute name="isSubject" type="java.lang.Boolean" required="false" description="判断是否为科目类型的数据"%>
+<%@ attribute name="node" type="java.lang.String" required="false" description="确定分组类型数据的开始节点"%>
+<%@ attribute name="continuation" type="java.lang.Boolean" required="false" description="是否允许连续选择,适用于变量"%>
+
 <div class="input-append">
 	<input id="${id}Id" name="${name}" class="${cssClass}" type="hidden" value="${value}"/>
 	<input id="${id}Name" name="${labelName}" ${allowInput?'':'readonly="readonly"'} type="text" value="${labelValue}" data-msg-required="${dataMsgRequired}"
@@ -39,13 +43,14 @@
 			ajaxData:{selectIds: $("#${id}Id").val()},buttons:{"确定":"ok", ${allowClear?"\"清除\":\"clear\", ":""}"关闭":true}, submit:function(v, h, f){
 				if (v=="ok"){
 					var tree = h.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
-					
+
 					var ids = [], names = [], nodes = [];
 					if ("${checked}" == "true"){
 						nodes = tree.getCheckedNodes(true);
 					}else{
 						nodes = tree.getSelectedNodes();
 					}
+
 					for(var i=0; i<nodes.length; i++) {//<c:if test="${checked && notAllowSelectParent}">
 						if (nodes[i].isParent){
 							continue; // 如果为复选框选择，则过滤掉父节点
@@ -65,20 +70,35 @@
 							top.$.jBox.tip("不能选择当前栏目以外的栏目模型，请重新选择。");
 							return false;
 						}//</c:if>
-						
-						if("${isGroup}"=="true"){//将选中的节点加工拼接所有的父级
+
+						if("${isGroup}"=="true" && "${isSubject}"!="true"){//将选中的节点加工拼接所有的父级
 							var keyVal={group:'',name:''};
 							appendParents(nodes[i],keyVal);
 							ids.push(keyVal.group);
 							names.push(keyVal.name);
+							//console.log(ids);
 						}else{
 							ids.push(nodes[i].id);
-							names.push(nodes[i].name);//
+							names.push(nodes[i].name);
 						}
-						break; // 如果为非复选框选择，则返回第一个选择  
+
+						//<c:if test="${!checked}">
+						break; // 如果为非复选框选择，则返回第一个选择  </c:if>
 					}
-					$("#${id}Id").val(ids.join(",").replace(/u_/ig,""));
-					$("#${id}Name").val(names.join(","));
+					
+					if("${continuation}"=="true"){
+						if($("#${id}Id").val()!=''){
+							$("#${id}Id").val($("#${id}Id").val()+","+ids.join("&").replace(/u_/ig,""));
+							$("#${id}Name").val($("#${id}Name").val()+","+names.join("&"));
+						}else{
+							$("#${id}Id").val(ids.join("&").replace(/u_/ig,""));
+							$("#${id}Name").val(names.join("&"));
+						}
+					}else{
+						$("#${id}Id").val(ids.join(",").replace(/u_/ig,""));
+						$("#${id}Name").val(names.join(","));
+					}
+
 				}//<c:if test="${allowClear}">
 				else if (v=="clear"){
 					$("#${id}Id").val("");
@@ -95,9 +115,9 @@
 	
 	function appendParents(node,obj){//只用于分组类型
 		var parent=node.getParentNode();
-		if(parent && parent.id!=0){
-			obj.group=node.group+(obj.group?':'+obj.group:'');
-			obj.name=node.name+(obj.name?':'+obj.name:'');
+		obj.group=node.group+(obj.group?':'+obj.group:'');
+		obj.name=node.name+(obj.name?':'+obj.name:'');
+		if(parent && parent.group!=${"node"}){
 			appendParents(parent,obj);
 		}
 	}

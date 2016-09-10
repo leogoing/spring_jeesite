@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.OperateDao">
+
+	
+	<sql id="Columns">
+		o.id,
+		o.USER_ID "user.id",
+        o.SYS_TIME sysTime,
+        o.GROUP_STR groupStr,
+        o.MODULE ,
+        o.OPERATE_SOURCE operateSource,
+        o.OPERATE_TYPE operateType,
+        o.OPERATE_TIME operateTime,
+        o.OBJECT_ID objectId,
+        o.REMARKS ,
+        o.object_info objectInfo,
+        o.BUSINESS_DAY businessDay ,
+        u.name "user.name" 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="user != null and user.id!=null and user.id!=''">
+			o.user_id=#{user.id},
+		</if>
+		<if test="module != null and module!=''">
+			o.module=#{module},
+		</if>
+		<if test="operateSource != null and operateSource != ''">
+			o.operate_source=#{operateSource},
+		</if>
+		<if test="operateType != null ">
+			o.operate_type=#{operateType},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			o.group_str=#{groupStr},
+		</if>
+		<if test="objectId !=null ">
+			o.object_id=#{objectId},
+		</if>
+		<if test="remarks !=null and remarks !=''">
+			o.remarks=#{remarks},
+		</if>
+		<if test="objectInfo !=null and objectInfo !=''">
+			o.objectInfo=#{objectInfo},
+		</if>
+		<if test="businessDay !=null">
+			o.business_day=#{businessDay},
+		</if>
+		<if test="operateTime !=null">
+			o.operate_time=#{operateTime},
+		</if>
+			o.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="user != null and user.id!=null and user.id!=''">
+			and o.user_id=#{user.id}
+		</if>
+		<if test="objectId !=null">
+			and o.object_id=#{objectId}
+		</if>
+		<if test="module != null and module!=''">
+			and trim(o.module)=#{module}		<!-- char类型数据右边有多余空格导致比较错误 -->
+		</if>
+		<if test="operateSource != null and operateSource != ''">
+			and o.operate_source=#{operateSource}
+		</if>
+		<if test="operateType != null ">
+			and o.operate_type=#{operateType}
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			and o.group_str=#{groupStr}
+		</if>
+		<if test="remarks !=null and remarks !=''">
+			and o.remarks=#{remarks}
+		</if>
+		<if test="objectInfo !=null and objectInfo !=''">
+			o.objectInfo=#{objectInfo},
+		</if>
+		<if test="businessDay !=null">
+			and o.business_day=#{businessDay}
+		</if>
+		<if test="operateTime !=null">
+			and o.operate_time=#{operateTime}
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and o.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Operate">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_Operate o left join sys_user u on u.id=o.user_id 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_Operate o set
+		<if test="id != null">
+			o.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		insert into GOLD_Operate o 
+				(
+				id,user_id,MODULE,OPERATE_SOURCE,OPERATE_TYPE,OPERATE_TIME,business_day
+				<if test="objectId !=null and objectId !=''">,objectId</if>
+				<if test="objectInfo !=null and objectInfo !=''">,objectInfo</if>
+				<if test="remarks !=null and remarks!=''">,REMARKS</if>
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(operate_primary_seq.nextval,
+				#{user.id},#{module},#{operateSource},#{operateType},#{operateTime},#{businessDay}
+				<if test="objectId !=null and objectId !=''">,#{objectId}</if>
+				<if test="objectInfo !=null and objectInfo !=''">,#{objectInfo}</if>
+				<if test="remarks !=null and remarks!=''">,#{remarks}</if>
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

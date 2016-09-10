@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <D>
  * @param <T>
  */
-public abstract class DefaultLService<T extends LEntity> extends AbstractLService{
+public class DefaultLService<T extends LEntity> extends AbstractLService{
 
 	@Autowired
 	protected AbstractDaoManager<T> daoManager;
@@ -29,6 +29,10 @@ public abstract class DefaultLService<T extends LEntity> extends AbstractLServic
 	
 	public T get(T entity){
 		return daoManager.get(entity);
+	}
+	
+	public int delete(T entity){
+		return daoManager.delete(entity);
 	}
 	
 	public int update(T entity){

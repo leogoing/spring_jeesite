@@ -43,7 +43,7 @@
 			<shiro:hasPermission name="gold:group:update"><td>
 				<a href="${ctx}/sys/group/form?id={{row.id}}">修改</a>
 				<a href="${ctx}/sys/group/delete?id={{row.id}}" onclick="return confirmx('要删除该分组及所有子分组项吗？', this.href)">删除</a>
-				<a href="${ctx}/sys/group/form?parentId={{row.id}}">添加下级分组</a> 
+				<a href="${ctx}/sys/group/preAdd?parentId={{row.id}}&parentName={{row.groupName}}">添加下级分组</a> 
 			</td></shiro:hasPermission>
 		</tr>
 	</script>

@@ -30,7 +30,7 @@
 		<li><a href="${ctx}/sys/group/list">分组列表</a></li>
 		<li class="active"><a href="${ctx}/sys/group/form?id=${group.id}&parentId=${group.parentId}">分组明细</a></li>
 	</ul><br/>
-	<form:form id="inputForm" modelAttribute="group" action="${ctx}/sys/group/save" method="post" class="form-horizontal">
+	<form:form id="inputForm" modelAttribute="group" action="${ctx}/sys/group/${flag}" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>
 		<div class="control-group">
@@ -62,7 +62,9 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<shiro:hasPermission name="gold:group:update"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
+			<c:if test="${flag!='view'}">
+				<input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
+			</c:if>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>

@@ -13,6 +13,16 @@ public class Group extends BaseLEntity<Group>{
 	 * 版本
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 别名
+	 */
+	public static final String ALIAS=Group.class.getSimpleName().toLowerCase();
+	
+	/**
+	 * 视图路径前缀
+	 */
+	public static final String VIEW_PREFIX="gold/deal/"+ALIAS;
 
 	/**
 	 * 代号实际应用中使用的唯一单词
@@ -70,8 +80,27 @@ public class Group extends BaseLEntity<Group>{
 
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
+	}
+
+	@Override
+	public String alias() {
+		return ALIAS;
 	} 
 	
-	
+	@Override
+	public String viewPrefix() {
+		return VIEW_PREFIX;
+	}
+
+	@Override
+	public Group initObject() {
+		return new Group();
+	}
+
+	@Override
+	public String toString() {
+		return "Group [groupId=" + groupId + ", groupName=" + groupName + ", parentId=" + parentId + ", parentName="
+				+ parentName + "]";
+	}
 	
 }

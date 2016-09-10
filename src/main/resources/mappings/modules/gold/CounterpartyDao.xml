@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liwang.dao.CounterpartyDao">
+
+	
+	<sql id="Columns">
+		c.id,
+		c.PLACE_FLAG placeFlag,
+        c.CODE ,
+        c.NAME ,
+        c.SYS_TIME sysTime,
+        c.GROUP_STR groupStr,
+        c.STATUS 
+	</sql>
+	
+	<sql id="setColumns">
+		<if test="status != null">
+			c.status=#{status},
+		</if>
+		<if test="placeFlag != null">
+			c.place_flag=#{placeFlag},
+		</if>
+		<if test="code != null and code!=''">
+			c.code=#{code},
+		</if>
+		<if test="name != null and name != ''">
+			c.name=#{name},
+		</if>
+		<if test="groupStr !=null and groupStr !=''">
+			c.group_str=#{groupStr},
+		</if>
+			c.sys_time=systimestamp
+	</sql>
+	<sql id="judgeColumns">
+		<if test="status != null">
+			and c.status=#{status}
+		</if>
+		<if test="placeFlag != null">
+			and c.place_flag=#{placeFlag}
+		</if>
+		<if test="code != null and code!=''">
+			and c.code=#{code}
+		</if>
+		<if test="name != null and name != ''">
+			and c.name=#{name}
+		</if>
+		<if test="userGroupStr != null and userGroupStr !=''">
+			and permission_compare(#{userGroupStr},c.group_str,#{operat},c.id)=0 <!-- 调用函数处理 -->
+		</if>
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<choose>
+				<when test="id != null">
+					 and c.id=#{id}
+				</when>
+				<otherwise>
+					<include refid="judgeColumns"/>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<select id="find" resultType="org.liwang.entity.Counterparty">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_COUNTERPARTY c 
+		<include refid="condition"/>
+	</select>
+	<select id="get" resultType="org.liwang.entity.Counterparty">
+		select 
+		<include refid="Columns"/> 
+		from GOLD_COUNTERPARTY c 
+		<include refid="condition"/>
+	</select>
+
+	<update id="update">
+		update GOLD_COUNTERPARTY c set
+		<if test="id != null">
+			c.id=#{id},
+		</if>
+		<include refid="setColumns"/>
+		<include refid="condition"/>
+	</update>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select counterparty_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_COUNTERPARTY c 
+				(
+				id,status,PLACE_FLAG,code
+				<if test="name !=null and name!=''">,name</if>
+				<if test="groupStr !=null and groupStr !=''">,group_str</if>
+				)
+			values
+				(#{id},
+				#{status},#{placeFlag},#{code}
+				<if test="name !=null and name!=''">,#{name}</if>
+				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
+				)
+	</insert>
+
+</mapper>
+

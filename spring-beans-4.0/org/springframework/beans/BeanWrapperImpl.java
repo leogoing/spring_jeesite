@@ -100,6 +100,7 @@ public class BeanWrapperImpl extends AbstractPropertyAccessor implements BeanWra
 	private Object rootObject;
 
 	/**
+	 * 可能是封装了一个安全的上下文用来调用反射到的方法的<br>
 	 * The security context used for invoking the property methods
 	 */
 	private AccessControlContext acc;

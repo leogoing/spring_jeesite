@@ -77,6 +77,9 @@ public class ActGroupEntityService extends GroupEntityManager {
 		throw new RuntimeException("not implement method.");
 	}
 
+	/**
+	 * 根据用户id查找该用户所属的角色
+	 */
 	public List<Group> findGroupsByUser(String userId) {
 //		return getDbSqlSession().selectList("selectGroupsByUserId", userId);
 		List<Group> list = Lists.newArrayList();

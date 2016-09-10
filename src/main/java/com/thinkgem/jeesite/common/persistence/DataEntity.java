@@ -40,7 +40,7 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 	}
 	
 	/**
-	 * 插入之前执行方法，需要手动调用
+	 * 插入之前执行方法，需要手动调用(设置id用户等基本属性)
 	 */
 	@Override
 	public void preInsert(){

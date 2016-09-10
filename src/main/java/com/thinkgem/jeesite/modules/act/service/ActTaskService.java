@@ -41,6 +41,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.liwang.util.ShiroUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +89,7 @@ public class ActTaskService extends BaseService {
 	private IdentityService identityService;
 	
 	/**
-	 * 获取待办列表
+	 * 获取待办列表(包含等待签收的和已经签收的任务)
 	 * @param procDefKey 流程定义标识
 	 * @return
 	 */
@@ -110,6 +111,9 @@ public class ActTaskService extends BaseService {
 		}
 		if (act.getEndDate() != null){
 			todoTaskQuery.taskCreatedBefore(act.getEndDate());
+		}
+		if(act.getTaskName()!=null){//方便查询区分放行和复核
+			todoTaskQuery.taskName(act.getTaskName());
 		}
 		
 		// 查询列表
@@ -140,6 +144,9 @@ public class ActTaskService extends BaseService {
 		}
 		if (act.getEndDate() != null){
 			toClaimQuery.taskCreatedBefore(act.getEndDate());
+		}
+		if(act.getTaskName()!=null){
+			toClaimQuery.taskName(act.getTaskName());
 		}
 		
 		// 查询列表
@@ -385,7 +392,7 @@ public class ActTaskService extends BaseService {
 	}
 	
 	/**
-	 * 启动流程
+	 * 启动流程并回写登记流程实例id到Act表中
 	 * @param procDefKey 流程定义KEY
 	 * @param businessTable 业务表表名
 	 * @param businessId	业务表编号
@@ -398,6 +405,8 @@ public class ActTaskService extends BaseService {
 		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId())
 		
 		// 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
+		//实际上是设置Authentication已认证用户信息在启动流程时会调用Authentication.getAuthenticatedUserId() 从而插入到数据库 
+		//TODO  需要加锁
 		identityService.setAuthenticatedUserId(userId);
 		
 		// 设置流程变量
@@ -413,7 +422,7 @@ public class ActTaskService extends BaseService {
 		// 启动流程
 		ProcessInstance procIns = runtimeService.startProcessInstanceByKey(procDefKey, businessTable+":"+businessId, vars);
 		
-		// 更新业务表流程实例ID
+		// 更新业务表流程实例ID 
 		Act act = new Act();
 		act.setBusinessTable(businessTable);// 业务表名
 		act.setBusinessId(businessId);	// 业务表ID

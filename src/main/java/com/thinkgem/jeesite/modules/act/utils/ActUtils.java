@@ -182,7 +182,7 @@ public class ActUtils {
 		GroupEntity groupEntity = new GroupEntity();
 		groupEntity.setId(role.getEnname());
 		groupEntity.setName(role.getName());
-		groupEntity.setType(role.getRoleType());
+		groupEntity.setType(role.getRoleType());//需要security-role才能看到manage页签，需要assignment才能claim任务
 		groupEntity.setRevision(1);
 		return groupEntity;
 	}

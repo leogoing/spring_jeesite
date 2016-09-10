@@ -105,6 +105,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">是否自动签收任务：</label>
+			<div class="controls">
+				<form:radiobuttons path="autoSignFlag" items="${fns:getDictList('sys_user_autoSign')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">电话:</label>
 			<div class="controls">
 				<form:input path="phone" htmlEscape="false" maxlength="100"/>

@@ -36,13 +36,16 @@ public abstract class DefaultDaoManager<E extends LEntity> extends AbstractDaoMa
 	  */
 	public List<E> find(E entity){
 		preOperate(entity, ShiroUtil.VIEW_PERMISSION_STR);
+		if(log.isDebugEnabled() && entity!=null){
+			log.debug("find-设置完实体中的groupStr: {}",((BaseLEntity)entity).getGroupStr());
+		}
 		return dao.find(entity);
 	}
 	
 	protected abstract void preOperate(E entity,String operatFlag);
 	
 	protected void setGroupStr(E entity,String operatFlag){
-		if(entity instanceof BaseLEntity){
+		if(entity!=null && entity instanceof BaseLEntity){
 			Set<String> permissions=authManager.getAllPermission();
 			
 			if(log.isDebugEnabled()){
@@ -57,13 +60,17 @@ public abstract class DefaultDaoManager<E extends LEntity> extends AbstractDaoMa
 	@Override
 	public int update(E entity) {
 		preOperate(entity,ShiroUtil.UPDATE_PERMISSION_STR);
-		return 0;
+		
+		return dao.update(entity);
 	}
 
 	@Override
 	public int save(E entity) {
 		
-		return 0;
+		return dao.save(entity);
 	}
 	
+	public int delete(E entity){
+		return dao.delete(entity);
+	}
 }

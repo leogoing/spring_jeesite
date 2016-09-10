@@ -27,5 +27,8 @@ public abstract class AbstractDaoManager<E extends LEntity> {
 	public abstract int update(E entity);
 	
 	public abstract int save(E entity);
+	
+	public abstract int delete(E entity);
+	
 }
 

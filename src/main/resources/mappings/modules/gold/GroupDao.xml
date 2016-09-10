@@ -68,6 +68,7 @@
 		where g.id=#{id} 
 	</select>
 	
+	<!-- 不适用了,没有实际用途 -->
 	<select id="getGroupInfoByRoles" resultType="org.liwang.entity.Group">
 		select 
 			<include refid="columns"/>
@@ -94,6 +95,28 @@
 		 group by g.group_id 
 	</select>
 	
+	<!-- 层次查询,向下 -->
+	<select id="getPermByGroupsDown" resultType="org.liwang.entity.Group">
+		SELECT DISTINCT b.* FROM (SELECT g.* from Gold_Group g start with g.id in 
+		<foreach collection="coll" item="group_id" separator="," open="(" close=")">
+		 	#{group_id}
+		 </foreach>
+		   connect by prior g.id=g.parent_id) a INNER JOIN 
+		 (SELECT g.* from Gold_Group g start with g.group_id ='${group.groupId}' connect by prior g.id=g.parent_id) b ON a.id=b.id
+	</select>
+	
+	<!-- 层次查询,向下包含所有角色的并集 -->
+	<select id="getPermByRolesDown" resultType="org.liwang.entity.Group">
+		SELECT distinct g.* from Gold_Group g start with g.id in (
+		select r.group_id from GOLD_GROUP_ROLE r where r.role_id in 
+		<foreach collection="roles" item="role" separator="," open="(" close=")">
+			#{role.id}
+		</foreach>
+		 group by r.group_id )
+		 connect by prior g.id=g.parent_id
+	</select>
+	
+	<!-- 层次查询 ,向上-->
 	<select id="getPermByGroups" resultType="org.liwang.entity.Group">
 		 select 
 		 <if test="group == null" >connect_by_root g.id id,</if>
@@ -119,8 +142,43 @@
 	</select>
 	
 	<select id="getPermByGroup" resultType="String">
-		select g.group_id from Gold_Group g  start with g.id=1 connect by g.id=#{id} prior g.id=g.parent_id
+		select g.group_id from Gold_Group g  start with g.id=#{id} 
+		connect by prior g.parent_id=g.id order by connect_by_root g.id,level desc
 	</select>
+	
+	<insert id="save">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select group_primary_seq.nextval from dual
+		</selectKey>
+		insert into GOLD_GROUP g 
+			(id,group_id,
+			<if test="groupName !=null and groupName !=''">group_name,</if>
+			<if test="parentId !=null">parent_id,</if>
+			status)
+		values
+			(#{id},#{groupId},
+			<if test="groupName !=null and groupName !=''">#{groupName},</if>
+			<if test="parentId !=null">#{parentId},</if>
+			#{status})
+	</insert>
+	
+	<!-- 添加分组默认角色为父级的角色 -->
+	<insert id="saveGroupRole">
+		insert into GOLD_GROUP_ROLE g (g.role_id,g.group_id) 
+			select g2.role_id ,#{id} from GOLD_GROUP_ROLE g2 where g2.group_id=#{parentId}
+	</insert>
+	
+	<!-- 删除关联的所有子分组 -->
+	<delete id="deleteGroupRoleByGroup">
+		delete from GOLD_GROUP_ROLE g where g.group_id in 
+		(select g2.id from Gold_Group g2  start with g2.id=#{id} connect by prior g2.id=g2.parent_id)
+	</delete>
+	
+	<!-- 删除所有子分组 -->
+	<delete id="delete">
+		delete from GOLD_GROUP g where g.id in 
+		(select g2.id from Gold_Group g2  start with g2.id=#{id} connect by prior g2.id=g2.parent_id)
+	</delete>
 	
 	<delete id="deleteGroupRole">
 		DELETE FROM GOLD_GROUP_ROLE WHERE role_id = #{id}

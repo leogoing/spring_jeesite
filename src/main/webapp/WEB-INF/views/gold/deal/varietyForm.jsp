@@ -82,8 +82,8 @@
 		<div class="control-group">
 			<label class="control-label">分组信息：</label>
 			<div class="controls">
-                <sys:treeselect id="group" name="groupStr" value="${variety.groupStr}" labelName="groupStrNames" labelValue="${variety.groupStrNames}"
-					title="分组" url="/sys/group/treeData?node=variety" cssClass="" notAllowSelectParent="true" checked="true" isGroup="true"/>
+                <sys:treeselect id="groupStr" name="groupStr" value="${variety.groupStr}" labelName="groupStrNames" labelValue="${variety.groupStrNames}"
+					title="分组" url="/sys/group/treeData?node=variety" cssClass="" notAllowSelectParent="true" checked="true" isGroup="true" node="variety"/>
 			</div>
 		</div>
 		<div class="control-group">

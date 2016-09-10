@@ -1,0 +1,20 @@
+<variables>
+	<prefix>org.liwang</prefix><!-- classPath的前缀 -->
+	<variable classPath="org.liwang.entity.Counterparty" field="id"><!-- 多个depend是或的关系，暂不设并的关系 -->
+		<depend classPath="org.liwang.entity.Deal" field="dealAccount.id"/>
+		<depend classPath="org.liwang.entity.Deal" field="counterparty.id"/>
+	</variable>
+	<variable classPath="org.liwang.entity.SoundPrice" field="businessDay">
+		<depend classPath="org.liwang.entity.BusinessDayDetail" field="businessDay"/>
+	</variable>
+	<variable classPath="org.liwang.entity.Variety" field="currency">
+		<depend classPath="org.liwang.entity.Deal" field="buyCur"/>
+		<depend classPath="org.liwang.entity.Deal" field="sellCur"/>
+	</variable>
+	<!-- 公用变量 -->
+	<communal classPath="org.liwang.entity.BusinessDayDetail">
+		<condition><!-- 所依赖的条件（同一对象中的某个变量） -->
+			<property field="status" value="3"/>
+		</condition>
+	</communal>
+</variables>

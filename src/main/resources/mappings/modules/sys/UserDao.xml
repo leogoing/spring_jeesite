@@ -80,6 +80,7 @@
 		a.update_by AS "updateBy.id",
 		a.update_date,
 		a.del_flag,
+		a.auto_sign_flag autoSignFlag,
     	c.name AS "company.name",
     	c.parent_id AS "company.parent.id",
     	c.parent_ids AS "company.parentIds",
@@ -245,6 +246,7 @@
 			login_flag, 
 			photo, 
 			del_flag
+			<if test="autoSignFlag!=null">,auto_sign_flag</if>
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -264,9 +266,21 @@
 			#{remarks}, 
 			#{loginFlag}, 
 			#{photo}, 
-			#{delFlag}
+			#{delFlag},
+			<if test="autoSignFlag!=null">,#{autoSignFlag}</if>
 		)
 	</insert>
+	
+	<select id="extractAutoSign">
+		select u.LOGIN_NAME,u.id from sys_user u 
+		<where>
+			u.id in 
+			<foreach collection="users" item="user" separator="," open="(" close=")">
+				#{user.id}
+			</foreach>
+			and u.AUTO_SIGN_FLAG=0
+		</where>
+	</select>
 	
 	<!-- 更新用户 -->
 	<update id="update">

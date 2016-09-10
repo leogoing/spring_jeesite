@@ -1,56 +1,29 @@
 package com.thinkgem.jeesite.liwang.Main;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
 
 import javax.inject.Named;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.dom4j.DocumentException;
+import org.liwang.entity.BusinessDayDetail;
 
 @Named
-class Try extends c implements Serializable{
+class Try  implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 124L;
-	public static void main(String[] args) {
-//		System.out.println("null".equals(null));
-//		System.out.println(char.class.getName().length());
-//		for(String s:StringUtils.delimitedListToStringArray("http://nishui/kkj..//sa", "/"))
-//			System.out.println(s);;
-//		Try t=new Try();
-//		for(Method m:t.getClass().getMethods()){
-//			System.out.println(m.getName()+": "+m.getDeclaringClass().getModifiers());
-//		}
-		/*String[][] s=new String[][]{new String[]{"1"},new String[]{"0"}};
-		String[] d=new String[]{"2"};
-		Array.set(s, 0, d);
-		for(String a[]:s)
-		System.out.println(a[0]);
-		System.out.println(888);
-		for(String a:d)
-			System.out.println(a);*/
-		new c().b();
+	public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, 
+													SecurityException, NoSuchFieldException, IllegalArgumentException, 
+													IllegalAccessException, DocumentException {
+//		Element root=DomUtil.loadElement("src/main/resources/variable-matches.xml");
+//		Element a=root.element("communal");
+//		System.out.println(root.elementText("prefix"));
 		
-		String a="uu:ads:rt";
-		System.out.println(a.matches("(\\S+:|)ads(:\\S+|)"));
+		Number n=new Integer(2);
 		
+		System.out.println(n.equals(2));
 	}
+	private String abc;
 	
-	public void a(){
-		System.out.println(123);
-	}
-}
-class c {
-	public void b(){
-		a();
-	}
-	public  void a() {
-		System.out.println(456);
-	}
+	public String getName(){return "";}
 }
