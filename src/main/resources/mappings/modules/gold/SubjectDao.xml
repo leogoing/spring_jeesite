@@ -117,7 +117,19 @@
 	</delete>
 	
 	<update id="addBalance">
-		update GOLD_Subject s set balance=balance+#{balance} <include refid="Subject"/>
+		update GOLD_Subject s set balance=balance+#{balance} where 1=1 
+		<if test="subject.id != null">
+			and s.id=#{subject.id}
+		</if>
+		<if test="subject.firstSubject != null ">
+			and s.first_subject=#{subject.firstSubject}
+		</if>
+		<if test="subject.secondSubject != null">
+			and s.second_subject=#{subject.secondSubject}
+		</if>
+		<if test="subject.thirdSubject != null">
+			and s.third_subject=#{subject.thirdSubject}
+		</if>
 	</update>
 	
 	<insert id="save">

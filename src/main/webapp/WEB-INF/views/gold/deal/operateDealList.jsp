@@ -14,6 +14,47 @@
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function cancel(param){
+			confirmx('确认要取消办理该交易吗？', function(){ajax('cancel?taskId='+param)});
+		}
+		
+		function stop(taskId,dealId){
+			confirmx('确认要终止办理该交易吗？', function(){ajax('stop?taskId='+taskId+'&id='+dealId)});
+		}
+		
+		function claim(param){
+			confirmx('确认要签收该交易吗？', function(){ajax('claim?taskId='+param)});
+		}
+		
+		function appoint(param){
+			var appointId=$("#appointId").val();
+			if(!appointId){
+				confirmx("请选择委托人!",function(){});
+				return false;
+			}
+			confirmx('确认要委派该交易吗？', function(){ajax('appoint?taskId='+param+'&appointId='+appointId)});
+		}
+		
+		function ajax(url,data,func){
+			$.ajax({
+				url:'${ctx}/gold/deal/'+url,
+				data:data,
+				dataType:'json',
+				type:'post',
+				success:function(res){
+					if(func){
+						func(res);
+					}else{
+						alert(res.message);
+					}
+					location.reload();
+				},
+				error:function(){
+					alert("error");
+				}
+			});
+		}
 	</script>
 </head>
 <body>
@@ -35,6 +76,10 @@
 				<form:radiobuttons path="status" items="${fns:getDictList('gold_deal_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</li></c:if>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+			<li><label>委托人：</label>
+				<sys:treeselect id="appoint" name="appoint" value="" labelName="" labelValue=""
+					title="委托人" url="/sys/user/treeData" cssClass="" notAllowSelectParent="true" />
+			</li>
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>
@@ -53,9 +98,10 @@
 			</tr>
 		</thead>
 		<tbody>
-		<c:forEach items="${page.list}" var="deal">
+		<c:forEach items="${page.list}" var="act">
+			<c:set var="deal" value="${act.vars.map.deal}"/>
 			<tr>
-				<td><a href="${ctx}/gold/deal/operateDetail?id=${deal.id}&flag=${flag}">
+				<td><a href="${ctx}/gold/deal/operateDetail?id=${deal.id}&flag=${flag}&actStatus=${act.status}&taskId=${act.task.id}&procInsId=${act.task.processInstanceId}">
 					${deal.dealNo}
 				</a></td>
 				<td>
@@ -80,22 +126,30 @@
 					<fmt:formatDate value="${deal.deliveryDate}" pattern="yyyy-MM-dd"/>
 				</td>
 				<td>
-					<c:if test="${flag=='approve'}">
+					<%-- <c:if test="${flag=='approve'}">
 						<c:if test="${fns:hasAnyPermission(deal.groupStr,'approve',deal.id,'gold:deal:') }">
 							<a href="${ctx}/gold/deal/approve?id=${deal.id}" onclick="return confirmx('确认要放行该交易吗？', this.href)">放行</a>
 						</c:if>
 						<c:if test="${fns:hasAnyPermission(deal.groupStr,'reback',deal.id,'gold:deal:') }">
 							<a href="${ctx}/gold/deal/reBack?id=${deal.id}" onclick="return confirmx('确认要踢回该交易吗？', this.href)">踢回</a>
 						</c:if>
-					</c:if>
-					<c:if test="${flag=='reCheck'}">
+					</c:if> --%>
+					<%-- <c:if test="${flag=='reCheck'}">
 						<c:if test="${fns:hasAnyPermission(deal.groupStr,'reCheck',deal.id,'gold:deal:') }">
 							<a href="${ctx}/gold/deal/reCheck?id=${deal.id}" onclick="return confirmx('确认要复核该交易吗？', this.href)">复核</a>
 						</c:if>
+					</c:if> --%>
+					<c:if test="${act.status=='todo'}">
+						<a href="javascript:void(0);" onclick="cancel(${act.taskId});">取消办理</a>
+						<c:if test="${flag=='reCheck' && fns:hasAnyPermission(deal.groupStr,'stop',deal.id,'gold:deal:')}">
+							<a href="javascript:void(0);" onclick="stop('${act.taskId}',${deal.id})">终止业务</a>
+						</c:if>
+						<c:if test="${fns:hasAnyPermission(deal.groupStr,'appoint',deal.id,'gold:deal:')}">
+							<a href="javascript:void(0);" onclick="appoint('${act.taskId}')">委派</a>
+						</c:if>
 					</c:if>
-					<a href="${ctx}/gold/deal/cancel?id=${deal.id}" onclick="return confirmx('确认要取消办理该交易吗？', this.href)">取消办理</a>
-					<c:if test="${fns:hasAnyPermission(deal.groupStr,'appoint',deal.id,'gold:deal:')}">
-						<a href="${ctx}/gold/deal/appoint?id=${deal.id}" onclick="">委派</a>
+					<c:if test="${act.status=='claim'}">
+						<a href="javascript:void(0);" onclick="claim('${act.taskId}')">签收</a>
 					</c:if>
 				</td>
 			</tr>

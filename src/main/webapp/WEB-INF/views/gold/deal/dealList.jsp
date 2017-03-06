@@ -83,18 +83,18 @@
 					<fmt:formatDate value="${deal.deliveryDate}" pattern="yyyy-MM-dd"/>
 				</td>
 				<c:if test="true"><td>
-					<c:if test="${fns:hasAnyPermission(deal.groupStr,'update',deal.id,'gold:deal:') }">
-						<a href="${ctx}/gold/deal/preUpdate?id=${deal.id}">修改</a>
-					</c:if>
-					<c:if test="${fns:hasAnyPermission(deal.groupStr,'delete',deal.id,'gold:deal:') }">
-						<a href="${ctx}/gold/deal/delete?id=${deal.id}" onclick="return confirmx('确认要删除该交易吗？', this.href)">删除</a>
-					</c:if>
 					<c:if test="${fns:hasAnyPermission(deal.groupStr,'publish',deal.id,'gold:deal:')}">
-						<c:if test="${not empty deal.processId}">
+						<c:if test="${not empty deal.procInsId}">
 							<a>办理中...</a>
 						</c:if>
-						<c:if test="${empty deal.processId}">
-							<a href="${ctx}/gold/deal/delete?id=${deal.id}" onclick="return confirmx('确认要发布该交易吗？', this.href)">发布</a>
+						<c:if test="${empty deal.procInsId}">
+							<c:if test="${fns:hasAnyPermission(deal.groupStr,'update',deal.id,'gold:deal:') }">
+								<a href="${ctx}/gold/deal/preUpdate?id=${deal.id}">修改</a>
+							</c:if>
+							<c:if test="${fns:hasAnyPermission(deal.groupStr,'delete',deal.id,'gold:deal:') }">
+								<a href="${ctx}/gold/deal/delete?id=${deal.id}" onclick="return confirmx('确认要删除该交易吗？', this.href)">删除</a>
+							</c:if>
+							<a href="${ctx}/gold/deal/startProcess?id=${deal.id}" onclick="return confirmx('确认要发布该交易吗？', this.href)">发布</a>
 						</c:if>
 					</c:if>
 				</td></c:if>

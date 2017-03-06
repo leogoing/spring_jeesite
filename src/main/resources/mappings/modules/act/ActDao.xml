@@ -8,4 +8,11 @@
 		WHERE id = #{businessId}
 	</update>
 	
+	<!-- 清除业务表中的流程id  用于删除流程后的级联删除 -->
+	<update id="clearProcInsIdByBusinessId">
+		UPDATE ${businessTable} SET 
+			proc_ins_id = null 
+		WHERE proc_ins_id = #{procInsId}
+	</update>
+	
 </mapper>

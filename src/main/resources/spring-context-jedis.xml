@@ -16,10 +16,10 @@
 		<property name="testOnBorrow" value="true" /> <!-- 当调用borrow Object方法时，是否进行有效性检查 -->
 	</bean>
 	
-	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+	<!-- <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
 		<constructor-arg index="0" ref="jedisPoolConfig" />
 		<constructor-arg index="1" value="${redis.host}" />
 		<constructor-arg index="2" value="${redis.port}" type="int" />
-	</bean>
+	</bean> -->
 	
 </beans>

@@ -202,7 +202,9 @@
 			a.id, a.name, a.login_name
 		FROM sys_user a
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-			AND a.office_id = #{office.id}
+			<if test="office!=null and office.id!=null">
+				AND a.office_id = #{office.id}
+			</if>
 		ORDER BY a.name
 	</select>
 	
@@ -271,15 +273,16 @@
 		)
 	</insert>
 	
-	<select id="extractAutoSign">
-		select u.LOGIN_NAME,u.id from sys_user u 
-		<where>
-			u.id in 
-			<foreach collection="users" item="user" separator="," open="(" close=")">
-				#{user.id}
-			</foreach>
-			and u.AUTO_SIGN_FLAG=0
-		</where>
+	<!-- 根据分组提取拥有该分组权限的自动签收交易的用户 -->
+	<select id="extractAutoSignByGroup">
+		select u.LOGIN_NAME,u.id from sys_user u  where u.AUTO_SIGN_FLAG=0 and u.id in (
+		select USER_ID from SYS_USER_ROLE where ROLE_ID in (
+		select role_id from GOLD_GROUP_ROLE where Group_id =
+		(select id from GOLD_GROUP where GROUP_ID=#{group} 
+		<if test="secondGroup!=null and secondGroup!=''">
+			and PARENT_ID=(select id from GOLD_GROUP where group_id=#{secondGroup}
+		</if>
+		))))
 	</select>
 	
 	<!-- 更新用户 -->

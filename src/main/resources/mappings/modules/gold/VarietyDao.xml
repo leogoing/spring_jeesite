@@ -107,7 +107,7 @@
 	</update>
 	
 	<update id="addStorage">
-		update GOLD_VARIETY v set storage=storage+#{storage} <include refid="condition"/>
+		update GOLD_VARIETY v set storage=storage+#{storage} where currency=#{variety.currency} 
 	</update>
 	
 	<insert id="save">

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1"
+  metadata-complete="true">
 
 	<display-name>JeeSite</display-name>
 
@@ -12,7 +14,7 @@
 		<param-value>classpath*:/spring-context*.xml</param-value>
 	</context-param>
 	<listener><!-- 继承了Spring的ContextLoaderListener加载Spring主应用上下文 -->
-		<listener-class>com.thinkgem.jeesite.modules.sys.listener.WebContextListener</listener-class>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
 	<!-- 针对Bean的request和session和 globalsession作用域定义的初始化配置 -->
@@ -37,7 +39,7 @@
 	</filter-mapping>
 	
 	<!-- Apache Shiro -->
-	<filter>
+	<!-- <filter>
 		<filter-name>shiroFilter</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 		<init-param>
@@ -48,7 +50,7 @@
 	<filter-mapping>
 		<filter-name>shiroFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 
 	<!-- PageCache, cache .html suffix.
 	<filter>
@@ -65,7 +67,7 @@
 	</filter-mapping>-->
 
 	<!-- SiteMesh 网页布局和修饰的框架 -->
-	<filter>
+	<!-- <filter>
 		<filter-name>sitemeshFilter</filter-name>
 		<filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
 	</filter>
@@ -76,7 +78,7 @@
 	<filter-mapping>
 		<filter-name>sitemeshFilter</filter-name>
 		<url-pattern>/f/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	
 	<!-- MVC Servlet -->
 	<servlet>
@@ -94,7 +96,7 @@
 	</servlet-mapping>
 
 	<!-- Activiti -->
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>RestletServlet</servlet-name>
 		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
 		<init-param>
@@ -105,7 +107,7 @@
 	<servlet-mapping>
 		<servlet-name>RestletServlet</servlet-name>
 		<url-pattern>/act/rest/service/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 	<!-- DruidStatView -->
 	<servlet>
@@ -122,7 +124,7 @@
 	</servlet-mapping>
 	
 	<!-- CKFinder Ajax文件管理器 -->
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>CKFinderConnectorServlet</servlet-name>
 		<servlet-class>com.thinkgem.jeesite.common.web.CKFinderConnectorServlet</servlet-class>
 		<init-param>
@@ -158,27 +160,27 @@
 	<filter-mapping>
 		<filter-name>FileUploadFilter</filter-name>
 		<url-pattern>/static/ckfinder/core/connector/java/connector.java</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 
 	<!-- Userfiles download -->
-	<servlet>
+	<!-- <servlet>
 	  	<servlet-name>UserfilesDownloadServlet</servlet-name>
 	  	<servlet-class>com.thinkgem.jeesite.common.servlet.UserfilesDownloadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 	  	<servlet-name>UserfilesDownloadServlet</servlet-name>
 	  	<url-pattern>/userfiles/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	
 	<!-- Validate code -->
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>ValidateCodeServlet</servlet-name>
 		<servlet-class>com.thinkgem.jeesite.common.servlet.ValidateCodeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ValidateCodeServlet</servlet-name>
 		<url-pattern>/servlet/validateCodeServlet</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	
 	<!-- FineReport 
 	<servlet>

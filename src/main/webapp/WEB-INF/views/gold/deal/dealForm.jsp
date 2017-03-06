@@ -5,6 +5,7 @@
 	<title>交易添加</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+	
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
@@ -23,81 +24,85 @@
 				}
 			});
 			
-			if(${flag=='view' || flag=='approve' || flag=='reCheck'}){
+			if(${flag=='view' || flag=='approve' }){
 				$('.controls input:not(#operate)').attr('disabled','disabled');
 			} 
 			
 			$("#btnApprove").click(function(){
-				$.ajax({
-					url:'${ctx}/gold/deal/approve',
-					data:{"id":${deal.id}},
-					dataType:'json',
-					type:'post',
-					success:function(res){
-						alert("success");
-					},
-					error:function(){
-						alert("error");
-					}
-				});
+				confirmx('确认要放行该交易吗？',function(){ajax('approve',{"id":${deal.id},
+																	"amount":${deal.amount},
+																	"bornOf":${deal.bornOf},
+																	"buyCur":'${deal.buyCur}',
+																	"counterparty.id":${deal.counterparty.id},
+																	"dealAccount.id":${deal.dealAccount.id},
+																	"dealDate":$('#dealDate').val(),
+																	"dealNo":'${deal.dealNo}',
+																	"dealType":${deal.dealType},
+																	"deliveryDate":$('#deliveryDate').val(),
+																	"earlyPay":${deal.earlyPay},
+																	"money":${deal.money},
+																	"sellCur":'${deal.sellCur}',
+																	"sfFlag":${deal.sfFlag},
+																	"status":${deal.status},
+																	"taskId":'${taskId}',"procInsId":'${procInsId}'},
+																	function(res){
+																		alert(res.message);
+																		document.getElementById('listHref').click();
+																	})});
 			});
 			
 			$("#btnReCheck").click(function(){
-				$.ajax({
-					url:'${ctx}/gold/deal/reCheck',
-					data:{"id":${deal.id}},
-					dataType:'json',
-					type:'post',
-					success:function(res){
-						alert("success");
-					},
-					error:function(){
-						alert("error");
-					}
-				});
+				confirmx('确认要复核该交易吗？',"${ctx}/gold/deal/reCheck?id=${deal.id}&taskId=${taskId}&procInsId=${procInsId}");
 			});
 			
 			$("#btnBack").click(function(){
-				$.ajax({
-					url:'${ctx}/gold/deal/reBack',
-					data:{"id":${deal.id}},
-					dataType:'json',
-					type:'post',
-					success:function(res){
-						alert("success");
-					},
-					error:function(){
-						alert("error");
-					}
-				});
+				confirmx('确认要踢回该交易吗？',"${ctx}/gold/deal/reBack?id=${deal.id}&taskId=${taskId}&procInsId=${procInsId}");
 			});
 			
 			$("#btnSubmit").click(function(){
 				if(${flag=='reCheck'}){
-					$.ajax({
-					url:'${ctx}/gold/deal/updateNoRedirect',
-					data:$("#inputForm").serialize(),
-					dataType:'json',
-					type:'post',
-					success:function(res){
-						alert("success");
-					},
-					error:function(){
-						alert("error");
-					}
-				});
+					confirmx('确认要修改并保存该交易吗？',function(){
+						ajax('updateNoRedirect',$("#inputForm").serialize()+"&taskId=${taskId}&procInsId=${procInsId}");
+					});
 				}else{
 					$("#inputForm").submit();
 				}
 			});
 			
+			$("#btnCancel").click(function(){
+				confirmx('确认要取消办理该交易吗？', function(){ajax('cancel',{'taskId':'${taskId}'})});
+			});
+			
+			$("#btnStop").click(function(){
+				confirmx('确认要终止办理该交易吗？',function(){ajax('stop',{'taskId':'${taskId}','procInsId':'${procInsId}','dealId':${deal.id}})});
+			});
 		});
+		
+		
+		function ajax(url,data,func){
+			$.ajax({
+				url:'${ctx}/gold/deal/'+url,
+				data:data,
+				dataType:'json',
+				type:'post',
+				success:function(res){
+					if(func){
+						func(res);
+					}else{
+						alert(res.message);
+					}
+				},
+				error:function(){
+					alert("error");
+				}
+			});
+		}
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
 		<c:if test="${flag=='reCheck' || flag=='approve'}">
-			<li><a href="${ctx}/gold/deal/${flag}List">交易列表</a></li>
+			<li><a id="listHref" href="${ctx}/gold/deal/${flag}List">交易列表</a></li>
 		</c:if>
 		<c:if test="${flag!='reCheck' && flag!='approve'}">
 			<li><a href="${ctx}/gold/deal/list">交易列表</a></li>
@@ -128,7 +133,7 @@
 			<div class="control-group">
 				<label class="control-label">流程实例号：</label>
 				<div class="controls">
-					<form:input path="processId" htmlEscape="false" maxlength="20" class="input-xlarge" disabled="true"/>
+					<form:input path="procInsId" htmlEscape="false" maxlength="20" class="input-xlarge" disabled="true"/>
 				</div>
 			</div>
 		</c:if>
@@ -180,14 +185,14 @@
 		<div class="control-group">
 			<label class="control-label">交易日期：</label>
 			<div class="controls">
-				<form:input path="dealDate" htmlEscape="false" maxlength="20" class="input-xlarge required"/>
+				<form:input id="dealDate" path="dealDate" htmlEscape="false" maxlength="20" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">交割日期：</label>
 			<div class="controls">
-				<form:input path="deliveryDate" htmlEscape="false" maxlength="20" class="input-xlarge required"/>
+				<form:input id="deliveryDate" path="deliveryDate" htmlEscape="false" maxlength="20" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
@@ -258,28 +263,32 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<c:if test="${fns:hasAnyPermission(deal.groupStr,'update',deal.id,'gold:deal:')} && ${flag !='view' && flag!='approve'}">
-				<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存"/>&nbsp;
-			</c:if>
-			<c:if test="${flag=='reCheck'} && ${fns:hasAnyPermission(deal.groupStr,'recheck',deal.id,'gold:deal:') }">
-				<input id="btnReCheck" class="btn btn-primary" type="button" value="复 核"/>&nbsp;
-				<input id="btnStop" class="btn btn-primary" type="button" value="终止流程"/>&nbsp;
-			</c:if>
-			<c:if test="${flag=='approve'}">
-				<c:if test="${fns:hasAnyPermission(deal.groupStr,'approve',deal.id,'gold:deal:') }">
-					<input id="btnApprove" class="btn btn-primary" type="button" value="放 行"/>&nbsp;
+			<c:if test="${actStatus!='claim'}">
+				<c:if test="${fns:hasAnyPermission(deal.groupStr,'update',deal.id,'gold:deal:') && flag !='view' && flag!='approve'}">
+					<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存"/>&nbsp;
 				</c:if>
-				<c:if test="${fns:hasAnyPermission(deal.groupStr,'reback',deal.id,'gold:deal:') }">
-					<input id="btnBack" class="btn btn-primary" type="button" value="踢 回"/>&nbsp;
+				<c:if test="${flag=='reCheck' && fns:hasAnyPermission(deal.groupStr,'recheck',deal.id,'gold:deal:') }">
+					<input id="btnReCheck" class="btn btn-primary" type="button" value="复 核"/>&nbsp;
+					<c:if test="${fns:hasAnyPermission(deal.groupStr,'stop',deal.id,'gold:deal:') }">
+						<input id="btnStop" class="btn btn-primary" type="button" value="终止流程"/>&nbsp;
+					</c:if>
+				</c:if>
+				<c:if test="${flag=='approve'}">
+					<c:if test="${fns:hasAnyPermission(deal.groupStr,'approve',deal.id,'gold:deal:') }">
+						<input id="btnApprove" class="btn btn-primary" type="button" value="放 行"/>&nbsp;
+					</c:if>
+					<c:if test="${fns:hasAnyPermission(deal.groupStr,'reback',deal.id,'gold:deal:') }">
+						<input id="btnBack" class="btn btn-primary" type="button" value="踢 回"/>&nbsp;
+					</c:if>
+				</c:if>
+				<c:if test="${flag=='reCheck' || flag=='approve'}">
+					<input id="btnCancel" class="btn btn-primary" type="button" value="取消办理"/>&nbsp;
+					<!--<c:if test="${fns:hasAnyPermission(deal.groupStr,'appoint',deal.id,'gold:deal:')}">
+						<input id="btnAppoint" class="btn btn-primary" type="button" value="委派"/>&nbsp;
+					</c:if>-->
 				</c:if>
 			</c:if>
-			<c:if test="${flag=='reCheck' || flag=='approve'}">
-				<input id="btnCancel" class="btn btn-primary" type="button" value="取消办理"/>&nbsp;
-				<c:if test="${fns:hasAnyPermission(deal.groupStr,'appoint',deal.id,'gold:deal:')}">
-					<input id="btnAppoint" class="btn btn-primary" type="button" value="委派"/>&nbsp;
-				</c:if>
-			</c:if>
-			<input id="btnReturn" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+			<input id="btnReturn" class="btn" type="button" value="返 回" onclick="document.getElementById('listHref').click();"/>
 		</div>
 	</form:form>
 </body>

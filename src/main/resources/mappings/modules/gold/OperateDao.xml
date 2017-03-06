@@ -118,8 +118,8 @@
 		insert into GOLD_Operate o 
 				(
 				id,user_id,MODULE,OPERATE_SOURCE,OPERATE_TYPE,OPERATE_TIME,business_day
-				<if test="objectId !=null and objectId !=''">,objectId</if>
-				<if test="objectInfo !=null and objectInfo !=''">,objectInfo</if>
+				<if test="objectId !=null and objectId !=''">,object_id</if>
+				<if test="objectInfo !=null and objectInfo !=''">,object_info</if>
 				<if test="remarks !=null and remarks!=''">,REMARKS</if>
 				<if test="groupStr !=null and groupStr !=''">,group_str</if>
 				)

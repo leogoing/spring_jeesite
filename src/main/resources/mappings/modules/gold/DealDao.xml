@@ -22,7 +22,7 @@
         d.module,
         d.SYS_TIME sysTime,
         d.GROUP_STR groupStr,
-        d.process_id processId,
+        d.proc_ins_id procInsId,
         d.STATUS ,
         c1.name "counterparty.name",
         c2.name "dealAccount.name"
@@ -74,8 +74,8 @@
 		<if test="approve !=null">
 			d.approve=#{approve},
 		</if>
-		<if test="processId !=null and processId!=''">
-			d.process_id=#{processId},
+		<if test="procInsId !=null and procInsId!=''">
+			d.proc_ins_id=#{procInsId},
 		</if>
 		<if test="module != null">
 			d.module=#{module},
@@ -131,8 +131,8 @@
 		<if test="module != null">
 			and d.module=#{module} 
 		</if>
-		<if test="processId !=null and processId!=''">
-			d.process_id=#{processId},
+		<if test="procInsId !=null and procInsId!=''">
+			d.proc_ins_id=#{procInsId},
 		</if>
 		<if test="approve !=null">
 			and d.approve=#{approve}
@@ -171,7 +171,7 @@
 		left join GOLD_Counterparty c2 on d.DEAL_ACCOUNT_ID=c2.id 
 		<include refid="condition"/>
 	</select>
-
+	
 	<update id="update">
 		update GOLD_DEAL d set
 		<if test="id != null">
@@ -180,6 +180,10 @@
 		<include refid="setColumns"/>
 		<include refid="condition"/>
 	</update>
+	
+	<delete id="delete">
+		delete from GOLD_DEAL d <include refid="condition"/>
+	</delete>
 	
 	<insert id="save">
 		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
@@ -193,7 +197,7 @@
 				<if test="bornOf !=null">born_of,</if>
 				<if test="earlyPay !=null">early_pay,</if>
 				counterparty_id,deal_account_id
-				<if test="processId !=null and processId!=''">,process_id</if>
+				<if test="procInsId !=null and procInsId!=''">,proc_ins_id</if>
 				<if test="approve !=null">,approve</if>
 				<if test="groupStr !=null and groupStr !=''">,group_str</if>
 				)
@@ -205,7 +209,7 @@
 				<if test="bornOf !=null">#{bornOf},</if>
 				<if test="earlyPay !=null">#{earlyPay},</if>
 				#{counterparty.id},#{dealAccount.id}
-				<if test="processId !=null and processId!=''">,#{processId}</if>
+				<if test="procInsId !=null and procInsId!=''">,#{procInsId}</if>
 				<if test="approve !=null">,#{approve}</if>
 				<if test="groupStr !=null and groupStr !=''">,#{groupStr}</if>
 				)
