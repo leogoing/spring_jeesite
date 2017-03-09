@@ -42,6 +42,7 @@
 		<poi.version>3.9</poi.version>
 		<freemarker.version>2.3.20</freemarker.version>
 		
+		
 		<!-- jdbc driver setting -->
 		<mysql.driver.version>5.1.30</mysql.driver.version>
 		<oracle.driver.version>10.2.0.4.0</oracle.driver.version>
@@ -350,6 +351,18 @@
 			<scope>provided</scope>
 		</dependency> 
 		<!-- WEB end -->
+
+		<!-- rabbit依赖 -->
+		<dependency>
+	      <groupId>com.rabbitmq</groupId>
+	      <artifactId>amqp-client</artifactId>
+	      <version>3.5.1</version>
+	    </dependency>
+		<dependency>
+		    <groupId>org.springframework.amqp</groupId>
+		    <artifactId>spring-rabbit</artifactId>
+		    <version>1.4.6.RELEASE</version>
+		</dependency>
 
 		<!-- CACHE begin -->
 		<dependency>

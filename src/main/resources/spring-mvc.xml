@@ -11,7 +11,7 @@
 	<context:property-placeholder ignore-unresolvable="true" location="classpath:jeesite.properties" />
 	
 	<!-- 使用Annotation自动注册Bean,只扫描@Controller(在主配置中进行扫描其它注解) -->
-	<context:component-scan base-package="org.liwang.controller" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
+	<context:component-scan base-package="org.liwang" use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
     
@@ -105,9 +105,9 @@
 	</mvc:interceptors> -->
 	
 	<!-- 支持Shiro对Controller的方法级AOP安全控制 begin-->
-	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+	<!-- <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
 		<property name="proxyTargetClass" value="true" />
-	</bean>
+	</bean> -->
 	
 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 		<property name="exceptionMappings">
