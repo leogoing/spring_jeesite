@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/rabbit
+     	http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd"
+	default-lazy-init="false">
+	
+	<description>rabbitmq连接服务配置</description>
+	
+	 <!-- 加载配置属性文件 -->
+	<context:property-placeholder ignore-unresolvable="true" location="classpath:rabbitmq.properties" />
+	
+	<!-- 连接配置 -->
+    <rabbit:connection-factory id="connectionFactory" host="${mq.host}" username="${mq.username}" password="${mq.password}" port="${mq.port}"  virtual-host="${mq.vhost}"/>
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <!-- spring template声明 ,定义了发送和接收消息的基本操作-->
+    <rabbit:template exchange="test-mq-exchange" id="amqpTemplate"  connection-factory="connectionFactory"  message-converter="jsonMessageConverter" />
+
+    <!-- 消息对象json转换类 -->
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+    
+    <!-- 申明一个消息队列Queue -->
+    <rabbit:queue id="test_queue_key" name="test_queue_key" durable="true" auto-delete="false" exclusive="false" />
+    
+    <!-- 定义exchange模式为direct，意思就是消息与一个特定的路由键完全匹配，才会转发 -->
+    <rabbit:direct-exchange name="test-mq-exchange" durable="true" auto-delete="false" id="test-mq-exchange">
+	    <rabbit:bindings><!-- 设置消息queue匹配的key -->
+	        <rabbit:binding queue="test_queue_key" key="test_queue_key"/>
+	    </rabbit:bindings>
+	</rabbit:direct-exchange>
+	
+	<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
+	    <rabbit:listener queues="test_queue_key" ref="MQListener"/>
+	</rabbit:listener-container>
+	
+</beans>
