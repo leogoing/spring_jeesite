@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Administrator
  *
  */
-@Controller
+//@Controller
 @RequestMapping("/rabbitmq")
 public class RabbitMQController {
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * @author Administrator
  *
  */
-@Service
+//@Service
 public class MQProducerImpl implements MQProducer{
 	
 	private final static Logger log = LoggerFactory.getLogger(MQProducerImpl.class);

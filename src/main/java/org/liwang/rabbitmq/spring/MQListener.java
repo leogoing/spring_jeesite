@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * @author Administrator
  *
  */
-@Service("MQListener")
+//@Service("MQListener")
 public class MQListener implements MessageListener{
 
 	private static final Logger log = LoggerFactory.getLogger(MQListener.class);
