@@ -6,10 +6,11 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//deferred();
+			deferred();
 		});
 		
 		function deferred(){
+			console.log('start...');
 		    $.get('/jeesite/webqq/messageMonitor',function(data){
 		        console.log(data);
 		        $("#textBoard").val($("#textBoard").val()+"\n\r"+data.ip+":\r"+data.mes);

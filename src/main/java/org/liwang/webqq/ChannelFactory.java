@@ -3,6 +3,7 @@ package org.liwang.webqq;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 
 import org.liwang.webqq.MessageHandler.Message;
 import org.liwang.webqq.MessageHandler.MessageData;
@@ -67,6 +68,8 @@ public class ChannelFactory implements InitializingBean{
 		connectionFactory.setPort(port);
 		connectionFactory.setVirtualHost(vhost);
 		connection = connectionFactory.newConnection();
+		createCrowdTalkQueue();
+		startMonitor();
 	}
 
 	/**
@@ -77,9 +80,6 @@ public class ChannelFactory implements InitializingBean{
 		if(crowdTalkProductChannel == null || !crowdTalkProductChannel.isOpen())
 			crowdTalkProductChannel = connection.createChannel();
 		
-		log.info("@@@@");
-		crowdTalkProductChannel.exchangeDelete(crowdTalk+".exchange");
-		crowdTalkProductChannel.queueDelete(crowdTalk+".queue");
 		
 		crowdTalkProductChannel.exchangeDeclare(crowdTalk+".exchange", "direct", true, false, false, null);
 		DeclareOk qOk = crowdTalkProductChannel.queueDeclare(crowdTalk+".queue", true, false, false, null);
@@ -98,25 +98,28 @@ public class ChannelFactory implements InitializingBean{
 			public void handleDelivery(String consumerTag, Envelope envelope,
 					BasicProperties properties, byte[] body) throws IOException {
 				String mes = new String(body,"UTF-8");
-				log.info(mes);
+				log.info("handleDelivery:"+mes);
 				String ip = mes.split("-")[0];
 				String val = mes.split("-")[1];
 				messageHandler.sendMessage(new MessageData<MessageHandler.Message>(new Message(ip, val)));
+				crowdTalkConsumerChannel.basicAck(envelope.getDeliveryTag(), false);
 			}
 		};
-		crowdTalkConsumerChannel.basicConsume(crowdTalk+".queue", false, crowdTalk+".consumer", true, false, null, consumer);
+		crowdTalkConsumerChannel.basicConsume(crowdTalk+".queue", false, crowdTalk+".consumer", false, false, null, consumer);
 	}
 	
 	/**发送消息
 	 * @throws IOException */
 	public void sendMessage(Message mes) throws IOException{
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		log.info(mes.getMes());
+		/*ByteArrayOutputStream os = new ByteArrayOutputStream();
 		ObjectOutputStream oo =new ObjectOutputStream(os);
-		oo.writeObject(mes);
+		oo.writeObject(mes.get);
 		byte[] b = os.toByteArray();
 		os.close();
-		oo.close();
-		crowdTalkProductChannel.basicPublish(crowdTalk+".exchange", crowdTalk+".route", true, true,MessageProperties.MINIMAL_BASIC ,b);
+		oo.close();*/
+		String s = mes.getIp()+"-"+mes.getMes();
+		crowdTalkProductChannel.basicPublish(crowdTalk+".exchange", crowdTalk+".route", true, false,MessageProperties.BASIC ,s.getBytes());
 	}
 	
 }

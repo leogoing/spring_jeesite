@@ -74,12 +74,6 @@
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
 		</repository>
 		
-		<repository>
-            <id>oschina-repos</id>
-            <name>Oschina Releases</name>
-            <url>http://maven.oschina.net/content/groups/public</url>
-        </repository>
-        
         <repository>
             <id>java-repos</id>
             <name>Java Repository</name>
@@ -104,6 +98,12 @@
 			<url>http://repo1.maven.org/maven2/</url>
 		</repository>
 		
+		<repository>
+            <id>oschina-repos</id>
+            <name>Oschina Releases</name>
+            <url>http://maven.oschina.net/content/groups/public</url>
+        </repository>
+		
 		<repository>   
             <id>maven-restlet</id>   
             <name>Public online Restlet repository</name>   
@@ -120,18 +120,6 @@
 			<id>activiti-repos2</id>
 			<name>Activiti Repository 2</name>
 			<url>https://app.camunda.com/nexus/content/groups/public</url>
-		</repository>
-		
-		<repository> 
-			<id>thinkgem-repos</id> 
-			<name>ThinkGem Repository</name>
-			<url>http://git.oschina.net/thinkgem/repos/raw/master</url>
-		</repository>
-		
-		<repository> 
-			<id>thinkgem-repos2</id> 
-			<name>ThinkGem Repository 2</name>
-			<url>https://raw.github.com/thinkgem/repository/master</url>
 		</repository>
 		
 	</repositories>
@@ -151,6 +139,12 @@
             <name>Oschina Releases</name>
             <url>http://maven.oschina.net/content/groups/public</url>
         </pluginRepository>
+        
+		<pluginRepository>
+			<id>central-repos</id>
+			<name>Central Repository</name>
+			<url>http://repo.maven.apache.org/maven2</url>
+		</pluginRepository>
 		
 	</pluginRepositories> 
 	
@@ -720,6 +714,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency> -->
+		<dependency>
+            <groupId>org.eclipse.jetty.aggregate</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency> 
 		
 	</dependencies>
 

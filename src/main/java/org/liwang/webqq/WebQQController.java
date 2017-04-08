@@ -45,17 +45,21 @@ public class WebQQController {
 		return "crowdTalk";
 	}
 	
-	
+	@ResponseBody
 	@RequestMapping("/messageMonitor")
 	public DeferredResult<MessageHandler.Message> messageMonitor(HttpServletRequest request) throws IOException{
-		channelFactory.startMonitor();
 		//将DeferredResult存到session中
 		HttpSession session = request.getSession();
 		MessageListenerImpl message = (MessageListenerImpl)session.getAttribute("messageListener"); 
+		
+		System.out.println("messageMonitor##:"+message);
 		if(message == null){
 			message = new MessageListenerImpl(new DeferredResult<MessageHandler.Message>());
 			session.setAttribute("messageListener", message);
+		}else{
+			message.setResult(new DeferredResult<MessageHandler.Message>());
 		}
+		
 		messageHandler.addListener(message);
 		return message.getResult();
 	}
@@ -63,10 +67,10 @@ public class WebQQController {
 	
 	@ResponseBody
 	@RequestMapping("/sendMessage")
-	public Map<String,String> sendMessage(HttpServletRequest request,String mes){
+	public Map<String,String> sendMessage(HttpServletRequest request,String mes) throws IOException{
 		
-		messageHandler.sendMessage(new MessageData<MessageHandler.Message>(new Message(
-				request.getHeader("x-forwarded-for") == null?request.getRemoteAddr():request.getHeader("x-forwarded-for"),mes)));
+		channelFactory.sendMessage(new Message(
+				request.getHeader("x-forwarded-for") == null?request.getRemoteAddr():request.getHeader("x-forwarded-for"),mes));
 		
 		return new HashMap<String,String>();
 	}

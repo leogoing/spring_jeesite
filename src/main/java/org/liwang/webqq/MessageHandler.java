@@ -25,8 +25,10 @@ public class MessageHandler {
 	}
 	
 	public void sendMessage(MessageData<Message> mes){
-		for(MessageListener e : list)
+		System.out.println("@s:"+list.size());
+		for(MessageListener e : list){
 			e.handler(mes);
+		}
 	}
 	
 	
@@ -63,12 +65,15 @@ public class MessageHandler {
 	}
 	
 	public static class MessageListenerImpl implements MessageListener{
-		private final DeferredResult<Message> result;
+		private DeferredResult<Message> result;
 		public MessageListenerImpl(DeferredResult<Message> result) {
 			this.result = result;
 		}
 		public DeferredResult<Message> getResult(){
 			return result;
+		}
+		public void setResult(DeferredResult<Message> result) {
+			this.result = result;
 		}
 		@Override
 		public void handler(MessageData<Message> mes) {
