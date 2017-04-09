@@ -954,6 +954,8 @@
 							<value>${project.build.sourceEncoding}</value>
 						</systemProperty>
 					</systemProperties>
+					<stopPort>9999</stopPort>
+					<stopKey>shutdown</stopKey>
 				</configuration>
 			</plugin>
 			
