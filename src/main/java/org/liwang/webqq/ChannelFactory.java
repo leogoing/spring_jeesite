@@ -77,6 +77,10 @@ public class ChannelFactory implements InitializingBean{
 	 * @throws IOException 
 	 */
 	public void createCrowdTalkQueue() throws IOException{
+		if(connection == null || !connection.isOpen()){
+			connection = connectionFactory.newConnection();
+		}
+		
 		if(crowdTalkProductChannel == null || !crowdTalkProductChannel.isOpen())
 			crowdTalkProductChannel = connection.createChannel();
 		
